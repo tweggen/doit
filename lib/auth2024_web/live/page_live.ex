@@ -31,6 +31,14 @@ defmodule Auth2024Web.PageLive do
   end
 
   @impl true
+  def handle_event("delete", data, socket) do
+    Todos.delete_item(Map.get(data, "id"))
+    socket = assign(socket, items: Todos.list_items(), active: %Item{})
+    Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info(%{event: "update", payload: %{items: items}}, socket) do
     {:noreply, assign(socket, items: items)}
   end

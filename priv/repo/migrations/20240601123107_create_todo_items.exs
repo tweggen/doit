@@ -3,9 +3,10 @@ defmodule Auth2024.Repo.Migrations.CreateTodoItems do
 
   def change do
     create table(:todo_items) do
+      add :status, :integer
+      add :due, :date
       add :caption, :string
       add :content, :string
-      add :status, :integer
 
       timestamps(type: :utc_datetime)
     end

@@ -3,9 +3,9 @@ defmodule Auth2024.Repo.Migrations.CreateTodoPersons do
 
   def change do
     create table(:todo_persons) do
+      add :status, :integer
       add :family_name, :string
       add :given_name, :string
-      add :status, :integer
 
       timestamps(type: :utc_datetime)
     end

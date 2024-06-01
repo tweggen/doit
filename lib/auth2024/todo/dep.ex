@@ -5,8 +5,8 @@ defmodule Auth2024.Todo.Dep do
 
   schema "todo_deps" do
     field :relation, :integer
-    has_one :item_a, :Item
-    has_one :item_b, :Item
+    has_one :item_a, Item
+    has_one :item_b, Item
 
     timestamps(type: :utc_datetime)
   end
