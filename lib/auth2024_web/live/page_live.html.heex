@@ -1,26 +1,35 @@
 <section class="todoapp">
   <header class="header">
     <h1>todos</h1>
-    <input class="new-todo" placeholder="What needs to be done?" autofocus="" />
+    <form phx-submit="create" id="form">
+      <input
+        id="new_todo"
+        class="new-todo"
+        type="text"
+        name="text"
+        placeholder="What needs to be done?"
+        autofocus=""
+        required="required"
+      />
+    </form>
   </header>
   <section class="main" style="display: block;">
     <input id="toggle-all" class="toggle-all" type="checkbox" />
     <label for="toggle-all">Mark all as complete</label>
     <ul class="todo-list">
-      <li data-id="1590167947253" class="">
-        <div class="view">
-          <input class="toggle" type="checkbox" />
-          <label>Learn how to build a Todo list in Phoenix</label>
-          <button class="destroy"></button>
-        </div>
-      </li>
-      <li data-id="1590167956628" class="completed">
-        <div class="view">
-          <input class="toggle" type="checkbox" />
-          <label>Completed item</label>
-          <button class="destroy"></button>
-        </div>
-      </li>
+        <%= for item <- @items do %>
+        <li data-id={item.id} class={completed?(item)}>
+          <div class="view">
+            <%= if checked?(item) do %>
+              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" checked />
+            <% else %>
+              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
+            <% end %>
+            <label><%= item.text %></label>
+            <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
+          </div>
+        </li>
+        <% end %>
     </ul>
   </section>
   <footer class="footer" style="display: block;">

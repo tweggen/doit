@@ -5,7 +5,7 @@ config :auth2024, Auth2024.Repo,
   username: "postgres",
   password: "admin",
   hostname: "localhost",
-  database: "auth2024_dev",
+  database: "doit_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

@@ -1,5 +1,5 @@
-defmodule LiveViewTodoWeb.PageLiveTest do
- use LiveViewTodoWeb.ConnCase
+defmodule Auth2024Web.PageLiveTest do
+ use Auth2024Web.ConnCase
  import Phoenix.LiveViewTest
 
  test "disconnected and connected mount", %{conn: conn} do
