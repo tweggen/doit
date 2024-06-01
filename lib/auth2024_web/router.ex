@@ -21,7 +21,8 @@ defmodule Auth2024Web.Router do
   scope "/", Auth2024Web do
     pipe_through :browser
 
-    get "/", PageController, :home
+    #get "/", PageController, :home
+    live "/", PageLive
     live "/hi", HiWidgetLive
   end
 

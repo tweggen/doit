@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :auth2024, Auth2024.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "admin",
   hostname: "localhost",
   database: "auth2024_dev",
   stacktrace: true,
