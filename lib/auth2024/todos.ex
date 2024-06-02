@@ -58,10 +58,13 @@ defmodule Auth2024.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def add_item(attrs) do
-    %Item{}
-    |> Item.changeset(attrs)
+  def add_item(user, attrs) do
+    user
+    |> Ecto.build_assoc(:todos, attrs)
     |> Repo.insert()
+    #%Item{}
+    #|> Item.changeset(attrs)
+    #|> Repo.insert()
   end
 
   @doc """

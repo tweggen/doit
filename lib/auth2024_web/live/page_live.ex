@@ -22,7 +22,7 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event("create", %{"text" => text}, socket) do
-    Todos.add_item(%{user: socket.assigns.current_user, caption: text, status: 0, author: socket.assigns.current_person, contact: socket.assigns.current_person})
+    Todos.add_item(socket.assigns.current_user, %{caption: text, status: 0, author: socket.assigns.current_person, contact: socket.assigns.current_person})
     socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
