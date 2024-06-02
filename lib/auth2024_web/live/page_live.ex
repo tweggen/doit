@@ -30,20 +30,41 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event("toggle", data, socket) do
-	status = if Map.has_key?(data, "value"), do: 1, else: 0
-	item = Todos.get_item!(Map.get(data, "id"))
-	Todos.update_item(item, %{id: item.id, status: status})
-	socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
+    user = socket.assigns.current_user
+	  status = if Map.has_key?(data, "value"), do: 1, else: 0
+	  item = Todos.get_item!(Map.get(data, "id"))
+	  Todos.update_item(user, item, %{status: status})
+	  socket = assign(socket, items: Todos.list_items(user), active: %Item{})
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
   end
 
   @impl true
   def handle_event("delete", data, socket) do
-    Todos.delete_item(Map.get(data, "id"))
+    user = socket.assigns.current_user
+    Todos.delete_item(user, Map.get(data, "id"))
     socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_params(params, _url, socket) do
+    user = socket.assigns.current_user
+    items = Todos.list_items(user)
+
+    case params["filter_by"] do
+      "completed" ->
+        completed = Enum.filter(items, &(&1.status == 1))
+        {:noreply, assign(socket, items: completed, tab: "completed")}
+
+      "active" ->
+        active = Enum.filter(items, &(&1.status == 0))
+        {:noreply, assign(socket, items: active, tab: "active")}
+
+      _ ->
+        {:noreply, assign(socket, items: items, tab: "all")}
+    end
   end
 
   @impl true

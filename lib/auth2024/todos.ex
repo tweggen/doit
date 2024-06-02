@@ -130,9 +130,9 @@ defmodule Auth2024.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_item(%Item{} = item, attrs) do
+  def update_item(_user, %Item{} = item, attrs) do
     item
-    |> Item.changeset(attrs)
+    |> Item.changeset_status(attrs)
     |> Repo.update()
   end
 
@@ -165,9 +165,9 @@ defmodule Auth2024.Todos do
   end
 
   # "soft" delete
-  def delete_item(id) do
+  def delete_item(_user, id) do
     get_item!(id)
-    |> Item.changeset(%{status: 2})
+    |> Item.changeset_status(%{status: 2})
     |> Repo.update()
   end
 

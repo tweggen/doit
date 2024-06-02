@@ -25,7 +25,7 @@
             <% else %>
               <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
             <% end %>
-            <label><%= item.content %></label>
+            <label><%= item.caption %></label>
             <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
           </div>
         </li>
@@ -36,13 +36,13 @@
     <span class="todo-count"><strong>1</strong> item left</span>
     <ul class="filters">
       <li>
-        <a href="#/" class="selected">All</a>
+        <.link patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}>All</.link>
       </li>
       <li>
-        <a href="#/active">Active</a>
+        <.link patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}>Active</.link>
       </li>
       <li>
-        <a href="#/completed">Completed</a>
+        <.link patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}>Completed</.link>
       </li>
     </ul>
     <button class="clear-completed" style="display: block;">

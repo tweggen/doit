@@ -44,6 +44,7 @@ defmodule Auth2024Web do
 
       import Plug.Conn
       import Auth2024Web.Gettext
+      alias Auth2024Web.Router.Helpers, as: Routes
 
       unquote(verified_routes())
     end
@@ -54,7 +55,7 @@ defmodule Auth2024Web do
       use Phoenix.LiveView,
         layout: {Auth2024Web.Layouts, :app}
 
-      unquote(html_helpers())
+      unquote(view_helpers())
     end
   end
 
@@ -62,7 +63,7 @@ defmodule Auth2024Web do
     quote do
       use Phoenix.LiveComponent
 
-      unquote(html_helpers())
+      unquote(view_helpers())
     end
   end
 
@@ -75,20 +76,31 @@ defmodule Auth2024Web do
         only: [get_csrf_token: 0, view_module: 1, view_template: 1]
 
       # Include general helpers for rendering HTML
-      unquote(html_helpers())
+      unquote(view_helpers())
     end
   end
 
-  defp html_helpers do
+  defp view_helpers do
     quote do
       # HTML escaping functionality
       import Phoenix.HTML
+
+      # Import LiveView helpers (live_render, live_component, live_patch, etc)
+      import Phoenix.LiveView.Helpers
+
+      # Import basic rendering functionality (render, render_layout, etc)
+      # import Phoenix.View
+
       # Core UI components and translation
       import Auth2024Web.CoreComponents
       import Auth2024Web.Gettext
 
+      alias Auth2024Web.Router.Helpers, as: Routes
+
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
+
+      import Phoenix.Component
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
