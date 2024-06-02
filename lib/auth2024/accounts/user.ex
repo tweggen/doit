@@ -1,7 +1,7 @@
 defmodule Auth2024.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Auth2024.Todos.{Item,Person}
+  alias Auth2024.Todo.{Item,Person}
 
 
   schema "users" do

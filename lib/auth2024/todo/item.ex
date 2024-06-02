@@ -25,6 +25,8 @@ defmodule Auth2024.Todo.Item do
     item
     |> cast(attrs, [:status, :due, :caption, :content])
     |> validate_required([:user, :status, :caption])
+    |> cast_assoc(:author)
+    |> cast_assoc(:contact)
   end
 
   defp validate_caption(changeset) do

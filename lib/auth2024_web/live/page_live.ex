@@ -11,7 +11,9 @@ defmodule Auth2024Web.PageLive do
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
     with token when is_bitstring(token) <- session["user_token"],
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
-      {:ok, assign(socket, current_user: user, current_person: Todos.find_person(user), items: Todos.list_items(user))}
+        current_person = Todos.find_person(user)
+        items = Todos.list_items(user)
+      {:ok, assign(socket, current_user: user, current_person: current_person, items: items)}
     else
       _ -> {:ok, socket}
     end

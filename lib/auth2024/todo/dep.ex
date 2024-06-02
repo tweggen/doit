@@ -17,5 +17,7 @@ defmodule Auth2024.Todo.Dep do
     dep
     |> cast(attrs, [:relation])
     |> validate_required([:relation])
+    |> cast_assoc(:demanding_item)
+    |> cast_assoc(:required_item)
   end
 end

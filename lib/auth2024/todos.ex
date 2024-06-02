@@ -7,6 +7,7 @@ defmodule Auth2024.Todos do
   alias Auth2024.Repo
 
   alias Auth2024.Todo.{Item, Person}
+  alias Auth2024.Accounts.User
 
   ## Database getters
 
@@ -38,8 +39,9 @@ defmodule Auth2024.Todos do
   def list_items(user) do
     Item
     |> order_by(desc: :inserted_at)
+    |> where([a], a.user_id == ^user.id)
     |> where([a], is_nil(a.status) or a.status != 2)
-    |> Repo.get_by(User, id: user.id)
+    |> Repo.all()
   end
 
   ## Item creation
@@ -74,9 +76,9 @@ defmodule Auth2024.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def add_person(attrs) do
-    %Person{}
-    |> Person.changeset(attrs)
+  def add_person(user, attrs) do
+    user
+    |> Ecto.build_assoc(:person, attrs)
     |> Repo.insert()
   end
 
@@ -94,7 +96,7 @@ defmodule Auth2024.Todos do
 
   """
   def find_person(user) do
-    case Repo.get_by(Person, user_id: user.id) do
+    case Repo.get_by(Person, [user_id: user.id]) do
       nil ->
         # Entity doesn't exist, create it
         #changeset = %{
@@ -103,7 +105,7 @@ defmodule Auth2024.Todos do
         #}
         #{:ok, entity} = Repo.insert(changeset)
         #entity
-        add_person(%{family_name: user.email, user_id: user.id, status: 0})
+        add_person(user, %{family_name: user.email, status: 0})
 
       entity ->
         # Entity already exists, return it

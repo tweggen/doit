@@ -22,5 +22,7 @@ defmodule Auth2024.Todo.Person do
     person
     |> cast(attrs, [:family_name, :given_name, :status])
     |> validate_required([:family_name, :status])
+    |> cast_assoc(:user)
   end
 end
+  
