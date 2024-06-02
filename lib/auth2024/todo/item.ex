@@ -8,9 +8,11 @@ defmodule Auth2024.Todo.Item do
     field :due, :date
     field :caption, :string
     field :content, :string
-    has_one :author, Person
-    has_many :contact, Person
-    has_many :deps, Dep
+    belongs_to :author, Person, foreign_key: :author_id
+    belongs_to :contact, Person, foreign_key: :contact_id
+
+    has_many :demanding_from_deps, Dep, foreign_key: :demanding_id
+    has_many :required_by_deps, Dep, foreign_key: :required_id
 
     timestamps(type: :utc_datetime)
   end
@@ -19,7 +21,7 @@ defmodule Auth2024.Todo.Item do
   def changeset(item, attrs) do
     item
     |> cast(attrs, [:status, :due, :caption, :content])
-    |> validate_required([:caption])
+    |> validate_required([:status, :due, :caption, :content])
   end
 
   defp validate_caption(changeset) do

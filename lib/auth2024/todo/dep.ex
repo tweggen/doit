@@ -5,8 +5,9 @@ defmodule Auth2024.Todo.Dep do
 
   schema "todo_deps" do
     field :relation, :integer
-    has_one :item_a, Item
-    has_one :item_b, Item
+
+    belongs_to :demanding_item, Item, foreign_key: :demanding_id
+    belongs_to :required_item, Item, foreign_key: :required_id
 
     timestamps(type: :utc_datetime)
   end
