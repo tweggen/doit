@@ -9,7 +9,7 @@ defmodule Auth2024.Todo.Person do
     field :family_name, :string
     field :given_name, :string
     has_many :authored_items, Item, foreign_key: :author_id
-    has_many :contact_items, Item, foreign_key: :contact_id
+    has_many :contacted_items, Item, foreign_key: :contact_id
 
     timestamps(type: :utc_datetime)
   end
