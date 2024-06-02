@@ -19,11 +19,11 @@ defmodule Auth2024Web.Router do
   end
 
   scope "/", Auth2024Web do
-    pipe_through :browser
-
+    pipe_through [:browser, :require_authenticated_user]
+  
     #get "/", PageController, :home
     live "/", PageLive
-    live "/hi", HiWidgetLive
+    #live "/hi", HiWidgetLive
   end
 
   # Other scopes may use custom stacks.

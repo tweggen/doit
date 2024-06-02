@@ -6,16 +6,22 @@ defmodule Auth2024Web.PageLive do
   @topic "live"
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     # subscribe to the channel
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
-    {:ok, assign(socket, items: Todos.list_items())} # add items to assigns
+    with token when is_bitstring(token) <- session["user_token"],
+      user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
+      {:ok, assign(socket, current_user: user, current_person: Todos.find_person(user), items: Todos.list_items(user))}
+    else
+      _ -> {:ok, socket}
+    end
+    #{:ok, socket}
   end
 
   @impl true
   def handle_event("create", %{"text" => text}, socket) do
-    Todos.add_item(%{caption: text})
-    socket = assign(socket, items: Todos.list_items(), active: %Item{})
+    Todos.add_item(%{user: socket.assigns.current_user, caption: text, status: 0, author: socket.assigns.current_person, contact: socket.assigns.current_person})
+    socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
   end
@@ -25,7 +31,7 @@ defmodule Auth2024Web.PageLive do
 	status = if Map.has_key?(data, "value"), do: 1, else: 0
 	item = Todos.get_item!(Map.get(data, "id"))
 	Todos.update_item(item, %{id: item.id, status: status})
-	socket = assign(socket, items: Todos.list_items(), active: %Item{})
+	socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
   end
@@ -33,7 +39,7 @@ defmodule Auth2024Web.PageLive do
   @impl true
   def handle_event("delete", data, socket) do
     Todos.delete_item(Map.get(data, "id"))
-    socket = assign(socket, items: Todos.list_items(), active: %Item{})
+    socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
   end

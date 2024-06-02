@@ -2,8 +2,11 @@ defmodule Auth2024.Todo.Item do
   use Ecto.Schema
   import Ecto.Changeset
   alias Auth2024.Todo.{Person, Dep}
+  alias Auth2024.Accounts.{User}
 
   schema "todo_items" do
+    belongs_to :user, User
+
     field :status, :integer
     field :due, :date
     field :caption, :string
@@ -21,7 +24,7 @@ defmodule Auth2024.Todo.Item do
   def changeset(item, attrs) do
     item
     |> cast(attrs, [:status, :due, :caption, :content])
-    |> validate_required([:status, :due, :caption, :content])
+    |> validate_required([:user, :status, :caption])
   end
 
   defp validate_caption(changeset) do

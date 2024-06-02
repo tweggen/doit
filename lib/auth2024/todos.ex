@@ -6,7 +6,7 @@ defmodule Auth2024.Todos do
   import Ecto.Query, warn: false
   alias Auth2024.Repo
 
-  alias Auth2024.Todo.{Item}
+  alias Auth2024.Todo.{Item, Person}
 
   ## Database getters
 
@@ -35,11 +35,11 @@ defmodule Auth2024.Todos do
       [%Item{}, ...]
 
   """
-  def list_items do
+  def list_items(user) do
     Item
     |> order_by(desc: :inserted_at)
     |> where([a], is_nil(a.status) or a.status != 2)
-    |> Repo.all()
+    |> Repo.get_by(User, id: user.id)
   end
 
   ## Item creation
@@ -60,6 +60,55 @@ defmodule Auth2024.Todos do
     %Item{}
     |> Item.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @doc """
+  Adds an person
+
+  ## Examples
+
+      iex> add_person(%{field: value})
+      {:ok, %Person{}}
+
+      iex> add_person(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def add_person(attrs) do
+    %Person{}
+    |> Person.changeset(attrs)
+    |> Repo.insert()
+  end
+
+
+  @doc """
+  Return a person for the user, creating it if it doesn't exist.
+
+  ## Examples
+
+      iex> add_person(%{field: value})
+      {:ok, %Person{}}
+
+      iex> add_person(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def find_person(user) do
+    case Repo.get_by(Person, user_id: user.id) do
+      nil ->
+        # Entity doesn't exist, create it
+        #changeset = %{
+        #  # Set initial attributes here
+        #  # ...
+        #}
+        #{:ok, entity} = Repo.insert(changeset)
+        #entity
+        add_person(%{family_name: user.email, user_id: user.id, status: 0})
+
+      entity ->
+        # Entity already exists, return it
+        entity
+    end
   end
 
   ## Settings
