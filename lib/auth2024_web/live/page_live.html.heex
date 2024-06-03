@@ -1,6 +1,5 @@
 <section class="todoapp">
   <header class="header">
-    <h1>todos</h1>
     <form phx-submit="create" id="form">
       <input
         id="new_todo"
@@ -16,21 +15,6 @@
   <section class="main" style="display: block;">
     <input id="toggle-all" class="toggle-all" type="checkbox" />
     <label for="toggle-all">Mark all as complete</label>
-    <!-- ul class="todo-list">
-        <%= for item <- @items do %>
-        <li data-id={item.id} class={completed?(item)}>
-          <div class="view">
-            <%= if checked?(item) do %>
-              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" checked />
-            <% else %>
-              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
-            <% end %>
-            <label><%= item.caption %></label>
-            <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
-          </div>
-        </li>
-        <% end %>
-    </ul -->
     <ul class="todo-list" id="todo-list-items">
       <%= for item <- @items do %>
         <%= if item.id == @editing do %>
