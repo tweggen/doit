@@ -59,7 +59,8 @@ defmodule Auth2024.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
-      {:assent, "~> 0.2.9"}
+      {:assent, "~> 0.2.9"},
+      {:daisy_ui_components, ">= 0.1.2"}
     ]
   end
 
