@@ -15,33 +15,40 @@
   <section class="main" style="display: block;">
     <input id="toggle-all" class="toggle-all" type="checkbox" />
     <label for="toggle-all">Mark all as complete</label>
-    <ul class="todo-list" id="todo-list-items">
+    <ul role="list" class="divide-y divide-gray-100" id="todo-list-items">
       <%= for item <- @items do %>
-        <%= if item.id == @editing do %>
-          <form phx-submit="update-item" id="form-update">
-            <input
-              id="update_todo"
-              class="new-todo"
-              type="text"
-              name="text"
-              required="required"
-              value={item.caption}
-            />
-            <input type="hidden" name="id" value={item.id}/>
-          </form>
-        <% else %>
-          <li data-id={item.id} class={completed?(item)}>
-            <div class="view">
-              <%= if checked?(item) do %>
-                <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" checked />
-              <% else %>
-                <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
-              <% end %>
-              <label phx-click="edit-item" phx-value-id={item.id}><%= item.caption %></label>
-              <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
-            </div>
-          </li>
-        <% end %>
+        <li data-id={item.id} class="flex justify-between gap-x-6 py-5" class={completed?(item)}>
+          <div>
+            <%= if checked?(item) do %>
+              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" checked />
+            <% else %>
+              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
+            <% end %>
+          </div>
+          <div>
+            <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
+          </div>
+          <div class="min-w-0 flex-auto">
+            <p class="text-sm font-semibold leading-6 text-gray-900">
+            <%= if item.id == @editing do %>
+              <form phx-submit="update-item" id="form-update">
+                <input
+                  id="update_todo"
+                  class="text-sm font-semibold leading-6 text-gray-900 border-none"
+                  type="text"
+                  name="text"
+                  required="required"
+                  value={item.caption}
+                />
+                <input type="hidden" name="id" value={item.id}/>
+              </form>
+            <% else %>
+              <label  phx-click="edit-item" phx-value-id={item.id}><%= item.caption %></label>
+            <% end %>
+            </p>
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500">Contact Person</p>
+          </div>
+        </li>
       <% end %>
     </ul>
   </section>
