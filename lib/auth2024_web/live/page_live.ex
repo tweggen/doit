@@ -44,8 +44,7 @@ defmodule Auth2024Web.PageLive do
     {:noreply, assign(socket, editing: String.to_integer(data["id"]))}
   end
 
-  @impl true
-  def handle_event("update-item", %{"id" => item_id, "text" => text}, socket) do
+  def do_edit_done(socket, item_id, text) do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
     Todos.update_item_caption(user, current_item, %{caption: text})
@@ -53,6 +52,12 @@ defmodule Auth2024Web.PageLive do
     socket = assign(socket, items: items, editing: nil)
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
+  end
+
+
+  @impl true
+  def handle_event("update-item", %{"id" => item_id, "text" => text}, socket) do
+    do_edit_done(socket, item_id, text)
   end
 
   @impl true

@@ -31,8 +31,11 @@
           <div class="min-w-0 flex-auto">
             <p class="text-sm font-semibold leading-6 text-gray-900">
             <%= if item.id == @editing do %>
-              <form phx-submit="update-item" id="form-update">
+              <form 
+                phx-submit="update-item" 
+                id="form-update">
                 <input
+                  phx-mounted={JS.focus()}
                   id="update_todo"
                   class="text-sm font-semibold leading-6 text-gray-900 border-none"
                   type="text"
@@ -43,7 +46,7 @@
                 <input type="hidden" name="id" value={item.id}/>
               </form>
             <% else %>
-              <label  phx-click="edit-item" phx-value-id={item.id}><%= item.caption %></label>
+              <label phx-click="edit-item" phx-value-id={item.id}><%= item.caption %></label>
             <% end %>
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">Contact Person</p>
