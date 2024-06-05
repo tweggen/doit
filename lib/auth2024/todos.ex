@@ -42,6 +42,7 @@ defmodule Auth2024.Todos do
     |> where([a], a.user_id == ^user.id)
     |> where([a], is_nil(a.status) or a.status != 2)
     |> Repo.all()
+    |> Repo.preload([:contact, :author, :user])
   end
 
   ## Item creation

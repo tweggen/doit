@@ -20,13 +20,14 @@ defmodule Auth2024Web.PageLive do
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person(user)
         items = Todos.list_items(user)
-      {:ok, assign(socket, 
-                current_user: user, 
-                current_person: current_person,
-                items: items,
-                editing: nil,
-                editing_item_caption: nil,
-                tab: "all")}
+      {:ok, 
+        assign(socket, 
+          current_user: user, 
+          current_person: current_person,
+          items: items,
+          editing: nil,
+          editing_item_caption: nil,
+          tab: "all")}
     else
       _ -> {:ok, socket}
     end
@@ -38,6 +39,7 @@ defmodule Auth2024Web.PageLive do
     current_item = Todos.get_item!(item_id)
     Todos.update_item_caption(user, current_item, %{caption: text})
     items = Todos.list_items(user)
+    IO.inspect(items)
     socket = assign(socket, items: items, editing: nil, editing_item_caption: nil)
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
@@ -69,7 +71,8 @@ defmodule Auth2024Web.PageLive do
   def handle_event("edit-item", data, socket) do
     #IO.inspect("edit called")
     #IO.inspect(data)
-    {:noreply, assign(socket, 
+    {:noreply, 
+      assign(socket, 
         editing_item_caption: data["text"],
         editing: String.to_integer(data["id"]))}
   end
