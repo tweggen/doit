@@ -147,4 +147,17 @@ defmodule Auth2024Web.PageLive do
     if not is_nil(item.status) and item.status > 0, do: "completed", else: ""
   end
 
+  def display_due_date(item) do
+    if is_nil(item.due) do
+      # Get the current local date
+      current_date = :calendar.local_time()
+
+      # Format the date as "YYYY-MM-DD"
+      formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
+      formatted_date
+    else
+      item.due.to_string()
+    end
+  end
+
 end

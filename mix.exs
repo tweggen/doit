@@ -60,6 +60,8 @@ defmodule Auth2024.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:assent, "~> 0.2.9"},
+      {:calendar, "~> 1.0.0"}, 
+      {:timex, "~> 3.7"},
     ]
   end
 
