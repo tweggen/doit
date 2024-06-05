@@ -33,11 +33,11 @@
             <%= if item.id == @editing do %>
               <form 
                 phx-submit="submit-todo-item" 
-                id="form-update">
+                id="form-todo-item">
                 <input
                   phx-mounted={JS.focus()}
                   phx-change="validate-todo-item"
-                  phx-blur="left-todo-item"
+                  phx-blur={JS.dispatch("submit", to: "#form-todo-item")}
                   id="update_todo"
                   class="text-sm font-semibold leading-6 text-gray-900 border-none"
                   type="text"
