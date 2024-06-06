@@ -12,6 +12,11 @@ defmodule Auth2024Web.PageLive do
     IO.inspect({:state, state})
   end
 
+
+  defp empty_editing_item_values() do
+    %{caption: nil}
+  end
+
   @impl true
   def mount(_params, session, socket) do
     # subscribe to the channel
@@ -25,8 +30,8 @@ defmodule Auth2024Web.PageLive do
           current_user: user, 
           current_person: current_person,
           items: items,
-          editing: nil,
-          editing_item_caption: nil,
+          editing_item: nil,
+          editing_item_values: empty_editing_item_values(),
           tab: "all")}
     else
       _ -> {:ok, socket}
@@ -34,13 +39,12 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  def do_edit_done(socket, item_id, text) do
+  def do_edit_done(socket, item_id, kind, value) do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
-    Todos.update_item_caption(user, current_item, %{caption: text})
+    Todos.update_item_caption(user, current_item, %{kind => value})
     items = Todos.list_items(user)
-    IO.inspect(items)
-    socket = assign(socket, items: items, editing: nil, editing_item_caption: nil)
+    socket = assign(socket, editing_item_values: empty_editing_item_values(), items: items, editing_item: nil)
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
   end
@@ -69,35 +73,32 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event("edit-item", data, socket) do
-    #IO.inspect("edit called")
-    #IO.inspect(data)
     {:noreply, 
       assign(socket, 
-        editing_item_caption: data["text"],
-        editing: String.to_integer(data["id"]))}
+        editing_item_values: Map.put(empty_editing_item_values(),
+          :caption, data["text"]),
+        editing_item: String.to_integer(data["id"]))}
   end
 
 
   @impl true
   def handle_event("submit-todo-item", %{"id" => item_id, "text" => text}, socket) do
-    #IO.inspect("submit called")
-    do_edit_done(socket, item_id, text)
+    do_edit_done(socket, item_id, :caption, text)
   end
 
 
   @impl true
   def handle_event("validate-todo-item", %{"_target" => _target, "text" => text}, socket) do
-    #IO.inspect("validate called")
-    #IO.inspect(text)
-    {:noreply, assign(socket, editing_item_caption: text)}
+    {:noreply, 
+      assign(socket, 
+      editing_item_values: Map.put(socket.assigns.editing_item_values,
+        :caption,  text))}
   end
 
 
   @impl true
   def handle_event("left-todo-item", _data, socket) do
-    #IO.inspect("left called")
-    #IO.inspect(socket.assigns.editing)
-    do_edit_done(socket, socket.assigns.editing, socket.assigns.editing_item_caption)
+    do_edit_done(socket, socket.assigns.editing, :caption, socket.assigns.editing_item_values.caption)
     {:noreply, socket}
   end
 

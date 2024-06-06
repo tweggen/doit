@@ -30,7 +30,7 @@
           </div>
           <div class="min-w-0 flex-auto">
             <p class="text-sm font-semibold leading-6 text-gray-900">
-            <%= if item.id == @editing do %>
+            <%= if item.id == @editing_item do %>
               <form 
                 phx-submit="submit-todo-item" 
                 id="form-todo-item">
