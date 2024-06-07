@@ -57,7 +57,10 @@ defmodule Auth2024Web.PageLive do
   def do_edit_done(socket, item_id, kind, value) do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
-    Todos.update_item_caption(user, current_item, %{kind => value})
+    case kind do
+      :caption -> Todos.update_item_caption(user, current_item, %{kind => value})
+      :due -> Todos.update_item_due(user, current_item, %{kind => value})
+    end
     items = Todos.list_items(user)
     socket = assign(socket, editing_item_values: empty_editing_item_values(), items: items, editing_item: nil)
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)

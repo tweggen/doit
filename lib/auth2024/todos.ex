@@ -138,7 +138,7 @@ defmodule Auth2024.Todos do
   end
 
   @doc """
-  Updates a item.
+  Updates a item caption
 
   ## Examples
 
@@ -152,6 +152,24 @@ defmodule Auth2024.Todos do
   def update_item_caption(_user, %Item{} = item, attrs) do
     item
     |> Item.changeset_caption(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates a item due date
+
+  ## Examples
+
+      iex> update_item_due(item, %{field: new_value})
+      {:ok, %Item{}}
+
+      iex> update_item_due(item, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_item_due(_user, %Item{} = item, attrs) do
+    item
+    |> Item.changeset_due(attrs)
     |> Repo.update()
   end
 

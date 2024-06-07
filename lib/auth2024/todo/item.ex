@@ -35,6 +35,12 @@ defmodule Auth2024.Todo.Item do
     |> validate_required([:caption])
   end
 
+  def changeset_due(item, attrs) do
+    item
+    |> cast(attrs, [:due])
+    |> validate_required([:due])
+  end
+
   def changeset_status(item, attrs) do
     item
     |> cast(attrs, [:status])
