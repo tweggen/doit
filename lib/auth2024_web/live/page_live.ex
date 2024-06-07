@@ -126,9 +126,15 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  def handle_event("submit-todo-item-due", %{"item_id" => item_id, "duedate" => datetext}, socket) do
-    IO.inspect(["submit due", datetext])
-    do_edit_done(socket, item_id, :due, datetext)
+  #def handle_event("submit-todo-item-due", %{"item_id" => item_id, "duedate" => datetext}, socket) do
+    #IO.inspect(["submit due", datetext])
+    #do_edit_done(socket, item_id, :due, datetext)
+  #end
+
+
+  def handle_event("submit-todo-item-due", data, socket) do
+    IO.inspect(["submit due", data])
+    #do_edit_done(socket, item_id, :due, datetext)
   end
 
 
