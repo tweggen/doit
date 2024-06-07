@@ -30,37 +30,47 @@
           </div>
           <div class="min-w-0 flex-auto">
             <p class="text-sm font-semibold leading-6 text-gray-900">
-            <%= if item.id == @editing_item do %>
-              <form 
-                phx-submit="submit-todo-item-caption" 
-                id="form-todo-item-caption">
-                <input
-                  phx-mounted={JS.focus()}
-                  phx-change="validate-todo-item-caption"
-                  phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
-                  class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
-                  type="text"
-                  name="text"
-                  required="required"
-                  value={item.caption}
-                />
-                <input type="hidden" name="id" value={item.id}/>
-              </form>
-            <% else %>
-              <label phx-click="edit-item-caption" phx-value-id={item.id}><%= item.caption %></label>
-            <% end %>
+              <%= if item.id == @editing_item do %>
+                <form 
+                  phx-submit="submit-todo-item-caption" 
+                  id="form-todo-item-caption">
+                  <input
+                    phx-mounted={JS.focus()}
+                    phx-change="validate-todo-item-caption"
+                    phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
+                    class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
+                    type="text"
+                    name="text"
+                    required="required"
+                    value={item.caption}
+                  />
+                  <input type="hidden" name="id" value={item.id}/>
+                </form>
+              <% else %>
+                <label phx-click="edit-item-caption" phx-value-id={item.id}>
+                  <%= item.caption %>
+                </label>
+              <% end %>
             </p>
-            <p class="mt-1 truncate text-xs leading-5 text-gray-500"><%= item.contact.given_name %> <%= item.contact.family_name %></p>
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+              <%= item.contact.given_name %> 
+              <%= item.contact.family_name %>
+            </p>
           </div>
-          <form 
-            phx-submit="submit-todo-item-due" 
-            id="form-todo-item-due">
-            <input type="date" 
-              class="text-sm font-semibold border-none text-gray-900 sm:text-sm datepicker-input" 
-              phx-change="validate-todo-item-due"
-              phx-blur={JS.dispatch("submit", to: "#form-todo-item-due")}
-              value={display_due_date(item)}>
-          </form>
+          <div>
+            <form 
+              phx-submit="submit-todo-item-due" 
+              id={form_todo_item_due_id(item)}>
+              <input type="date" 
+                class="text-sm font-semibold border-none text-gray-900 sm:text-sm datepicker-input" 
+                phx-change="validate-todo-item-due"
+                phx-blur={JS.dispatch("submit", to: "#form-todo-item-due")}
+                name="duedate"
+                value={display_due_date(item)}
+              />
+              <input type="hidden" name="item_id" value={item.id}/>
+            </form>
+          </div>
         </li>
       <% end %>
     </ul>
