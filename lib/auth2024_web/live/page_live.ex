@@ -15,7 +15,22 @@ defmodule Auth2024Web.PageLive do
 
   defp empty_editing_item_values() do
     %{caption: nil}
+    %{due: nil}
   end
+
+
+  defp default_editing_item_values(socket, text) do
+    {erl_date, _erl_time} = :calendar.local_time()
+    {:ok, date} = Date.from_erl(erl_date)
+    %{
+      caption: text, 
+      status: 0, 
+      author: socket.assigns.current_person,
+      contact: socket.assigns.current_person,
+      due: date
+    }
+  end
+
 
   @impl true
   def mount(_params, session, socket) do
@@ -52,9 +67,19 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event("create", %{"text" => text}, socket) do
-    Todos.add_item(socket.assigns.current_user, %{caption: text, status: 0, author: socket.assigns.current_person, contact: socket.assigns.current_person})
+    Todos.add_item(socket.assigns.current_user, default_editing_item_values(socket, text));
     socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
+    {:noreply, socket}
+  end
+
+
+  @impl true
+  def handle_event("delete", data, socket) do
+    user = socket.assigns.current_user
+    Todos.delete_item(user, Map.get(data, "id"))
+    socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
+    Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
   end
 
@@ -71,8 +96,11 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  @doc """
+  Activates editing the item's caption.
+  """
   @impl true
-  def handle_event("edit-item", data, socket) do
+  def handle_event("edit-item-caption", data, socket) do
     {:noreply, 
       assign(socket, 
         editing_item_values: Map.put(empty_editing_item_values(),
@@ -81,35 +109,31 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  @impl true
-  def handle_event("submit-todo-item", %{"id" => item_id, "text" => text}, socket) do
+  def handle_event("submit-todo-item-caption", %{"id" => item_id, "text" => text}, socket) do
     do_edit_done(socket, item_id, :caption, text)
   end
 
 
   @impl true
-  def handle_event("validate-todo-item", %{"_target" => _target, "text" => text}, socket) do
+  def handle_event("validate-todo-item-caption", %{"_target" => _target, "text" => text}, socket) do
     {:noreply, 
       assign(socket, 
-      editing_item_values: Map.put(socket.assigns.editing_item_values,
+        editing_item_values: Map.put(socket.assigns.editing_item_values,
         :caption,  text))}
   end
 
 
-  @impl true
-  def handle_event("left-todo-item", _data, socket) do
-    do_edit_done(socket, socket.assigns.editing, :caption, socket.assigns.editing_item_values.caption)
-    {:noreply, socket}
+  def handle_event("submit-todo-item-due", %{"id" => item_id, "text" => text}, socket) do
+    do_edit_done(socket, item_id, :due, text)
   end
 
 
   @impl true
-  def handle_event("delete", data, socket) do
-    user = socket.assigns.current_user
-    Todos.delete_item(user, Map.get(data, "id"))
-    socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
-    Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
-    {:noreply, socket}
+  def handle_event("validate-todo-item-due", %{"_target" => _target, "text" => text}, socket) do
+    {:noreply, 
+      assign(socket, 
+        editing_item_values: Map.put(socket.assigns.editing_item_values,
+        :due,  text))}
   end
 
 
@@ -157,7 +181,7 @@ defmodule Auth2024Web.PageLive do
       formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
       formatted_date
     else
-      item.due.to_string()
+      Date.to_string(item.due.to_string)
     end
   end
 

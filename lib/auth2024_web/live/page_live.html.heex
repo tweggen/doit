@@ -32,12 +32,12 @@
             <p class="text-sm font-semibold leading-6 text-gray-900">
             <%= if item.id == @editing_item do %>
               <form 
-                phx-submit="submit-todo-item" 
-                id="form-todo-item">
+                phx-submit="submit-todo-item-caption" 
+                id="form-todo-item-caption">
                 <input
                   phx-mounted={JS.focus()}
-                  phx-change="validate-todo-item"
-                  phx-blur={JS.dispatch("submit", to: "#form-todo-item")}
+                  phx-change="validate-todo-item-caption"
+                  phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
                   class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
                   type="text"
                   name="text"
@@ -47,14 +47,20 @@
                 <input type="hidden" name="id" value={item.id}/>
               </form>
             <% else %>
-              <label phx-click="edit-item" phx-value-id={item.id}><%= item.caption %></label>
+              <label phx-click="edit-item-caption" phx-value-id={item.id}><%= item.caption %></label>
             <% end %>
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500"><%= item.contact.given_name %> <%= item.contact.family_name %></p>
           </div>
-          <input type="date" 
-            class="text-sm font-semibold border-none text-gray-900 sm:text-sm datepicker-input" 
-            value={display_due_date(item)}>
+          <form 
+            phx-submit="submit-todo-item-due" 
+            id="form-todo-item-due">
+            <input type="date" 
+              class="text-sm font-semibold border-none text-gray-900 sm:text-sm datepicker-input" 
+              phx-change="validate-todo-item-due"
+              phx-blur={JS.dispatch("submit", to: "#form-todo-item-due")}
+              value={display_due_date(item)}>
+          </form>
         </li>
       <% end %>
     </ul>
