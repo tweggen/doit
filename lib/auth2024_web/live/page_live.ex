@@ -23,8 +23,8 @@ defmodule Auth2024Web.PageLive do
     {erl_date, _erl_time} = :calendar.local_time()
     {:ok, date} = Date.from_erl(erl_date)
     %{
-      caption: text, 
-      status: 0, 
+      caption: text,
+      status: 0,
       author: socket.assigns.current_person,
       contact: socket.assigns.current_person,
       due: date
@@ -40,9 +40,9 @@ defmodule Auth2024Web.PageLive do
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person(user)
         items = Todos.list_items(user)
-      {:ok, 
-        assign(socket, 
-          current_user: user, 
+      {:ok,
+        assign(socket,
+          current_user: user,
           current_person: current_person,
           items: items,
           editing_item: nil,
@@ -104,8 +104,8 @@ defmodule Auth2024Web.PageLive do
   """
   @impl true
   def handle_event("edit-item-caption", data, socket) do
-    {:noreply, 
-      assign(socket, 
+    {:noreply,
+      assign(socket,
         editing_item_values: Map.put(empty_editing_item_values(),
           :caption, data["text"]),
         editing_item: String.to_integer(data["id"]))}
@@ -119,24 +119,26 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event("validate-todo-item-caption", %{"_target" => _target, "text" => text}, socket) do
-    {:noreply, 
-      assign(socket, 
+    {:noreply,
+      assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
         :caption,  text))}
   end
 
 
-  def handle_event("submit-todo-item-due", %{"id" => item_id, "text" => text}, socket) do
-    do_edit_done(socket, item_id, :due, text)
+  def handle_event("submit-todo-item-due", %{"item_id" => item_id, "duedate" => datetext}, socket) do
+    IO.inspect(["submit due", datetext])
+    do_edit_done(socket, item_id, :due, datetext)
   end
 
 
   @impl true
-  def handle_event("validate-todo-item-due", %{"_target" => _target, "text" => text}, socket) do
-    {:noreply, 
-      assign(socket, 
+  def handle_event("validate-todo-item-due", %{"_target" => _target, "duedate" => datetext}, socket) do
+    IO.inspect(["validate due", datetext])
+    {:noreply,
+      assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
-        :due,  text))}
+        :due,  datetext))}
   end
 
 
@@ -175,6 +177,12 @@ defmodule Auth2024Web.PageLive do
     if not is_nil(item.status) and item.status > 0, do: "completed", else: ""
   end
 
+
+  @impl true
+  def form_todo_item_due_id(item) do
+    #"form-todo-item-due-{item.id}"
+  end
+
   def display_due_date(item) do
     if is_nil(item.due) do
       # Get the current local date
@@ -184,7 +192,7 @@ defmodule Auth2024Web.PageLive do
       formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
       formatted_date
     else
-      Date.to_string(item.due.to_string)
+      Date.to_string(item.due)
     end
   end
 
