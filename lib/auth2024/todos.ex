@@ -117,6 +117,17 @@ defmodule Auth2024.Todos do
     end
   end
 
+  def search_person_family_names(name) do
+    Person
+    |> where([p], p.family_name == ^name)
+    |> order_by(desc: :family_name)
+    |> Repo.all()
+  end
+
+  def search_person_family_name(name) do
+    List.first(search_person_family_names(name))
+  end
+
   def search_persons_beginning(stem) do
     Person
     |> where([p], like(p.family_name, ^"%#{String.replace(stem, "%", "\\%")}%"))
@@ -146,6 +157,24 @@ defmodule Auth2024.Todos do
   def update_item(_user, %Item{} = item, attrs) do
     item
     |> Item.changeset_status(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates an item contact
+
+  ## Examples
+
+      iex> update_item_contact(item, %{field: new_value})
+      {:ok, %Item{}}
+
+      iex> update_item_contact(item, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_item_contact(_user, %Item{} = item, attrs) do
+    item
+    |> Item.changeset_contact(attrs)
     |> Repo.update()
   end
 

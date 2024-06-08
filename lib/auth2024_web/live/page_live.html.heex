@@ -1,5 +1,26 @@
+
+<.modal id="confirm-new-person">
+  <Auth2024Web.CoreComponents.header>
+    Sure to add new person?
+    <:subtitle>
+      I want to check you do not accidentally add
+      a misspelled version of an existing person.
+    </:subtitle>
+  </Auth2024Web.CoreComponents.header> 
+  <Auth2024Web.CoreComponents.simple_form 
+    for={@create_confirm_new_person_form} 
+    phx-submit="create-new-person-submit"
+  >
+    <:actions>
+      <.button>OK</.button>
+      <.button>No</.button>
+    </:actions>
+  </Auth2024Web.CoreComponents.simple_form>
+</.modal>
+
 <section class="todoapp">
   <header class="header">
+    <p phx-click={show_modal("confirm-new-person")}>Open Modal!</p>
     <form phx-submit="create" id="form">
       <input
         id="new_todo"
@@ -66,8 +87,14 @@
                     type="text"
                     name="text"
                     required="required"
+                    list="input-todo-item-contact"
                     value={item.contact.family_name}
                   />
+                  <datalist id="input-todo-item-contact">
+                    <%= for contact <- @editing_item_datalist do %>
+                      <option value={contact.family_name}><%= contact.family_name %></option>
+                    <% end %>
+                  </datalist>
                   <input type="hidden" name="id" value={item.id}/>
                 </form>
               <% else %>

@@ -42,15 +42,29 @@ defmodule Auth2024Web.PageLive do
         items = Todos.list_items(user)
       {:ok,
         assign(socket,
+          create_confirm_new_person_form: nil,
           current_user: user,
           current_person: current_person,
           items: items,
           editing_item: nil,
           editing_kind: nil,
+          editing_item_datalist: [],
           editing_item_values: empty_editing_item_values(),
           tab: "all")}
     else
       _ -> {:ok, socket}
+    end
+  end
+
+
+  defp possibly_update_item_contact(_socket, user, current_item, contact_person_name) do
+    contact_person = Todos.search_person_family_name(contact_person_name)
+    IO.inspect(["contact person", contact_person_name, contact_person])
+    Auth2024Web.CoreComponents.show_modal("confirm-new-person")
+    if contact_person != nil do
+      Todos.update_item_contact(user, current_item, contact_person)
+    else
+      Auth2024Web.CoreComponents.show_modal("confirm-new-person")
     end
   end
 
@@ -61,11 +75,26 @@ defmodule Auth2024Web.PageLive do
     case kind do
       :caption -> Todos.update_item_caption(user, current_item, %{kind => value})
       :due -> Todos.update_item_due(user, current_item, %{kind => value})
-      :contact -> Todos.update_item_contact(user, current_item, value)
+      :contact -> possibly_update_item_contact(socket, user, current_item, value)
     end
     items = Todos.list_items(user)
-    socket = assign(socket, editing_item_values: empty_editing_item_values(), items: items, editing_item: nil)
+    socket = assign(socket,
+      items: items,
+      editing_item: nil,
+      editing_kind: nil,
+      editing_item_datalist: [],
+      editing_item_values: empty_editing_item_values()
+    )
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
+    {:noreply, socket}
+  end
+
+
+  @impl true
+  def handle_event("create-new-person-submit", _data, socket) do
+    #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
+    IO.inspect("create-new-person-submit called.")
+    Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
     {:noreply, socket}
   end
 
@@ -111,7 +140,10 @@ defmodule Auth2024Web.PageLive do
         editing_item_values: Map.put(empty_editing_item_values(),
           :caption, data["text"]),
         editing_kind: :caption,
-        editing_item: String.to_integer(data["id"]))}
+        editing_item: String.to_integer(data["id"]),
+        editing_item_datalist: []
+      )
+    }
   end
 
 
@@ -129,9 +161,6 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  @doc """
-  Activates editing the item's caption.
-  """
   @impl true
   def handle_event("edit-item-contact", data, socket) do
     {:noreply,
@@ -139,7 +168,10 @@ defmodule Auth2024Web.PageLive do
         editing_item_values: Map.put(empty_editing_item_values(),
           :contact, data["text"]),
         editing_kind: :contact,
-        editing_item: String.to_integer(data["id"]))}
+        editing_item: String.to_integer(data["id"]),
+        editing_item_datalist: []
+      )
+    }
   end
 
 
@@ -150,14 +182,18 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event("validate-todo-item-contact", %{"_target" => _target, "text" => text}, socket) do
-    if nil != text && String.length(text)>1 do
-      user = Todos.search_person_beginning(text)
-      IO.inspect(user)
+    persons = if nil != text && String.length(text)>1 do
+      Todos.search_persons_beginning(text)
+    else
+      []
     end
     {:noreply,
       assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
-        :contact,  text))}
+          :contact,  text),
+        editing_item_datalist: persons
+      )
+    }
   end
 
 
@@ -213,9 +249,7 @@ defmodule Auth2024Web.PageLive do
 
 
   def form_todo_item_due_id(item) do
-    id = "form-todo-item-due-#{item.id}"
-    IO.inspect("returning id #{id}")
-    id
+    "form-todo-item-due-#{item.id}"
   end
 
   def display_due_date(item) do
