@@ -26,7 +26,7 @@
             <% end %>
           </div>
           <div>
-            <button class="destroy" phx-click="delete" phx-value-id={item.id}></button>
+            <button class="destroy" phx-click="delete" phx-value-id={item.id}>x</button>
           </div>
           <div class="min-w-0 flex-auto">
             <p class="text-sm font-semibold leading-6 text-gray-900">
@@ -64,10 +64,10 @@
               <input 
                 type="date" 
                 name="duedate"
-                class="text-sm font-semibold border-none text-gray-900 sm:text-sm datepicker-input" 
+                class="text-sm font-semibold border-none text-gray-900 sm:text-sm" 
                 phx-change="validate-todo-item-due"
-                phx-blur={JS.dispatch("submit", to: form_todo_item_due_id(item))}
-                phx-select={JS.dispatch("submit", to: form_todo_item_due_id(item))}
+                phx-blur={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
+                phx-select={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
                 value={display_due_date(item)}
               />
               <input type="hidden" name="item_id" value={item.id}/>

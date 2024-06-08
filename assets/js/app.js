@@ -42,3 +42,7 @@ liveSocket.connect()
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
 
+window.addEventListener("app:requestSubmit", (event) => {
+  const form = event.target;
+  form.requestSubmit();
+});
