@@ -46,6 +46,7 @@ defmodule Auth2024Web.PageLive do
           current_person: current_person,
           items: items,
           editing_item: nil,
+          editing_kind: nil,
           editing_item_values: empty_editing_item_values(),
           tab: "all")}
     else
@@ -60,6 +61,7 @@ defmodule Auth2024Web.PageLive do
     case kind do
       :caption -> Todos.update_item_caption(user, current_item, %{kind => value})
       :due -> Todos.update_item_due(user, current_item, %{kind => value})
+      :contact -> Todos.update_item_contact(user, current_item, value)
     end
     items = Todos.list_items(user)
     socket = assign(socket, editing_item_values: empty_editing_item_values(), items: items, editing_item: nil)
@@ -108,6 +110,7 @@ defmodule Auth2024Web.PageLive do
       assign(socket,
         editing_item_values: Map.put(empty_editing_item_values(),
           :caption, data["text"]),
+        editing_kind: :caption,
         editing_item: String.to_integer(data["id"]))}
   end
 
@@ -123,6 +126,38 @@ defmodule Auth2024Web.PageLive do
       assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
         :caption,  text))}
+  end
+
+
+  @doc """
+  Activates editing the item's caption.
+  """
+  @impl true
+  def handle_event("edit-item-contact", data, socket) do
+    {:noreply,
+      assign(socket,
+        editing_item_values: Map.put(empty_editing_item_values(),
+          :contact, data["text"]),
+        editing_kind: :contact,
+        editing_item: String.to_integer(data["id"]))}
+  end
+
+
+  def handle_event("submit-todo-item-contact", %{"id" => item_id, "text" => text}, socket) do
+    do_edit_done(socket, item_id, :contact, text)
+  end
+
+
+  @impl true
+  def handle_event("validate-todo-item-contact", %{"_target" => _target, "text" => text}, socket) do
+    if nil != text && String.length(text)>1 do
+      user = Todos.search_person_beginning(text)
+      IO.inspect(user)
+    end
+    {:noreply,
+      assign(socket,
+        editing_item_values: Map.put(socket.assigns.editing_item_values,
+        :contact,  text))}
   end
 
 

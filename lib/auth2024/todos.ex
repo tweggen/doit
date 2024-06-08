@@ -117,6 +117,18 @@ defmodule Auth2024.Todos do
     end
   end
 
+  def search_persons_beginning(stem) do
+    Person
+    |> where([p], like(p.family_name, ^"%#{String.replace(stem, "%", "\\%")}%"))
+    |> order_by(desc: :family_name)
+    |> Repo.all()
+  end
+
+  def search_person_beginning(stem) do
+    matches = search_persons_beginning(stem)
+    List.first(matches)
+  end
+
   ## Settings
 
   @doc """

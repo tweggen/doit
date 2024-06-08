@@ -30,7 +30,7 @@
           </div>
           <div class="min-w-0 flex-auto">
             <p class="text-sm font-semibold leading-6 text-gray-900">
-              <%= if item.id == @editing_item do %>
+              <%= if item.id == @editing_item && @editing_kind == :caption do %>
                 <form 
                   phx-submit="submit-todo-item-caption" 
                   id="form-todo-item-caption">
@@ -54,7 +54,27 @@
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
               <%= item.contact.given_name %> 
-              <%= item.contact.family_name %>
+              <%= if item.id == @editing_item && @editing_kind == :contact do %>
+                <form 
+                  phx-submit="submit-todo-item-contact" 
+                  id="form-todo-item-contact">
+                  <input
+                    phx-mounted={JS.focus()}
+                    phx-change="validate-todo-item-contact"
+                    phx-blur={JS.dispatch("submit", to: "#form-todo-item-contact")}
+                    class="text-sm leading-5 border-none p-0"
+                    type="text"
+                    name="text"
+                    required="required"
+                    value={item.contact.family_name}
+                  />
+                  <input type="hidden" name="id" value={item.id}/>
+                </form>
+              <% else %>
+                <label phx-click="edit-item-contact" phx-value-id={item.id}>
+                  <%= item.contact.family_name %>
+                </label>
+              <% end %>
             </p>
           </div>
           <div>
