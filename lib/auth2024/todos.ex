@@ -171,10 +171,15 @@ defmodule Auth2024.Todos do
       iex> update_item_contact(item, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
+
+      Note: For understanding the way ecto works, I fully
+      write this down without using convenience functions in
+      each of the data types.
+
   """
   def update_item_contact(_user, %Item{} = item, attrs) do
-    get_item!(item.id)
-    |> Repo.preload([:contact, :author, :user])
+    item
+    |> Repo.preload([:contact])
     |> Item.changeset_contact(attrs)
     |> Repo.update()
   end

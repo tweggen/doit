@@ -37,8 +37,7 @@ defmodule Auth2024.Todo.Item do
 
   def changeset_contact(item, attrs) do
     item
-    |> cast(%{}, [])
-    |> put_assoc(:contact, attrs.contact)
+    |> Ecto.Changeset.change(contact_id: attrs.contact.id)
     |> validate_required([:contact])
   end
 

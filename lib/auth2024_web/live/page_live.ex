@@ -65,6 +65,7 @@ defmodule Auth2024Web.PageLive do
   defp possibly_update_item_contact(_socket, user, current_item, contact_person_name) do
     contact_person = Todos.search_person_family_name(contact_person_name)
     IO.inspect(["contact person", contact_person_name, contact_person])
+    IO.inspect(["current_item", current_item])
     Auth2024Web.CoreComponents.show_modal("confirm-new-person")
     if contact_person != nil do
       Todos.update_item_contact(user, current_item, easy_changeset_attrs(:contact, contact_person))
