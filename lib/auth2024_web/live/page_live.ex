@@ -111,9 +111,8 @@ defmodule Auth2024Web.PageLive do
       :contact ->
         socket |> possibly_update_item_contact(user, current_item, value)
     end
-    items = Todos.list_items(user)
     socket = assign(socket,
-      items: items,
+      items: Todos.list_items(user),
       editing_item: nil,
       editing_kind: nil,
       editing_item_datalist: [],
@@ -125,18 +124,27 @@ defmodule Auth2024Web.PageLive do
 
 
   @impl true
-  def handle_event("create-new-person-submit", _data, socket) do
-    #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
-    IO.inspect("create-new-person-submit called.")
-    #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
-    #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
-    #socket = socket
-    #  |> push_event("data-cancel", %{to: "#confirm-new-person"})
-    socket =
-        socket
-        #|> assign(new_assigns)
-        |> push_event("close_modal", %{to: "#confirm-new-person"})
-    {:noreply, socket}
+  def handle_event("create-new-person-submit", %{"person" => person_params}, socket) do
+    case Todos.add_person(socket.assigns.current_user, person_params) do
+      {:error, message} ->
+        {:noreply, socket |> put_flash(:error, inspect(message))}
+
+      {:ok, _} ->
+        new_assigns = %{
+          editing_item: nil,
+          editing_kind: nil,
+          editing_item_datalist: [],
+          editing_item_values: empty_editing_item_values(),
+          new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+        }
+
+        socket =
+          socket
+          |> assign(new_assigns)
+          |> push_event("close_modal", %{to: "#confirm-new-person"})
+
+        {:noreply, socket}
+    end
   end
 
 

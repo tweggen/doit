@@ -92,10 +92,10 @@ defmodule Auth2024.Todos do
 
   ## Examples
 
-      iex> add_person(%{field: value})
+      iex> find_person(%{field: value})
       {:ok, %Person{}}
 
-      iex> add_person(%{field: bad_value})
+      iex> find_person(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
