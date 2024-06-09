@@ -3,7 +3,7 @@ defmodule Auth2024.Repo.Migrations.CreateTodoItems do
 
   def change do
     create table(:todo_items) do
-      add :user_id, references(:todo_persons), null: false
+      add :user_id, references(:users), null: false
 
       add :status, :integer
       add :due, :date

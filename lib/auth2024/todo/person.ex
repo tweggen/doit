@@ -18,10 +18,19 @@ defmodule Auth2024.Todo.Person do
   end
 
   @doc false
-  def changeset(person, attrs) do
-    person
+  def create_changeset(attrs) do
+    %__MODULE__{}
     |> cast(attrs, [:family_name, :given_name, :status])
     |> validate_required([:family_name, :status])
   end
+
+
+  @doc false
+  def edit_changeset(attrs,  %__MODULE__{} = struct) do
+    struct
+    |> cast(attrs, [:family_name, :given_name, :status])
+    |> validate_required([:family_name, :status])
+  end
+
 end
   

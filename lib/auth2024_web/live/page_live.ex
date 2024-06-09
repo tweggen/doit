@@ -1,6 +1,6 @@
 defmodule Auth2024Web.PageLive do
   use Auth2024Web, :live_view
-  alias Auth2024.Todo.Item
+  alias Auth2024.Todo.{Item,Person}
   alias Auth2024.Todos
 
   @topic "live"
@@ -45,23 +45,33 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def mount(_params, session, socket) do
+    default_assigns = %{
+      create_confirm_new_person_form: nil,
+      editing_item: nil,
+      editing_kind: nil,
+      current_user: nil,
+      current_person: nil,
+      editing_item_datalist: [],
+      items: nil,
+      new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+      tab: "all"
+    }
     # subscribe to the channel
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
     with token when is_bitstring(token) <- session["user_token"],
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person(user)
         items = Todos.list_items(user)
-      {:ok,
-        assign(socket,
-          create_confirm_new_person_form: nil,
-          current_user: user,
-          current_person: current_person,
-          items: items,
-          editing_item: nil,
-          editing_kind: nil,
-          editing_item_datalist: [],
-          editing_item_values: empty_editing_item_values(),
-          tab: "all")}
+      {:ok, 
+        socket 
+        |> assign(default_assigns) 
+        |> assign(
+            current_user: user,
+            current_person: current_person,
+            items: items,
+            editing_item_values: empty_editing_item_values()
+        )
+      }
     else
       _ -> {:ok, socket}
     end

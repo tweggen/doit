@@ -9,13 +9,24 @@
       a misspelled version of an existing person.
     </:subtitle>
   </Auth2024Web.CoreComponents.header> 
+
   <Auth2024Web.CoreComponents.simple_form 
-    for={@create_confirm_new_person_form} 
+    for={@new_person_form} 
     phx-submit="create-new-person-submit"
   >
+    <Auth2024Web.CoreComponents.input 
+      id="new-person-form-family-name"
+      label="family name"
+      field={@new_person_form[:family_name]} />
+    <Auth2024Web.CoreComponents.input 
+      label="status"
+      field={@new_person_form[:status]} />
+    <Auth2024Web.CoreComponents.input 
+      label="given name"
+      field={@new_person_form[:given_name]} />
     <:actions>
       <.button>OK</.button>
-      <.button>No</.button>
+      <.button phx-click={hide_modal("confirm-new-person")}>No</.button>
     </:actions>
   </Auth2024Web.CoreComponents.simple_form>
 </.modal>
