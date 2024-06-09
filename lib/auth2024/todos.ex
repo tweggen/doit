@@ -173,7 +173,8 @@ defmodule Auth2024.Todos do
 
   """
   def update_item_contact(_user, %Item{} = item, attrs) do
-    item
+    get_item!(item.id)
+    |> Repo.preload([:contact, :author, :user])
     |> Item.changeset_contact(attrs)
     |> Repo.update()
   end
@@ -225,9 +226,10 @@ defmodule Auth2024.Todos do
       %Ecto.Changeset{data: %Item{}}
 
   """
-  def change_item_caption(%Item{} = item, attrs \\ %{}) do
-    Item.caption_changeset(item, attrs)
-  end
+  #def change_item_caption(%Item{} = item, attrs \\ %{}) do
+  #  %Item{id: item.id }
+  #  |> Item.caption_changeset(item, attrs)
+  #end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking item content.
@@ -238,9 +240,9 @@ defmodule Auth2024.Todos do
       %Ecto.Changeset{data: %Item{}}
 
   """
-  def change_item_content(%Item{} = item, attrs \\ %{}) do
-    Item.content_changeset(item, attrs)
-  end
+  #def change_item_content(%Item{} = item, attrs \\ %{}) do
+  #  Item.content_changeset(item, attrs)
+  #end
 
   # "soft" delete
   def delete_item(_user, id) do

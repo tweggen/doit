@@ -57,12 +57,17 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  defp easy_changeset_attrs(kind, value) do
+    %{kind => value}
+  end
+
+
   defp possibly_update_item_contact(_socket, user, current_item, contact_person_name) do
     contact_person = Todos.search_person_family_name(contact_person_name)
     IO.inspect(["contact person", contact_person_name, contact_person])
     Auth2024Web.CoreComponents.show_modal("confirm-new-person")
     if contact_person != nil do
-      Todos.update_item_contact(user, current_item, contact_person)
+      Todos.update_item_contact(user, current_item, easy_changeset_attrs(:contact, contact_person))
     else
       Auth2024Web.CoreComponents.show_modal("confirm-new-person")
     end
@@ -73,8 +78,8 @@ defmodule Auth2024Web.PageLive do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
     case kind do
-      :caption -> Todos.update_item_caption(user, current_item, %{kind => value})
-      :due -> Todos.update_item_due(user, current_item, %{kind => value})
+      :caption -> Todos.update_item_caption(user, current_item, easy_changeset_attrs(kind, value))
+      :due -> Todos.update_item_due(user, current_item, easy_changeset_attrs(kind, value))
       :contact -> possibly_update_item_contact(socket, user, current_item, value)
     end
     items = Todos.list_items(user)
@@ -94,7 +99,14 @@ defmodule Auth2024Web.PageLive do
   def handle_event("create-new-person-submit", _data, socket) do
     #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
     IO.inspect("create-new-person-submit called.")
-    Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
+    #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
+    #Auth2024Web.CoreComponents.hide_modal("confirm-new-person")
+    #socket = socket
+    #  |> push_event("data-cancel", %{to: "#confirm-new-person"})
+    socket =
+        socket
+        #|> assign(new_assigns)
+        |> push_event("close_modal", %{to: "#confirm-new-person"})
     {:noreply, socket}
   end
 

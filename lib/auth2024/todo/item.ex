@@ -25,8 +25,8 @@ defmodule Auth2024.Todo.Item do
     item
     |> cast(attrs, [:status, :due, :caption, :content])
     |> validate_required([:user, :status, :caption])
-    |> cast_assoc(:author)
-    |> cast_assoc(:contact)
+    |> put_assoc(:author, attrs.author)
+    |> put_assoc(:contact, attrs.contact)
   end
 
   def changeset_caption(item, attrs) do
@@ -37,7 +37,8 @@ defmodule Auth2024.Todo.Item do
 
   def changeset_contact(item, attrs) do
     item
-    |> cast(attrs, [:contact])
+    |> cast(%{}, [])
+    |> put_assoc(:contact, attrs.contact)
     |> validate_required([:contact])
   end
 
@@ -70,28 +71,28 @@ defmodule Auth2024.Todo.Item do
 
   It requires the caption to change otherwise an error is added.
   """
-  def caption_changeset(item, attrs) do
-    item
-    |> cast(attrs, [:caption])
-    |> validate_caption()
-    |> case do
-      %{changes: %{caption: _}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :caption, "did not change")
-    end
-  end
+  #def caption_changeset(item, attrs) do
+  #  item
+  #  |> cast(attrs, [:caption])
+  #  |> validate_caption()
+  #  |> case do
+  #    %{changes: %{caption: _}} = changeset -> changeset
+  #    %{} = changeset -> add_error(changeset, :caption, "did not change")
+  #  end
+  #end
 
   @doc """
   An item changeset for changing the content.
 
   It requires the content to change otherwise an error is added.
   """
-  def content_changeset(item, attrs) do
-    item
-    |> cast(attrs, [:content])
-    |> validate_content()
-    |> case do
-      %{changes: %{content: _}} = changeset -> changeset
-      %{} = changeset -> add_error(changeset, :content, "did not change")
-    end
-  end
+  #def content_changeset(item, attrs) do
+  #  item
+  #  |> cast(attrs, [:content])
+  #  |> validate_content()
+  #  |> case do
+  #    %{changes: %{content: _}} = changeset -> changeset
+  #    %{} = changeset -> add_error(changeset, :content, "did not change")
+  #  end
+  #end
 end
