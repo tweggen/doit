@@ -60,7 +60,7 @@ defmodule Auth2024Web.PageLive do
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
     with token when is_bitstring(token) <- session["user_token"],
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
-        current_person = Todos.find_person(user)
+        current_person = Todos.find_person_for_user(user)
         items = Todos.list_items(user)
       {:ok, 
         socket 
@@ -89,6 +89,7 @@ defmodule Auth2024Web.PageLive do
     IO.inspect(["current_item", current_item])
     
     if contact_person != nil do
+      IO.inspect(contact_person)
       Todos.update_item_contact(user, current_item, easy_changeset_attrs(:contact, contact_person))
       socket
     else
@@ -98,7 +99,21 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  def do_edit_done(socket, item_id, kind, value) do
+  def just_edit_done(socket) do
+    user = socket.assigns.current_user
+    socket = assign(socket,
+      items: Todos.list_items(user),
+      editing_item: nil,
+      editing_kind: nil,
+      editing_item_datalist: [],
+      editing_item_values: empty_editing_item_values()
+    )
+    Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
+    socket
+  end
+
+
+  def save_edit_done(socket, item_id, kind, value) do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
     socket = case kind do
@@ -111,15 +126,7 @@ defmodule Auth2024Web.PageLive do
       :contact ->
         socket |> possibly_update_item_contact(user, current_item, value)
     end
-    socket = assign(socket,
-      items: Todos.list_items(user),
-      editing_item: nil,
-      editing_kind: nil,
-      editing_item_datalist: [],
-      editing_item_values: empty_editing_item_values()
-    )
-    Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
-    {:noreply, socket}
+    just_edit_done(socket)
   end
 
 
@@ -197,7 +204,7 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_event("submit-todo-item-caption", %{"id" => item_id, "text" => text}, socket) do
-    do_edit_done(socket, item_id, :caption, text)
+    {:noreply, save_edit_done(socket, item_id, :caption, text)}
   end
 
 
@@ -210,6 +217,20 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  defp editing_contact_datalist(_user, socket, text) do
+    persons = if nil != text && String.length(text)>1 do
+      Todos.search_persons_beginning(text)
+    else
+      []
+    end
+    if persons == [] do
+      [socket.assigns.current_person]
+    else
+      persons
+    end
+  end
+
+
   @impl true
   def handle_event("edit-item-contact", data, socket) do
     {:noreply,
@@ -218,36 +239,36 @@ defmodule Auth2024Web.PageLive do
           :contact, data["text"]),
         editing_kind: :contact,
         editing_item: String.to_integer(data["id"]),
-        editing_item_datalist: []
+        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
       )
     }
   end
 
 
   def handle_event("submit-todo-item-contact", %{"id" => item_id, "text" => text}, socket) do
-    do_edit_done(socket, item_id, :contact, text)
+    {:noreply, save_edit_done(socket, item_id, :contact, text)}
   end
 
 
   @impl true
   def handle_event("validate-todo-item-contact", %{"_target" => _target, "text" => text}, socket) do
-    persons = if nil != text && String.length(text)>1 do
-      Todos.search_persons_beginning(text)
-    else
-      []
-    end
     {:noreply,
       assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
           :contact,  text),
-        editing_item_datalist: persons
+        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, text)
       )
     }
   end
 
 
+  def handle_event("revert-todo-item-contact", _data, socket) do
+    {:noreply, just_edit_done(socket)}
+  end
+
+
   def handle_event("submit-todo-item-due", %{"item_id" => item_id, "duedate" => datetext}, socket) do
-    do_edit_done(socket, item_id, :due, datetext)
+    {:noreply, save_edit_done(socket, item_id, :due, datetext)}
   end
 
 

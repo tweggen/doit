@@ -87,15 +87,19 @@
               <% end %>
             </p>
             <p class="mt-1 truncate text-xs leading-5 text-gray-500">
-              <%= item.contact.given_name %> 
               <%= if item.id == @editing_item && @editing_kind == :contact do %>
-                <form 
+                <form
                   phx-submit="submit-todo-item-contact" 
                   id="form-todo-item-contact">
+                  <label>
+                    <%= item.contact.given_name %>
+                  </label>
                   <input
                     phx-mounted={JS.focus()}
                     phx-change="validate-todo-item-contact"
-                    phx-blur={JS.dispatch("submit", to: "#form-todo-item-contact")}
+                    phx-blur="revert-todo-item-contact"
+                    phx-key="escape"
+                    phx-keydown="revert-todo-item-contact"
                     class="text-sm leading-5 border-none p-0"
                     type="text"
                     name="text"
@@ -111,6 +115,9 @@
                   <input type="hidden" name="id" value={item.id}/>
                 </form>
               <% else %>
+                <label>
+                  <%= item.contact.given_name %>
+                </label>
                 <label phx-click="edit-item-contact" phx-value-id={item.id}>
                   <%= item.contact.family_name %>
                 </label>

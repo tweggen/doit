@@ -45,7 +45,6 @@ defmodule Auth2024.Todos do
     |> Repo.preload([:contact, :author, :user])
   end
 
-  ## Item creation
 
   @doc """
   Adds an item
@@ -68,8 +67,27 @@ defmodule Auth2024.Todos do
     #|> Repo.insert()
   end
 
+
   @doc """
-  Adds an person
+  Adds a new person, not associated to any user
+
+  ## Examples
+
+      iex> add_person(%{field: value})
+      {:ok, %User{}}
+
+      iex> add_person(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def add_person(user, attrs) do
+    Person.create_changeset(attrs)
+    |> Repo.insert()
+  end
+
+
+  @doc """
+  Adds an person to the current user.
 
   ## Examples
 
@@ -80,7 +98,7 @@ defmodule Auth2024.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def add_person(user, attrs) do
+  def add_person_to_user(user, attrs) do
     user
     |> Ecto.build_assoc(:person, attrs)
     |> Repo.insert()
@@ -99,7 +117,7 @@ defmodule Auth2024.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def find_person(user) do
+  def find_person_for_user(user) do
     case Repo.get_by(Person, [user_id: user.id]) do
       nil ->
         # Entity doesn't exist, create it
@@ -109,7 +127,7 @@ defmodule Auth2024.Todos do
         #}
         #{:ok, entity} = Repo.insert(changeset)
         #entity
-        add_person(user, %{family_name: user.email, status: 0})
+        add_person_to_user(user, %{family_name: user.email, status: 0})
 
       entity ->
         # Entity already exists, return it
