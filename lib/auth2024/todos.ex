@@ -179,6 +179,7 @@ defmodule Auth2024.Todos do
   """
   def update_item_contact(_user, %Item{} = item, attrs) do
     item
+    # We need the contact pre-loaded in the item we are modifying.
     |> Repo.preload([:contact])
     |> Item.changeset_contact(attrs)
     |> Repo.update()

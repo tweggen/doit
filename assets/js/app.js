@@ -25,9 +25,7 @@ import topbar from "../vendor/topbar"
 const hooks = {
   ModalCloser: {
     mounted() {
-      console.log("Mounting close_modal event");
       this.handleEvent("close_modal", () => {
-        console.log("Heard close_modal event");
         this.el.dispatchEvent(new Event("click", { bubbles: true }));
       });
     },
@@ -58,4 +56,9 @@ window.liveSocket = liveSocket
 window.addEventListener("app:requestSubmit", (event) => {
   const form = event.target;
   form.requestSubmit();
+});
+
+window.addEventListener("phx:exec-js", ({detail}) => {
+    console.log("Received another JS event.");
+    liveSocket.execJS(document.getElementById(detail.to), detail.encodedJS)
 });

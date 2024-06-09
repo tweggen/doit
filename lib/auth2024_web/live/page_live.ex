@@ -32,6 +32,17 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  def push_js(socket, to, js) do
+    event_details = %{
+      to: to,
+      encodedJS: Phoenix.json_library().encode!(js.ops)
+    }
+
+    socket
+    |> Phoenix.LiveView.push_event("exec-js", event_details);
+  end
+
+
   @impl true
   def mount(_params, session, socket) do
     # subscribe to the channel
@@ -62,15 +73,17 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  defp possibly_update_item_contact(_socket, user, current_item, contact_person_name) do
+  defp possibly_update_item_contact(socket, user, current_item, contact_person_name) do
     contact_person = Todos.search_person_family_name(contact_person_name)
     IO.inspect(["contact person", contact_person_name, contact_person])
     IO.inspect(["current_item", current_item])
-    Auth2024Web.CoreComponents.show_modal("confirm-new-person")
+    
     if contact_person != nil do
       Todos.update_item_contact(user, current_item, easy_changeset_attrs(:contact, contact_person))
+      socket
     else
-      Auth2024Web.CoreComponents.show_modal("confirm-new-person")
+      IO.inspect("Unknown person, ask for new")
+      socket |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
     end
   end
 
@@ -78,10 +91,15 @@ defmodule Auth2024Web.PageLive do
   def do_edit_done(socket, item_id, kind, value) do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
-    case kind do
-      :caption -> Todos.update_item_caption(user, current_item, easy_changeset_attrs(kind, value))
-      :due -> Todos.update_item_due(user, current_item, easy_changeset_attrs(kind, value))
-      :contact -> possibly_update_item_contact(socket, user, current_item, value)
+    socket = case kind do
+      :caption -> 
+        Todos.update_item_caption(user, current_item, easy_changeset_attrs(kind, value))
+        socket
+      :due ->
+        Todos.update_item_due(user, current_item, easy_changeset_attrs(kind, value))
+        socket
+      :contact ->
+        socket |> possibly_update_item_contact(user, current_item, value)
     end
     items = Todos.list_items(user)
     socket = assign(socket,
