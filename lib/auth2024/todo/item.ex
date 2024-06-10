@@ -30,7 +30,7 @@ defmodule Auth2024.Todo.Item do
   def changeset_caption(item, attrs) do
     item
     |> cast(attrs, [:caption])
-    |> validate_required([:caption])
+    |> validate_caption()
   end
 
   def changeset_contact(item, attrs) do

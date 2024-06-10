@@ -67,11 +67,11 @@ if config_env() == :prod do
 
   # Runtime production configuration, including reading
   # of environment variables, is done on config/runtime.exs.
-config :assent,
-  github: [
-    client_id: System.get_env("GITHUB_CLIENT_ID"),
-    client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
-  ]
+  config :assent,
+    github: [
+      client_id: System.get_env("GITHUB_CLIENT_ID"),
+      client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
+    ]
 
 
   # ## SSL Support
