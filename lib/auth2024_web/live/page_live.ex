@@ -1,5 +1,6 @@
 defmodule Auth2024Web.PageLive do
   use Auth2024Web, :live_view
+  alias Phoenix.LiveView.JS
   alias Auth2024.Todo.{Item,Person}
   alias Auth2024.Todos
 
@@ -37,9 +38,7 @@ defmodule Auth2024Web.PageLive do
       to: to,
       encodedJS: Phoenix.json_library().encode!(js.ops)
     }
-
-    socket
-    |> Phoenix.LiveView.push_event("exec-js", event_details);
+    socket |> Phoenix.LiveView.push_event("exec-js", event_details);
   end
 
 
@@ -93,21 +92,26 @@ defmodule Auth2024Web.PageLive do
       Todos.update_item_contact(user, current_item, easy_changeset_attrs(:contact, contact_person))
       socket
     else
-      IO.inspect("Unknown person, ask for new")
-      socket |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
+      socket 
+      |> push_js("confirm-new-person", 
+          %JS{} 
+          |> JS.set_attribute({"value", contact_person_name}, to: "#new-person-form-family-name")
+          )
+      |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
     end
   end
 
 
   def just_edit_done(socket) do
     user = socket.assigns.current_user
-    socket = assign(socket,
+    socket 
+    |> assign(
       items: Todos.list_items(user),
       editing_item: nil,
       editing_kind: nil,
       editing_item_datalist: [],
       editing_item_values: empty_editing_item_values()
-    )
+      )
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     socket
   end
@@ -126,17 +130,22 @@ defmodule Auth2024Web.PageLive do
       :contact ->
         socket |> possibly_update_item_contact(user, current_item, value)
     end
-    just_edit_done(socket)
+    socket |> just_edit_done()
   end
 
 
   @impl true
   def handle_event("create-new-person-submit", %{"person" => person_params}, socket) do
-    case Todos.add_person(socket.assigns.current_user, person_params) do
+    user = socket.assigns.current_user
+    current_item = socket.assigns.editing_item
+    case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
       {:error, message} ->
         {:noreply, socket |> put_flash(:error, inspect(message))}
 
-      {:ok, _} ->
+      {:ok, person} ->
+        Todos.update_item_contact(
+            user, current_item, easy_changeset_attrs(:contact, person))
+
         new_assigns = %{
           editing_item: nil,
           editing_kind: nil,

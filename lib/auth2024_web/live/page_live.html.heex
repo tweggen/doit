@@ -17,13 +17,13 @@
     <Auth2024Web.CoreComponents.input 
       id="new-person-form-family-name"
       label="family name"
-      field={@new_person_form[:family_name]} />
-    <Auth2024Web.CoreComponents.input 
-      label="status"
-      field={@new_person_form[:status]} />
+      field={@new_person_form[:family_name]} 
+    />
     <Auth2024Web.CoreComponents.input 
       label="given name"
-      field={@new_person_form[:given_name]} />
+      field={@new_person_form[:given_name]} 
+    />
+    <!-- Phoenix.HTML.Form.hidden_input id="new-person-form-hidden-id"/ -->
     <:actions>
       <.button>OK</.button>
       <.button phx-click={hide_modal("confirm-new-person")}>No</.button>
