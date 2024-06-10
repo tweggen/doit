@@ -33,23 +33,57 @@
 
 <section class="todoapp">
   <header class="header">
-    <p phx-click={show_modal("confirm-new-person")}>Open Modal!</p>
-    <form phx-submit="create" id="form">
+    <!--form phx-submit="create" id="form">
       <input
         id="new_todo"
-        class="new-todo"
+        class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
         type="text"
         name="text"
         placeholder="What needs to be done?"
         autofocus=""
         required="required"
       />
-    </form>
+    </form -->
   </header>
   <section class="main" style="display: block;">
     <input id="toggle-all" class="toggle-all" type="checkbox" />
-    <label for="toggle-all">Mark all as complete</label>
     <ul role="list" class="divide-y divide-gray-100" id="todo-list-items">
+
+        <li class="flex justify-between gap-x-6 py-5">
+          <div>
+            <input class="toggle" type="checkbox" disabled="true"/>
+          </div>
+          <div>
+            <button class="destroy" disabled="true">x</button>
+          </div>
+          <div class="min-w-0 flex-auto">
+            <p class="text-sm font-semibold leading-6 text-gray-900">
+              <form
+                phx-submit="create"
+                id="form"
+              >
+                <input
+                  class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
+                  id="new_todo"
+                  class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
+                  type="text"
+                  name="text"
+                  placeholder="What needs to be done?"
+                  autofocus=""
+                  required="required"                  
+                />
+              </form>
+            </p>
+            <p class="mt-1 truncate text-xs leading-5 text-gray-500">
+                <label>
+                  <%= @current_person.given_name %>
+                </label>
+                <label>
+                  <%= @current_person.family_name %>
+                </label>
+            </p>
+          </div>
+        </li>
       <%= for item <- @items do %>
         <li data-id={item.id} class="flex justify-between gap-x-6 py-5" class={completed?(item)}>
           <div>
@@ -145,20 +179,45 @@
     </ul>
   </section>
   <footer class="footer" style="display: block;">
-    <span class="todo-count"><strong>1</strong> item left</span>
-    <ul class="filters">
-      <li>
-        <.link patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}>All</.link>
-      </li>
-      <li>
-        <.link patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}>Active</.link>
-      </li>
-      <li>
-        <.link patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}>Completed</.link>
-      </li>
-    </ul>
-    <button class="clear-completed" style="display: block;">
+    <div>
+      <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
+        <li class="me-2">
+          <.link 
+            class={
+              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+               ++ (if @tab=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
+            }
+            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
+          >
+            All
+          </.link>
+        </li>
+        <li class="me-2">
+          <.link 
+            class={
+              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+               ++ (if @tab=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
+            }
+            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
+          >
+            Active
+          </.link>
+          </li>
+        <li class="me-2">
+          <.link 
+            class={
+              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+               ++ (if @tab=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
+            }
+            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
+          >
+            Completed
+          </.link>
+        </li>
+      </ul>
+    </div>
+    <!-- button class="clear-completed" style="display: block;">
       Clear completed
-    </button>
+    </button -->
   </footer>
 </section>
