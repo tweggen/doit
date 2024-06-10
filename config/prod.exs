@@ -16,5 +16,7 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
-# Runtime production configuration, including reading
-# of environment variables, is done on config/runtime.exs.
+config :assent,
+  github: [
+    redirect_uri: "https://geoffrey.fly.dev/auth/github/callback",
+  ]

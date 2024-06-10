@@ -83,7 +83,5 @@ config :swoosh, :api_client, false
 
 config :assent,
   github: [
-    client_id: System.get_env("GITHUB_CLIENT_ID"),
-    client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
     redirect_uri: "http://localhost:4000/auth/github/callback",
   ]
