@@ -123,9 +123,10 @@
                       <%= item.contact.given_name %>
                     </label>
                     <input
+                      id="input-todo-item-contact"
                       phx-mounted={JS.focus()}
                       phx-change="validate-todo-item-contact"
-                      phx-blur="revert-todo-item-contact"
+                      phx-blur="blur-todo-item-contact"
                       phx-key="escape"
                       phx-keydown="revert-todo-item-contact"
                       class="text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
@@ -135,9 +136,9 @@
                       list="input-todo-item-contact"
                       value={item.contact.family_name}
                     />
-                    <datalist id="input-todo-item-contact">
+                    <datalist id="input-todo-item-contact-datalist">
                       <%= for contact <- @editing_item_datalist do %>
-                        <option value={contact.family_name}><%= contact.family_name %></option>
+                        <option value={contact.family_name} id={"input-todo-item-contact-#{item.id}"}><%= contact.family_name %></option>
                       <% end %>
                     </datalist>
                     <input type="hidden" name="id" value={item.id}/>

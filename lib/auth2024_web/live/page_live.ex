@@ -132,9 +132,9 @@ defmodule Auth2024Web.PageLive do
 
 
   def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
+    IO.inspect("just_edit_done")
     user = socket.assigns.current_user
-    socket 
-    |> assign(
+    socket = socket |> assign(
       items: Todos.list_items(user),
       editing_item: nil,
       editing_kind: nil,
@@ -357,6 +357,26 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     {:noreply, just_edit_done(socket)}
+  end
+
+
+  @doc """
+  WHen the input field or the datalist is blurred, we would like 
+  to figure out, if the focus receive is one of input field or
+  datalist's child, or if the user aborted the input operation.
+  In the latter case, we'd like 
+  """
+  def handle_event(
+    "blur-todo-item-contact", 
+    data, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    IO.inspect(data)
+    #if !String.starts_with?(data.relatedTarget, "input-todo-item-contact") do
+      {:noreply, just_edit_done(socket)}
+    #else
+    #  {:noreply, socket}
+    #end
   end
 
 

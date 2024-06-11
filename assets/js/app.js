@@ -60,5 +60,6 @@ window.addEventListener("app:requestSubmit", (event) => {
 
 window.addEventListener("phx:exec-js", ({detail}) => {
     console.log("Received another JS event.");
+    console.log(detail);
     liveSocket.execJS(document.getElementById(detail.to), detail.encodedJS)
 });
