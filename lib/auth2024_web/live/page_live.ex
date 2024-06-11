@@ -362,10 +362,15 @@ defmodule Auth2024Web.PageLive do
 
   def handle_event(
     "submit-todo-item-due", 
-    %{"item_id" => _item_id, "duedate" => datetext}, 
+    %{"item_id" => item_id, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    {:noreply, find_edit_done(socket, :due, datetext)}
+    {
+      :noreply, 
+      socket
+      |> assign(editing_item: item_id)
+      |> find_edit_done(:due, datetext)
+    }
   end
 
 
