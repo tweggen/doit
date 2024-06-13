@@ -197,6 +197,15 @@ defmodule Auth2024Web.PageLive do
     socket |> just_edit_done()
   end
 
+  @impl true
+  def handle_event(
+    "blur-plus",
+    %{"relatedTarget" => related_target_id},
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    IO.inspect(related_target_id)
+  end
+
 
   @impl true
   def handle_event(

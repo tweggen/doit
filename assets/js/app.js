@@ -35,6 +35,8 @@ const hooks = {
       relay = this;
       document.addEventListener("relay-event", (e) =>
         {
+          console.log("Pushing");
+          console.log(e.detail.event);
           relay.pushEvent(e.detail.event, e.detail.payload);
         }
       );

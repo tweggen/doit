@@ -114,6 +114,9 @@
                   <%= item.caption %>
                 </label>
               <% end %>
+              <!--
+                                      onblur="window.dispatchToLV('blur-plus', {relatedTarget: event?.relatedTarget?.id})"
+-->
               <p class="mt-1 truncate text-xs leading-5 text-gray-500">
                 <%= if item.id == @editing_item && @editing_kind == :contact do %>
                   <form
@@ -129,7 +132,6 @@
                       phx-change="validate-todo-item-contact"
                       phx-key="escape"
                       phx-keydown="revert-todo-item-contact"
-                      onblur="window.dispatchToLV(event, {a:1})"
                       class="text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
                       type="text"
                       name="text"
@@ -139,7 +141,7 @@
                     />
                     <datalist id="input-todo-item-contact-datalist">
                       <%= for contact <- @editing_item_datalist do %>
-                        <option value={contact.family_name} id={"input-todo-item-contact-#{item.id}"}><%= contact.family_name %></option>
+                        <option value={contact.family_name} id={"input-todo-item-contact-#{contact.id}"}><%= contact.family_name %></option>
                       <% end %>
                     </datalist>
                     <input type="hidden" name="id" value={item.id}/>
