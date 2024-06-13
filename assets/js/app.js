@@ -29,6 +29,16 @@ const hooks = {
         this.el.dispatchEvent(new Event("click", { bubbles: true }));
       });
     },
+  },
+  RelayHook: {
+    mounted() {
+      relay = this;
+      document.addEventListener("relay-event", (e) =>
+        {
+          relay.pushEvent(e.detail.event, e.detail.payload);
+        }
+      );
+    },
   }
 }
 
@@ -63,3 +73,10 @@ window.addEventListener("phx:exec-js", ({detail}) => {
     console.log(detail);
     liveSocket.execJS(document.getElementById(detail.to), detail.encodedJS)
 });
+
+window.dispatchToLV = function (event, payload) {
+  let relay_event = new CustomEvent("relay-event", {
+    detail: { event: event, payload: payload },
+  });
+  document.dispatchEvent(relay_event);
+};

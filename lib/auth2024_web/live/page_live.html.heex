@@ -124,11 +124,12 @@
                     </label>
                     <input
                       id="input-todo-item-contact"
+                      phx-hook="RelayHook"
                       phx-mounted={JS.focus()}
                       phx-change="validate-todo-item-contact"
-                      phx-blur="blur-todo-item-contact"
                       phx-key="escape"
                       phx-keydown="revert-todo-item-contact"
+                      onblur="window.dispatchToLV(event, {a:1})"
                       class="text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
                       type="text"
                       name="text"
