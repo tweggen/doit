@@ -65,6 +65,12 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  defp query_items(
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+  end
+
+
   @impl true
   def mount(
     _params, session, %Phoenix.LiveView.Socket{} = socket
@@ -426,18 +432,16 @@ defmodule Auth2024Web.PageLive do
     user = socket.assigns.current_user
     items = Todos.list_items(user)
 
-    case params["filter_by"] do
-      "completed" ->
-        completed = Enum.filter(items, &(&1.status == 1))
-        {:noreply, assign(socket, items: completed, tab: "completed")}
-
-      "active" ->
-        active = Enum.filter(items, &(&1.status == 0))
-        {:noreply, assign(socket, items: active, tab: "active")}
-
-      _ ->
-        {:noreply, assign(socket, items: items, tab: "all")}
-    end
+    {:noreply,
+      assign(socket,
+        sort_by_column: params["sort-by"],
+        filter_by_value: case params["filter_by"] do
+          "completed" -> 1
+          "active" -> 0
+          _ -> nil
+        end
+      )
+    }
   end
 
 

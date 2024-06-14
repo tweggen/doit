@@ -180,7 +180,7 @@
   <footer class="footer" style="display: block;">
     <div>
       <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
-        <li class="me-2">
+        <li class="me-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -191,7 +191,7 @@
             All
           </.link>
         </li>
-        <li class="me-2">
+        <li class="me-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -202,7 +202,7 @@
             Active
           </.link>
           </li>
-        <li class="me-2">
+        <li class="me-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -217,39 +217,28 @@
     </div>
     <div>
       <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
-        <li class="me-2">
+        <li class="me-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
                ++ (if @tab=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
+            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "date"})}
           >
             by date
           </.link>
         </li>
-        <li class="me-2">
+        <li class="me-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
                ++ (if @tab=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
+            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "contact"})}
           >
             by contact
           </.link>
           </li>
-        <li class="me-2">
-          <.link 
-            class={
-              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @tab=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
-            }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
-          >
-            Threaded
-          </.link>
-        </li>
       </ul>
     </div>
     <!-- button class="clear-completed" style="display: block;">

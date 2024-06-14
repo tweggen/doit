@@ -27,6 +27,16 @@ defmodule Auth2024.Todos do
   """
   def get_item!(id), do: Repo.get!(Item, id)
 
+
+  defp apply_filter(query, filter_by_value) do
+    case filter_by_value do
+      "completed" -> where(query, is_nil(a.status) || a.status==1)
+      "all" -> where(query, is_nil(a.status) || a.status!=2)
+      "active" -> where(query, is_nil(a.status) || a.status==0)
+    end
+  end
+
+
   @doc """
   Returns the list of items.
 
@@ -36,11 +46,16 @@ defmodule Auth2024.Todos do
       [%Item{}, ...]
 
   """
-  def list_items(user) do
+  def list_items(user, filter_by_value, sort_by_column) do
     Item
-    |> order_by(desc: :inserted_at)
+    |> order_by(
+        case sort_by_columne do
+          _, "date" -> %{desc: :inserted_at}
+          "contact" -> %{asc: :contact}
+        end
+      )
     |> where([a], a.user_id == ^user.id)
-    |> where([a], is_nil(a.status) or a.status != 2)
+    |> apply_filter(filter_by_value)
     |> Repo.all()
     |> Repo.preload([:contact, :author, :user])
   end
