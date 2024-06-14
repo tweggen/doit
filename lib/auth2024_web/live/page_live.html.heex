@@ -184,7 +184,7 @@
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @tab=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
+               ++ (if @filter_by_value=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
           >
@@ -195,7 +195,7 @@
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @tab=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
+               ++ (if @filter_by_value=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
           >
@@ -206,7 +206,7 @@
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @tab=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
+               ++ (if @filter_by_value=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
           >
@@ -221,7 +221,7 @@
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @tab=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
+               ++ (if @sort_by_column=="date", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "date"})}
           >
@@ -232,7 +232,7 @@
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @tab=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
+               ++ (if @sort_by_column=="contact", do: ["text-blue-600", "bg-gray-100"], else: [])
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "contact"})}
           >

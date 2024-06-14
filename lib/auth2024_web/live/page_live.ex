@@ -68,6 +68,11 @@ defmodule Auth2024Web.PageLive do
   defp query_items(
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    Todos.list_items(
+      socket.assigns.current_user, 
+      socket.assigns.filter_by_value,
+      socket.assigns.sort_by_column
+    )
   end
 
 
@@ -84,14 +89,19 @@ defmodule Auth2024Web.PageLive do
       editing_item_datalist: [],
       items: nil,
       new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
-      tab: "all"
+      filter_by_value: "all",
+      sort_by_column: "date"
     }
     # subscribe to the channel
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
     with token when is_bitstring(token) <- session["user_token"],
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person_for_user(user)
-        items = Todos.list_items(user)
+        items = Todos.list_items(
+          user, 
+          default_assigns.filter_by_value, 
+          default_assigns.sort_by_column
+        )
       {:ok, 
         socket 
         |> assign(default_assigns) 
@@ -141,7 +151,7 @@ defmodule Auth2024Web.PageLive do
     IO.inspect("just_edit_done")
     user = socket.assigns.current_user
     socket = socket |> assign(
-      items: Todos.list_items(user),
+      items: query_items(socket),
       editing_item: nil,
       editing_kind: nil,
       editing_item_datalist: [],
@@ -248,7 +258,10 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     Todos.add_item(socket.assigns.current_user, default_editing_item_values(socket, text));
-    socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
+    socket = assign(socket, 
+      items: query_items(socket), 
+      active: %Item{}
+    )
     Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
   end
@@ -262,7 +275,10 @@ defmodule Auth2024Web.PageLive do
   ) do
     user = socket.assigns.current_user
     Todos.delete_item(user, Map.get(data, "id"))
-    socket = assign(socket, items: Todos.list_items(socket.assigns.current_user), active: %Item{})
+    socket = assign(socket, 
+      items: query_items(socket), 
+      active: %Item{}
+    )
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
   end
@@ -274,7 +290,10 @@ defmodule Auth2024Web.PageLive do
 	  status = if Map.has_key?(data, "value"), do: 1, else: 0
 	  item = Todos.get_item!(Map.get(data, "id"))
 	  Todos.update_item(user, item, %{status: status})
-	  socket = assign(socket, items: Todos.list_items(user), active: %Item{})
+    socket = assign(socket, 
+      items: query_items(socket), 
+      active: %Item{}
+    )
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
     {:noreply, socket}
   end
@@ -430,16 +449,15 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     user = socket.assigns.current_user
-    items = Todos.list_items(user)
+
+    sort_by_column = if Map.has_key?(params, "sort_by") do params["sort_by"] else socket.assigns.sort_by_column end
+    filter_by_value = if Map.has_key?(params, "filter_by") do params["filter_by"] else socket.assigns.filter_by_value end
 
     {:noreply,
       assign(socket,
-        sort_by_column: params["sort-by"],
-        filter_by_value: case params["filter_by"] do
-          "completed" -> 1
-          "active" -> 0
-          _ -> nil
-        end
+        sort_by_column: sort_by_column,
+        filter_by_value: filter_by_value,
+        items: Todos.list_items(user, filter_by_value, sort_by_column)
       )
     }
   end

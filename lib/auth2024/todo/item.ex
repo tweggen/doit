@@ -63,33 +63,4 @@ defmodule Auth2024.Todo.Item do
     |> validate_length(:content, max: 2030)
   end
 
-  @doc """
-  An item changeset for changing the caption.
-
-  It requires the caption to change otherwise an error is added.
-  """
-  #def caption_changeset(item, attrs) do
-  #  item
-  #  |> cast(attrs, [:caption])
-  #  |> validate_caption()
-  #  |> case do
-  #    %{changes: %{caption: _}} = changeset -> changeset
-  #    %{} = changeset -> add_error(changeset, :caption, "did not change")
-  #  end
-  #end
-
-  @doc """
-  An item changeset for changing the content.
-
-  It requires the content to change otherwise an error is added.
-  """
-  #def content_changeset(item, attrs) do
-  #  item
-  #  |> cast(attrs, [:content])
-  #  |> validate_content()
-  #  |> case do
-  #    %{changes: %{content: _}} = changeset -> changeset
-  #    %{} = changeset -> add_error(changeset, :content, "did not change")
-  #  end
-  #end
 end

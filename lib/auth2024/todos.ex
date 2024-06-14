@@ -30,9 +30,9 @@ defmodule Auth2024.Todos do
 
   defp apply_filter(query, filter_by_value) do
     case filter_by_value do
-      "completed" -> where(query, is_nil(a.status) || a.status==1)
-      "all" -> where(query, is_nil(a.status) || a.status!=2)
-      "active" -> where(query, is_nil(a.status) || a.status==0)
+      "completed" -> where(query, [a], is_nil(a.status) or a.status==1)
+      "all" -> where(query, [a], is_nil(a.status) or a.status != 2)
+      "active" -> where(query, [a], is_nil(a.status) or a.status==0)
     end
   end
 
@@ -47,13 +47,17 @@ defmodule Auth2024.Todos do
 
   """
   def list_items(user, filter_by_value, sort_by_column) do
-    Item
-    |> order_by(
-        case sort_by_columne do
-          _, "date" -> %{desc: :inserted_at}
-          "contact" -> %{asc: :contact}
-        end
-      )
+    # We have different base queries depending on if we order by date
+    # or by user, eventually grouping by each.
+    IO.inspect(["filter: ", filter_by_value, "sort: ", sort_by_column])
+    case sort_by_column do
+      "date" -> 
+        Item
+        |> order_by(desc: :inserted_at)
+      "contact" -> 
+        Item
+        |> order_by(asc: :contact_id, desc: :inserted_at)
+    end
     |> where([a], a.user_id == ^user.id)
     |> apply_filter(filter_by_value)
     |> Repo.all()
