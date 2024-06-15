@@ -365,19 +365,38 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event(
-    "edit-item-contact-select",
+    "click-item-contact-select",
     data, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
     {:noreply,
       assign(socket,
-        editing_item_values: Map.put(empty_editing_item_values(),
-          :contact, data["text"]),
+        editing_item_values: Map.put(empty_editing_item_values(), :contact, data["text"]),
         editing_kind: :contact,
         editing_item: String.to_integer(data["id"]),
         editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
       )
     }
+  end
+
+
+  @impl true
+  def handle_event(
+    "change-item-contact-select",
+    %{"value" => value}, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    if value="Create new..." do
+      socket 
+      #|> push_js("confirm-new-person", 
+      #    %JS{} 
+      #    |> JS.set_attribute({"value", contact_person_name}, to: "#new-person-form-family-name")
+      #    )
+      |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
+      { :noreply, socket }
+    else 
+      { :noreply, find_edit_done(socket, :contact, value) }
+    end
   end
 
 
