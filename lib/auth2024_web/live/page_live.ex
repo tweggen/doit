@@ -21,20 +21,23 @@ defmodule Auth2024Web.PageLive do
 
 
   defp editing_contact_datalist(
-    _user, 
+    user, 
     %Phoenix.LiveView.Socket{} = socket,
     text
   ) do
-    persons = if nil != text && String.length(text)>1 do
-      Todos.search_persons_beginning(text)
-    else
-      []
-    end
-    if persons == [] do
+    persons = Todos.list_persons!(user)
+    #persons = if nil != text && String.length(text)>1 do
+    #  Todos.search_persons_beginning(text)
+    #else
+    #  Todos.
+    #end
+    persons = if persons == [] do
       [socket.assigns.current_person]
     else
       persons
     end
+    IO.inspect(persons)
+    persons
   end
 
 
@@ -360,6 +363,24 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  @impl true
+  def handle_event(
+    "edit-item-contact-select",
+    data, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    {:noreply,
+      assign(socket,
+        editing_item_values: Map.put(empty_editing_item_values(),
+          :contact, data["text"]),
+        editing_kind: :contact,
+        editing_item: String.to_integer(data["id"]),
+        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
+      )
+    }
+  end
+
+
   def handle_event(
     "submit-todo-item-contact", 
     %{"id" => _item_id, "text" => text}, 
@@ -377,9 +398,22 @@ defmodule Auth2024Web.PageLive do
   ) do
     {:noreply,
       assign(socket,
-        editing_item_values: Map.put(socket.assigns.editing_item_values,
-          :contact,  text),
+        editing_item_values: Map.put(socket.assigns.editing_item_values, :contact, text),
         editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, text)
+      )
+    }
+  end
+
+
+  @impl true
+  def handle_event(
+    "load-todo-item-contacts", 
+    _data, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    {:noreply,
+      assign(socket,
+        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
       )
     }
   end

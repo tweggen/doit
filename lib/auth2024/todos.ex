@@ -157,7 +157,7 @@ defmodule Auth2024.Todos do
   def search_person_family_names(name) do
     Person
     |> where([p], p.family_name == ^name)
-    |> order_by(desc: :family_name)
+    |> order_by(asc: :family_name)
     |> Repo.all()
   end
 
@@ -168,7 +168,7 @@ defmodule Auth2024.Todos do
   def search_persons_beginning(stem) do
     Person
     |> where([p], like(p.family_name, ^"%#{String.replace(stem, "%", "\\%")}%"))
-    |> order_by(desc: :family_name)
+    |> order_by(asc: :family_name)
     |> Repo.all()
   end
 
@@ -176,6 +176,13 @@ defmodule Auth2024.Todos do
     matches = search_persons_beginning(stem)
     List.first(matches)
   end
+
+  def list_persons!(_user) do
+    Person
+    |> order_by(asc: :family_name)
+    |> Repo.all()
+  end
+
 
   ## Settings
 
