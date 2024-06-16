@@ -233,23 +233,33 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     user = socket.assigns.current_user
-    case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
-      {:error, message} ->
-        {:noreply, socket |> put_flash(:error, inspect(message))}
+    family_name = person_params["family_name"]
+    given_name = person_params["given_name"]
 
-      {:ok, person} ->
-        new_assigns = %{
-          # TXWTODO: Optimize this by just merging in the new person
-          available_persons: Todos.list_persons!(user),
-          new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
-        }
+    similarily_named_person = Todos.search_person_by_name(
+      family_name, given_name)
+    IO.inspect(["similarily named person", similarily_named_person])
+    if [] != similarily_named_person do
+      {:noreply, socket |> put_flash(:error, inspect("Person with the name #{given_name} #{family_name} already exists."))}
+    else
+      case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
+        {:error, message} ->
+          {:noreply, socket |> put_flash(:error, inspect(message))}
 
-        {:noreply, 
-          socket 
-          |> save_edit_done(:contact, person)
-          |> assign(new_assigns)
-          |> push_event("close_modal", %{to: "#confirm-new-person"})
-        }
+        {:ok, person} ->
+          new_assigns = %{
+            # TXWTODO: Optimize this by just merging in the new person
+            available_persons: Todos.list_persons!(user),
+            new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+          }
+
+          {:noreply, 
+            socket 
+            |> save_edit_done(:contact, person)
+            |> assign(new_assigns)
+            |> push_event("close_modal", %{to: "#confirm-new-person"})
+          }
+      end
     end
   end
 

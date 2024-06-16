@@ -154,6 +154,21 @@ defmodule Auth2024.Todos do
     end
   end
 
+
+  def search_person_by_name(family_name, given_name) do
+    Person
+    |> where([p], 
+        p.family_name == ^family_name 
+        and (
+          (^given_name == "" and is_nil(p.given_name)) 
+          or ^given_name == p.given_name
+        )
+      )
+    |> order_by(asc: :family_name)
+    |> Repo.all()
+  end
+
+
   def search_person_family_names(name) do
     Person
     |> where([p], p.family_name == ^name)
@@ -161,9 +176,11 @@ defmodule Auth2024.Todos do
     |> Repo.all()
   end
 
+
   def search_person_family_name(name) do
     List.first(search_person_family_names(name))
   end
+
 
   def search_persons_beginning(stem) do
     Person
