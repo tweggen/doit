@@ -82,9 +82,9 @@
         <li data-id={item.id} class="flex flex-row" class={completed?(item)}>
           <div class="w-8 flex-0">
             <%= if checked?(item) do %>
-              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" checked />
+              <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" checked />
             <% else %>
-              <input class="toggle" type="checkbox" phx-value-id={item.id} phx-click="toggle" />
+              <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" />
             <% end %>
           </div>
           <div class="flex-1 min-w-0 leading-6 text-gray-900">
