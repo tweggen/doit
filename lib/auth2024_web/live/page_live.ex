@@ -88,9 +88,11 @@ defmodule Auth2024Web.PageLive do
       editing_kind: nil,
       current_user: nil,
       current_person: nil,
+      contact_person_name_error: nil,
       editing_item_datalist: [],
       items: nil,
       new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+      new_person_form_errors: [],
       filter_by_value: "all",
       sort_by_column: "date"
     }
@@ -238,9 +240,12 @@ defmodule Auth2024Web.PageLive do
 
     similarily_named_person = Todos.search_person_by_name(
       family_name, given_name)
-    IO.inspect(["similarily named person", similarily_named_person])
+
     if [] != similarily_named_person do
-      {:noreply, socket |> put_flash(:error, inspect("Person with the name #{given_name} #{family_name} already exists."))}
+      socket = 
+        socket 
+        |> assign(new_person_form_errors: ["Person with similar name already exists."])
+      { :noreply, socket }
     else
       case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
         {:error, message} ->
@@ -249,6 +254,7 @@ defmodule Auth2024Web.PageLive do
         {:ok, person} ->
           new_assigns = %{
             # TXWTODO: Optimize this by just merging in the new person
+            new_person_form_errors: [],
             available_persons: Todos.list_persons!(user),
             new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
           }

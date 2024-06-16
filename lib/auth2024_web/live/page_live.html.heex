@@ -3,17 +3,18 @@
  phx-hook="ModalCloser"
 >
   <Auth2024Web.CoreComponents.header>
-    Sure to add new person?
-    <:subtitle>
+    Add new person
+    <!-- :subtitle>
       I want to check you do not accidentally add
       a misspelled version of an existing person.
-    </:subtitle>
+    </:subtitle-->
   </Auth2024Web.CoreComponents.header> 
 
   <Auth2024Web.CoreComponents.simple_form 
     for={@new_person_form} 
     phx-submit="create-new-person-submit"
   >
+    <Auth2024Web.CoreComponents.error :for={msg <- @new_person_form_errors}><p><%= msg %></p></Auth2024Web.CoreComponents.error>
     <Auth2024Web.CoreComponents.input 
       id="new-person-form-family-name"
       label="family name"
