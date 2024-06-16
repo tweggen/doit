@@ -23,7 +23,7 @@ defmodule Auth2024Web.PageLive do
   defp editing_contact_datalist(
     user, 
     %Phoenix.LiveView.Socket{} = socket,
-    text
+    _text
   ) do
     persons = Todos.list_persons!(user)
     #persons = if nil != text && String.length(text)>1 do
@@ -36,7 +36,6 @@ defmodule Auth2024Web.PageLive do
     else
       persons
     end
-    IO.inspect(persons)
     persons
   end
 
@@ -112,6 +111,7 @@ defmodule Auth2024Web.PageLive do
             current_user: user,
             current_person: current_person,
             items: items,
+            available_persons: editing_contact_datalist(user, socket, ""),
             editing_item_values: empty_editing_item_values()
         )
       }
@@ -128,7 +128,7 @@ defmodule Auth2024Web.PageLive do
 
   defp possibly_update_item_contact(
     %Phoenix.LiveView.Socket{} = socket, 
-    user, 
+    _user, 
     current_item, 
     contact_person_name
   ) do
@@ -152,7 +152,6 @@ defmodule Auth2024Web.PageLive do
 
   def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
     IO.inspect("just_edit_done")
-    user = socket.assigns.current_user
     socket = socket |> assign(
       items: query_items(socket),
       editing_item: nil,
@@ -181,7 +180,7 @@ defmodule Auth2024Web.PageLive do
   ) do
     user = socket.assigns.current_user
     current_item = Todos.get_item!(socket.assigns.editing_item)
-    socket = case kind do
+    case kind do
       :caption ->
         socket |> save_edit_done(kind, value)
       :due ->
@@ -223,6 +222,7 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     IO.inspect(related_target_id)
+    socket
   end
 
 
@@ -233,23 +233,23 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     user = socket.assigns.current_user
-    current_item = Todos.get_item!(socket.assigns.editing_item)
     case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
       {:error, message} ->
         {:noreply, socket |> put_flash(:error, inspect(message))}
 
       {:ok, person} ->
-
         new_assigns = %{
+          # TXWTODO: Optimize this by just merging in the new person
+          available_persons: Todos.list_persons!(user),
           new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
         }
 
-        socket 
-        |> save_edit_done(:contact, person)
-        |> assign(new_assigns)
-        |> push_event("close_modal", %{to: "#confirm-new-person"})
-
-        {:noreply, socket}
+        {:noreply, 
+          socket 
+          |> save_edit_done(:contact, person)
+          |> assign(new_assigns)
+          |> push_event("close_modal", %{to: "#confirm-new-person"})
+        }
     end
   end
 
@@ -277,7 +277,7 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     user = socket.assigns.current_user
-    Todos.delete_item(user, Map.get(data, "id"))
+    Todos.delete_item(user, Map.get(data, "item_id"))
     socket = assign(socket, 
       items: query_items(socket), 
       active: %Item{}
@@ -291,7 +291,7 @@ defmodule Auth2024Web.PageLive do
   def handle_event("toggle", data, socket) do
     user = socket.assigns.current_user
 	  status = if Map.has_key?(data, "value"), do: 1, else: 0
-	  item = Todos.get_item!(Map.get(data, "id"))
+	  item = Todos.get_item!(Map.get(data, "item_id"))
 	  Todos.update_item(user, item, %{status: status})
     socket = assign(socket, 
       items: query_items(socket), 
@@ -316,7 +316,7 @@ defmodule Auth2024Web.PageLive do
         editing_item_values: Map.put(empty_editing_item_values(),
           :caption, data["text"]),
         editing_kind: :caption,
-        editing_item: String.to_integer(data["id"]),
+        editing_item: String.to_integer(data["item_id"]),
         editing_item_datalist: []
       )
     }
@@ -325,7 +325,7 @@ defmodule Auth2024Web.PageLive do
 
   def handle_event(
     "submit-todo-item-caption", 
-    %{"id" => item_id, "text" => text},
+    %{"item_id" => _item_id, "text" => text},
     %Phoenix.LiveView.Socket{} = socket
   ) do
     {:noreply, find_edit_done(socket, :caption, text)}
@@ -356,56 +356,40 @@ defmodule Auth2024Web.PageLive do
         editing_item_values: Map.put(empty_editing_item_values(),
           :contact, data["text"]),
         editing_kind: :contact,
-        editing_item: String.to_integer(data["id"]),
-        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
+        editing_item: String.to_integer(data["item_id"])
       )
     }
-  end
-
-
-  @impl true
-  def handle_event(
-    "click-item-contact-select",
-    data, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    {:noreply,
-      assign(socket,
-        editing_item_values: Map.put(empty_editing_item_values(), :contact, data["text"]),
-        editing_kind: :contact,
-        editing_item: String.to_integer(data["id"]),
-        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
-      )
-    }
-  end
-
-
-  @impl true
-  def handle_event(
-    "change-item-contact-select",
-    %{"value" => value}, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    if value="Create new..." do
-      socket 
-      #|> push_js("confirm-new-person", 
-      #    %JS{} 
-      #    |> JS.set_attribute({"value", contact_person_name}, to: "#new-person-form-family-name")
-      #    )
-      |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
-      { :noreply, socket }
-    else 
-      { :noreply, find_edit_done(socket, :contact, value) }
-    end
   end
 
 
   def handle_event(
     "submit-todo-item-contact", 
-    %{"id" => _item_id, "text" => text}, 
+    %{"item_id" => item_id, "contact_person_name" => contact_person_name}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    {:noreply, find_edit_done(socket, :contact, text)}
+    if contact_person_name == "Create new..." do
+      
+      {:noreply, 
+        socket 
+        |> push_js("confirm-new-person", 
+            %JS{} 
+            #|> JS.set_attribute({"value", contact_person_name}, to: "#new-person-form-family-name")
+            )
+        |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
+        |> assign(
+            editing_item: item_id
+        )
+      }
+    else
+      {:noreply, 
+        find_edit_done(
+          assign(socket,
+            editing_item: item_id,
+            editing_item_value: contact_person_name),
+          :contact, contact_person_name
+        )
+      }
+      end
   end
 
 
@@ -417,22 +401,7 @@ defmodule Auth2024Web.PageLive do
   ) do
     {:noreply,
       assign(socket,
-        editing_item_values: Map.put(socket.assigns.editing_item_values, :contact, text),
-        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, text)
-      )
-    }
-  end
-
-
-  @impl true
-  def handle_event(
-    "load-todo-item-contacts", 
-    _data, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    {:noreply,
-      assign(socket,
-        editing_item_datalist: editing_contact_datalist(socket.assigns.current_user, socket, "")
+        editing_item_values: Map.put(socket.assigns.editing_item_values, :contact, text)
       )
     }
   end
@@ -444,26 +413,6 @@ defmodule Auth2024Web.PageLive do
     %Phoenix.LiveView.Socket{} = socket
   ) do
     {:noreply, just_edit_done(socket)}
-  end
-
-
-  @doc """
-  WHen the input field or the datalist is blurred, we would like 
-  to figure out, if the focus receive is one of input field or
-  datalist's child, or if the user aborted the input operation.
-  In the latter case, we'd like 
-  """
-  def handle_event(
-    "blur-todo-item-contact", 
-    data, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    IO.inspect(data)
-    #if !String.starts_with?(data.relatedTarget, "input-todo-item-contact") do
-      {:noreply, just_edit_done(socket)}
-    #else
-    #  {:noreply, socket}
-    #end
   end
 
 
@@ -487,7 +436,6 @@ defmodule Auth2024Web.PageLive do
     %{"_target" => _target, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    IO.inspect(["validate due", datetext])
     {:noreply,
       assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,

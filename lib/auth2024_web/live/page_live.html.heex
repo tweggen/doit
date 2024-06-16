@@ -104,7 +104,7 @@
                       value={item.caption}
                     />
                   </div>
-                  <input type="hidden" name="id" value={item.id}/>
+                  <input type="hidden" name="item_id" value={item.id}/>
                 </form>
               <% else %>
                 <label 
@@ -114,89 +114,34 @@
                   <%= item.caption %>
                 </label>
               <% end %>
-              <!--
-                                      onblur="window.dispatchToLV('blur-plus', {relatedTarget: event?.relatedTarget?.id})"
--->
-              <p 
-                phx-click="load-todo-item-contacts"
-                class="mt-1 truncate text-xs leading-5 text-gray-500"
+              <form
+                phx-submit="submit-todo-item-contact"
+                id={"form-todo-item-contact-#{item.id}"}
               >
-                <%= if true or item.id == @editing_item && @editing_kind == :contact do %>
-                  <form>
-                    <input type="hidden" name="id" value={item.id}/>
-                    <select 
-                      id={"select-todo-item-contact-#{item.id}"}
-                      class="text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
-                      phx-value-id={item.id}
-                      phx-click="click-item-contact-select"
-                      phx-change="change-item-contact-select"
-                      phx-mounted={JS.focus()}
+                <input type="hidden" name="item_id" value={item.id}/>
+                <select 
+                  id={"select-todo-item-contact-#{item.id}"}
+                  name="contact_person_name"
+                  class="mt-1 truncate text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
+                  phx-value-id={item.id}
+                  phx-change={JS.dispatch("submit", to: "#form-todo-item-contact-#{item.id}")}
+                >
+                  <%= for contact <- @available_persons do %>
+                    <option 
+                      selected={contact.id == item.contact_id}
+                      value={contact.family_name} 
+                      id={"select-todo-item-contact-#{item.id}-#{contact.id}"}
                     >
-                      <%= if item.id != @editing_item or @editing_kind != :contact do %>
-                        <option selected><%= item.contact.family_name %></option>
-                      <% else %>
-                        <%= for contact <- @editing_item_datalist do %>
-                          <option 
-                            selected={contact.id == item.contact_id}
-                            value={contact.family_name} 
-                            id={"select-todo-item-contact-#{item.id}-#{contact.id}"}
-                          >
-                            <%= contact.family_name %>                      
-                          </option>
-                        <% end %>
-                        <option 
-                          id={"select-todo-iten-new-contact-#{item.id}"}
-                        >
-                          Create new...
-                        </option>
-                      <% end %>
-                    </select>
-                  </form>
-                <% else %>
-                  <label class="border-1" phx-click="edit-item-contact-select" phx-value-id={item.id}>
-                    <%= item.contact.family_name %>
-                  </label>
-                <% end %>
-
-                <% if false do %>
-                  <%= if item.id == @editing_item && @editing_kind == :contact do %>
-                    <form
-                      phx-submit="submit-todo-item-contact" 
-                      id="form-todo-item-contact">
-                      <label class="margin-1">
-                        <%= item.contact.given_name %>
-                      </label>
-                      <input
-                        id="input-todo-item-contact"
-                        phx-hook="RelayHook"
-                        phx-mounted={JS.focus()}
-                        phx-change="validate-todo-item-contact"
-                        phx-key="escape"
-                        phx-keydown="revert-todo-item-contact"
-                        class="text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
-                        type="search"
-                        name="text"
-                        required="required"
-                        list="input-todo-item-contact"
-                        value={item.contact.family_name}
-                      />
-                      <datalist id="input-todo-item-contact-datalist">
-                        <%= for contact <- @editing_item_datalist do %>
-                          <option value={contact.family_name} id={"input-todo-item-contact-#{contact.id}"}><%= contact.family_name %></option>
-                        <% end %>
-                      </datalist>
-                      <input type="hidden" name="id" value={item.id}/>
-                    </form>
-                  <% else %>
-                    <label class="border-1">
-                      <%= item.contact.given_name %>
-                    </label>
-                    <label class="border-1" phx-click="edit-item-contact" phx-value-id={item.id}>
-                      <%= item.contact.family_name %>
-                    </label>
+                      <%= contact.family_name %>                      
+                    </option>
                   <% end %>
-                <% end %>
-              </p>
+                  <option 
+                    id={"select-todo-iten-new-contact-#{item.id}"}
+                  >
+                    Create new...
+                  </option>
+                </select>
+              </form>
             </div>
           </div>
           <div class="flex-0">

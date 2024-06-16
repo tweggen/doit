@@ -26,6 +26,7 @@ const hooks = {
   ModalCloser: {
     mounted() {
       this.handleEvent("close_modal", () => {
+          console.log("Pushing close modal");
         this.el.dispatchEvent(new Event("click", { bubbles: true }));
       });
     },
