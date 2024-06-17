@@ -1,36 +1,9 @@
 
-<.modal id="confirm-new-person"
- phx-hook="ModalCloser"
->
-  <Auth2024Web.CoreComponents.header>
-    Add new person
-    <!-- :subtitle>
-      I want to check you do not accidentally add
-      a misspelled version of an existing person.
-    </:subtitle-->
-  </Auth2024Web.CoreComponents.header> 
-
-  <Auth2024Web.CoreComponents.simple_form 
-    for={@new_person_form} 
-    phx-submit="create-new-person-submit"
-  >
-    <Auth2024Web.CoreComponents.error :for={msg <- @new_person_form_errors}><p><%= msg %></p></Auth2024Web.CoreComponents.error>
-    <Auth2024Web.CoreComponents.input 
-      id="new-person-form-family-name"
-      label="family name"
-      field={@new_person_form[:family_name]} 
-    />
-    <Auth2024Web.CoreComponents.input 
-      label="given name"
-      field={@new_person_form[:given_name]} 
-    />
-    <!-- Phoenix.HTML.Form.hidden_input id="new-person-form-hidden-id"/ -->
-    <:actions>
-      <.button>OK</.button>
-      <.button phx-click={hide_modal("confirm-new-person")}>No</.button>
-    </:actions>
-  </Auth2024Web.CoreComponents.simple_form>
-</.modal>
+<.live_component
+  id="confirm-new-person"
+  module={Auth2024Web.ConfirmNewPersonLive}
+  onperson="confirm_new_person_onperson"
+/>
 
 <section>
   <header>

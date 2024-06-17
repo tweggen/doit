@@ -4,7 +4,7 @@ defmodule Auth2024Web.Router do
   #use Auth2024Web, :router
 
   import Auth2024Web.UserAuth
-  import Auth2024Web.GithubAuth, only: [fetch_github_user: 2]
+  #import Auth2024Web.GithubAuth, only: [fetch_github_user: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]

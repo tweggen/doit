@@ -83,16 +83,12 @@ defmodule Auth2024Web.PageLive do
     _params, session, %Phoenix.LiveView.Socket{} = socket
   ) do
     default_assigns = %{
-      create_confirm_new_person_form: nil,
       editing_item: nil,
       editing_kind: nil,
       current_user: nil,
       current_person: nil,
-      contact_person_name_error: nil,
       editing_item_datalist: [],
       items: nil,
-      new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
-      new_person_form_errors: [],
       filter_by_value: "all",
       sort_by_column: "date"
     }
@@ -219,59 +215,6 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event(
-    "blur-plus",
-    %{"relatedTarget" => related_target_id},
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    IO.inspect(related_target_id)
-    socket
-  end
-
-
-  @impl true
-  def handle_event(
-    "create-new-person-submit",
-    %{"person" => person_params},
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    user = socket.assigns.current_user
-    family_name = person_params["family_name"]
-    given_name = person_params["given_name"]
-
-    similarily_named_person = Todos.search_person_by_name(
-      family_name, given_name)
-
-    if [] != similarily_named_person do
-      socket = 
-        socket 
-        |> assign(new_person_form_errors: ["Person with similar name already exists."])
-      { :noreply, socket }
-    else
-      case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
-        {:error, message} ->
-          {:noreply, socket |> put_flash(:error, inspect(message))}
-
-        {:ok, person} ->
-          new_assigns = %{
-            # TXWTODO: Optimize this by just merging in the new person
-            new_person_form_errors: [],
-            available_persons: Todos.list_persons!(user),
-            new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
-          }
-
-          {:noreply, 
-            socket 
-            |> save_edit_done(:contact, person)
-            |> assign(new_assigns)
-            |> push_event("close_modal", %{to: "#confirm-new-person"})
-          }
-      end
-    end
-  end
-
-
-  @impl true
-  def handle_event(
     "create", 
     %{"text" => text}, 
     %Phoenix.LiveView.Socket{} = socket
@@ -378,13 +321,29 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  def handle_info(
+    %{event: "confirm_new_person_onperson", person: person },
+    socket
+  ) do
+    new_assigns = %{
+      available_persons: Todos.list_persons!(socket.assigns.user),
+    }
+
+    {:noreply,
+      socket
+      |> save_edit_done(:contact, person)
+      |> assign(new_assigns)
+      |> push_event("close_modal", %{to: "#confirm-new-person"})
+    }
+  end
+
+
   def handle_event(
     "submit-todo-item-contact", 
     %{"item_id" => item_id, "contact_person_name" => contact_person_name}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
     if contact_person_name == "Create new..." do
-      
       {:noreply, 
         socket 
         |> push_js("confirm-new-person", 

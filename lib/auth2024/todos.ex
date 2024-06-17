@@ -99,7 +99,7 @@ defmodule Auth2024.Todos do
       {:error, %Ecto.Changeset{}}
 
   """
-  def add_person(user, attrs) do
+  def add_person(_user, attrs) do
     Person.create_changeset(attrs)
     |> Repo.insert()
   end
@@ -283,20 +283,6 @@ defmodule Auth2024.Todos do
   end
 
   ## Settings
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking item caption.
-
-  ## Examples
-
-      iex> change_item_caption(item)
-      %Ecto.Changeset{data: %Item{}}
-
-  """
-  #def change_item_caption(%Item{} = item, attrs \\ %{}) do
-  #  %Item{id: item.id }
-  #  |> Item.caption_changeset(item, attrs)
-  #end
 
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking item content.
