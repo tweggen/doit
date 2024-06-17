@@ -6,6 +6,8 @@ defmodule Auth2024Web.PageLive do
 
   @topic "live"
 
+  @form_name_new_person "confirm-new-person"
+
   @impl true
   def terminate(reason, state) do
     IO.inspect("terminate/2 callback")
@@ -139,11 +141,10 @@ defmodule Auth2024Web.PageLive do
       socket |> save_edit_done(:contact, contact_person)
     else
       socket 
-      |> push_js("confirm-new-person", 
-          %JS{} 
-          |> JS.set_attribute({"value", contact_person_name}, to: "#new-person-form-family-name")
-          )
-      |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
+      |> Auth2024Web.ConfirmNewPersonLive.show(
+        @form_name_new_person, 
+        contact_person_name
+      )
     end
   end
 
@@ -346,13 +347,12 @@ defmodule Auth2024Web.PageLive do
     if contact_person_name == "Create new..." do
       {:noreply, 
         socket 
-        |> push_js("confirm-new-person", 
-            %JS{} 
-            #|> JS.set_attribute({"value", contact_person_name}, to: "#new-person-form-family-name")
-            )
-        |> push_js("confirm-new-person", Auth2024Web.CoreComponents.show_modal("confirm-new-person"))
+        |> Auth2024Web.ConfirmNewPersonLive.show(
+          @form_name_new_person, 
+          nil
+        )
         |> assign(
-            editing_item: item_id
+          editing_item: item_id
         )
       }
     else
