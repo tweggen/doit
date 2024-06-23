@@ -5,7 +5,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   alias Auth2024.Todo.{Item,Person}
   alias Auth2024.Todos
 
-  @topic "live"
+  @form_topic "confirm_new_person_live"
 
 
   def push_js(
@@ -31,21 +31,21 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
 
   def show(
     socket, 
-    name, 
+    form_name, 
+    item_id,
     family_name
   ) do
     if nil != family_name do
-      push_js(socket, root_id(name), 
-        %JS{} |> JS.set_attribute(
-          {"value", family_name}, to: "#new-person-form-family-name"
-        )
+      push_js(socket, root_id(form_name), 
+        %JS{} 
+        |> JS.set_attribute({"value", family_name}, to: "#new-person-form-family-name")
       )
     else
       socket
     end
     |> push_js(
-      modal_id(name),
-      Auth2024Web.CoreComponents.show_modal(modal_id(name))
+      modal_id(form_name),
+      Auth2024Web.CoreComponents.show_modal(modal_id(form_name))
     )
   end
 
@@ -63,7 +63,8 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   ) do
     default_assigns = %{
       create_confirm_new_person_form: nil,
-      new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+      new_person_form: 
+        Phoenix.Component.to_form(Person.create_changeset(%{})),
       new_person_form_errors: []
     }
     {:ok, socket |> assign(default_assigns)}
@@ -80,10 +81,13 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   @impl true
   def handle_event(
     "create-new-person-submit",
-    %{"person" => person_params},
+    params,
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    user = socket.assigns.current_user
+    # Inform the view that this is the currently editing item
+
+    %{"person" => person_params} = params
+    user = socket.assigns.user
     family_name = person_params["family_name"]
     given_name = person_params["given_name"]
 
@@ -112,16 +116,19 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
 
           send( self(), %{ 
             event: socket.assigns.onperson,
-            confirmed_person: person 
+            confirmed_person: person
           } )
 
-          {:noreply, 
+          # send_update(@myself, id: socket.assigns.for_id, confirmed_person: person)
+
+          { 
+            :noreply, 
             socket 
-            |> socket.assigns.onperson(person)
             |> assign(new_assigns)
           }
       end
     end
   end
+
 
 end

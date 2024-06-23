@@ -8,17 +8,6 @@
 
 <section>
   <header>
-    <!--form phx-submit="create" id="form">
-      <input
-        id="new_todo"
-        class="text-sm font-semibold leading-6 text-gray-900 border-none p-0"
-        type="text"
-        name="text"
-        placeholder="What needs to be done?"
-        autofocus=""
-        required="required"
-      />
-    </form -->
   </header>
   <section style="display: block;">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
@@ -74,35 +63,16 @@
                 user={@current_user}
                 onitemchanged="on_itemlist_itemchanged"
               />
-              <form
-                phx-submit="submit-todo-item-contact"
-                class="flex-1 flex"
-                id={"form-todo-item-contact-#{item.id}"}
-              >
-                <input type="hidden" name="item_id" value={item.id}/>
-                <select 
-                  id={"select-todo-item-contact-#{item.id}"}
-                  name="contact_person_name"
-                  class="flex-1 m-0 truncate text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
-                  phx-value-id={item.id}
-                  phx-change={JS.dispatch("submit", to: "#form-todo-item-contact-#{item.id}")}
-                >
-                  <%= for contact <- @available_persons do %>
-                    <option 
-                      selected={contact.id == item.contact_id}
-                      value={contact.family_name} 
-                      id={"select-todo-item-contact-#{item.id}-#{contact.id}"}
-                    >
-                      <%= contact.family_name %>                      
-                    </option>
-                  <% end %>
-                  <option 
-                    id={"select-todo-iten-new-contact-#{item.id}"}
-                  >
-                    Create new...
-                  </option>
-                </select>
-              </form>            
+              <.live_component
+                module={Auth2024Web.ListItemPersonLive}
+                id={"listitem_contact_#{item.id}"}
+                item={item}
+                available_persons={@available_persons}
+                onediting="on_editing"
+                user={@current_user}
+                kind={:contact}
+                onitemchanged="on_itemlist_itemchanged"
+              />
           </div>
           <div class="flex-0 flex flex-col items-end">
             <div class="flex-1">

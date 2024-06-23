@@ -26,7 +26,6 @@
         label="given name"
         field={@new_person_form[:given_name]} 
       />
-      <!-- Phoenix.HTML.Form.hidden_input id="new-person-form-hidden-id"/ -->
       <:actions>
         <Auth2024Web.CoreComponents.button>OK</Auth2024Web.CoreComponents.button>
         <Auth2024Web.CoreComponents.button phx-click={Auth2024Web.CoreComponents.hide_modal("confirm-new-person")}>No</Auth2024Web.CoreComponents.button>

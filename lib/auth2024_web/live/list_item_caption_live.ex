@@ -17,33 +17,15 @@ defmodule Auth2024Web.ListItemCaptionLive do
   def empty_assigns() do
     %{
     is_list_item_caption_editing: false,
-    list_item_editing_value: nil,
-    list_item_editing_item: nil,
+    list_item_caption_editing_value: nil,
+    list_item_caption_editing_item: nil,
     }
   end
 
 
   def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
-    IO.inspect("list_item_just_edit_done")
-    editing_item = socket.assigns.list_item_editing_item
-    socket = socket 
-    |> assign(empty_assigns())
-
-    #|> assign(
-    #  items: Todos.list_items(
-    #    socket.assigns.user, 
-    #    socket.assigns.filter_by_value,
-    #    socket.assigns.sort_by_column
-    #  )
-    #)
-
-    send( self(), %{ 
-      event: socket.assigns.onitemchanged,
-      item_id: editing_item
-    } )
-
-    Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
-    socket
+    IO.inspect("list_item_caption_just_edit_done")
+    socket |> assign(empty_assigns())
   end
 
 
@@ -80,9 +62,17 @@ defmodule Auth2024Web.ListItemCaptionLive do
     %Phoenix.LiveView.Socket{} = socket,
     value
   ) do
-    user = socket.assigns.user
-    current_item = Todos.get_item!(socket.assigns.list_item_editing_item)
-    Todos.update_item_caption(user, current_item, %{caption: value})
+    #user = socket.assigns.user
+    #current_item = Todos.get_item!(socket.assigns.list_item_caption_editing_item)
+
+    # Send the change to the parent live view
+    send( self(), %{ 
+      event: socket.assigns.onitemchanged,
+      item_id: socket.assigns.list_item_caption_editing_item,
+      kind: :caption,
+      value: value
+    } )
+
     socket |> just_edit_done()
   end
 
@@ -100,8 +90,8 @@ defmodule Auth2024Web.ListItemCaptionLive do
       :noreply,
       assign(socket,
         is_list_item_caption_editing: true,
-        list_item_editing_value: data["text"],
-        list_item_editing_item: String.to_integer(data["item_id"]),
+        list_item_caption_editing_value: data["text"],
+        list_item_caption_editing_item: String.to_integer(data["item_id"])
       )
     }
   end
@@ -125,7 +115,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
     {
       :noreply,
       assign(socket,
-        list_item_editing_value: text
+        list_item_caption_editing_value: text
       )
     }
   end
