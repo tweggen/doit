@@ -1,0 +1,33 @@
+<div class="flex-1 flex" id={"list_item_caption_top-#{@id}"}>
+  <%= if @is_list_item_caption_editing do %>
+    <form
+      phx-submit="submit-todo-item-caption" 
+      phx-target={@myself}
+      id="form-todo-item-caption"
+    >
+      <div class="flex-1 flex">
+        <input
+          phx-mounted={JS.focus()}
+          phx-change="validate-todo-item-caption"
+          phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
+          phx-target={@myself}
+          class="flex-1 m-0 b-0 focus:bg-yellow-100 focus:ring-0 font-semibold text-sm border-none p-0"
+          type="text"
+          name="text"
+          required="required"
+          value={@item.caption}
+        />
+      </div>
+      <input type="hidden" name="item_id" value={@item.id}/>
+    </form>
+  <% else %>
+    <label 
+      class="flex-1 font-semibold text-sm margin-1 text-nowrap" 
+      phx-click="edit-item-caption"
+      phx-target={@myself}
+      phx-value-item_id={@item.id}
+    >
+      <%= @item.caption %>
+    </label>
+  <% end %>
+</div>

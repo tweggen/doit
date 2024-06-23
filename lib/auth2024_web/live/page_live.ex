@@ -214,6 +214,7 @@ defmodule Auth2024Web.PageLive do
     socket |> just_edit_done()
   end
 
+
   @impl true
   def handle_event(
     "create", 
@@ -262,49 +263,6 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  @doc """
-  Activates editing the item's caption.
-  """
-  @impl true
-  def handle_event(
-    "edit-item-caption", 
-    data, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    {:noreply,
-      assign(socket,
-        editing_item_values: Map.put(empty_editing_item_values(),
-          :caption, data["text"]),
-        editing_kind: :caption,
-        editing_item: String.to_integer(data["item_id"]),
-        editing_item_datalist: []
-      )
-    }
-  end
-
-
-  def handle_event(
-    "submit-todo-item-caption", 
-    %{"item_id" => _item_id, "text" => text},
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    {:noreply, find_edit_done(socket, :caption, text)}
-  end
-
-
-  @impl true
-  def handle_event(
-    "validate-todo-item-caption",
-    %{"_target" => _target, "text" => text}, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    {:noreply,
-      assign(socket,
-        editing_item_values: Map.put(socket.assigns.editing_item_values,
-        :caption,  text))}
-  end
-
-
   @impl true
   def handle_event(
     "edit-item-contact",
@@ -318,23 +276,6 @@ defmodule Auth2024Web.PageLive do
         editing_kind: :contact,
         editing_item: String.to_integer(data["item_id"])
       )
-    }
-  end
-
-
-  def handle_info(
-    %{event: "confirm_new_person_onperson", person: person },
-    socket
-  ) do
-    new_assigns = %{
-      available_persons: Todos.list_persons!(socket.assigns.user),
-    }
-
-    {:noreply,
-      socket
-      |> save_edit_done(:contact, person)
-      |> assign(new_assigns)
-      |> push_event("close_modal", %{to: "#confirm-new-person"})
     }
   end
 
@@ -435,6 +376,36 @@ defmodule Auth2024Web.PageLive do
         filter_by_value: filter_by_value,
         items: Todos.list_items(user, filter_by_value, sort_by_column)
       )
+    }
+  end
+
+
+  def handle_info(
+    %{event: "on_itemlist_itemchanged", item_id: item_id },
+    socket
+  ) do
+    {
+      :noreply,
+      socket
+      |> just_edit_done()
+    }
+  end
+
+
+  def handle_info(
+    %{event: "confirm_new_person_onperson", person: person },
+    socket
+  ) do
+    new_assigns = %{
+      available_persons: Todos.list_persons!(socket.assigns.user),
+    }
+
+    socket
+    {:noreply,
+      socket
+      |> save_edit_done(:contact, person)
+      |> assign(new_assigns)
+      |> push_event("close_modal", %{to: "#confirm-new-person"})
     }
   end
 

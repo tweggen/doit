@@ -67,32 +67,13 @@
             </div>
           </div>
           <div class="flex-1 min-w-0 leading-6 text-gray-900 flex flex-col items-stretch">
-              <%= if item.id == @editing_item && @editing_kind == :caption do %>
-                <form
-                  phx-submit="submit-todo-item-caption" 
-                  id="form-todo-item-caption">
-                  <div class="flex-1 flex">
-                    <input
-                      phx-mounted={JS.focus()}
-                      phx-change="validate-todo-item-caption"
-                      phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
-                      class="flex-1 m-0 b-0 focus:bg-yellow-100 focus:ring-0 font-semibold text-sm border-none p-0"
-                      type="text"
-                      name="text"
-                      required="required"
-                      value={item.caption}
-                    />
-                  </div>
-                  <input type="hidden" name="item_id" value={item.id}/>
-                </form>
-              <% else %>
-                <label 
-                  class="flex-1 font-semibold text-sm margin-1 text-nowrap" 
-                  phx-click="edit-item-caption" phx-value-item_id={item.id}
-                >
-                  <%= item.caption %>
-                </label>
-              <% end %>
+              <.live_component
+                module={Auth2024Web.ListItemCaptionLive}
+                id={"listitem_caption_#{item.id}"}
+                item={item}
+                user={@current_user}
+                onitemchanged="on_itemlist_itemchanged"
+              />
               <form
                 phx-submit="submit-todo-item-contact"
                 class="flex-1 flex"
