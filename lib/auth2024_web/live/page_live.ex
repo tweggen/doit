@@ -89,7 +89,7 @@ defmodule Auth2024Web.PageLive do
       current_person: nil,
       editing_item_datalist: [],
       items: nil,
-      filter_by_value: "all",
+      filter_by_value: "active",
       sort_by_column: "date"
     }
     # subscribe to the channel
