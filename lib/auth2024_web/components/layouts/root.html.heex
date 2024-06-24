@@ -12,8 +12,8 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white antialiased">
-    <ul class="relative z-10 flex items-center gap-4 p-0 sm:px-6 lg:px-8 justify-end">
+  <body class="bg-white antialiased h-screen flex-col justify-stretch">
+    <ul class="flex-0 relative z-10 flex items-center gap-4 p-0 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>
         <li class="w-4"></li>
         <li class="text-xs leading-5 text-gray-600">
