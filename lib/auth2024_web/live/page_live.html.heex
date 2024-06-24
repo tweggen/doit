@@ -6,13 +6,13 @@
   user={@current_user}
 />
 
-<section class="flex-1 flex flex-col">
-  <section class="flex-1 flex flex-col">
+<section class="flex-1 flex flex-col justify-stretch">
+  <section class="flex-1 flex flex-col justify-stretch">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
-    <ul role="list" class="divide-y divide-gray-100 flex-0" id="todo-list-items">
+    <ul role="list" class="divide-y divide-gray-100 flex-none" id="todo-list-items">
 
         <li class="flex flex-row">
-          <div class="w-8 flex-0">
+          <div class="w-8 flex-none">
           </div>
           <!-- div>
             <button class="destroy" disabled="true">x</button>
@@ -37,16 +37,16 @@
               </form>
             </div>
           </div>
-          <div class="flex-0 w-28"></div>
+          <div class="flex-none w-28"></div>
         </li>
       <%= for item <- @items do %>
         <li data-id={item.id} class="flex flex-row" class={completed?(item)}>
-          <div class="w-8 flex-0 flex flex-col">
+          <div class="w-8 flex-none flex flex-col">
             <div class="flex-1">
               <%= if checked?(item) do %>
                 <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" checked />
               <% else %>
-                <input class="flex-0 toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" />
+                <input class="flex-none toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" />
               <% end %>
             </div>
             <div class="flex-1">
@@ -72,7 +72,7 @@
                 onitemchanged="on_itemlist_itemchanged"
               />
           </div>
-          <div class="flex-0 flex flex-col items-end">
+          <div class="flex-none flex flex-col items-end">
             <div class="flex-1">
               <form 
                 phx-submit="submit-todo-item-due" 
@@ -97,9 +97,9 @@
       <% end %>
     </ul>
     <!-- This one to stretch to full screen height -->
-    <div class="flex-1"/>
+    <div class="flex-1">&nbsp;</div>
   </section>
-  <footer class="flex-0">
+  <footer class="flex-none">
     <div>
       <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
         <li class="me-1">

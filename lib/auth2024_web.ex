@@ -53,7 +53,7 @@ defmodule Auth2024Web do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        container: {:dev, class: "flex-1 flex flex-col"},
+        container: {:dev, class: "flex-1 flex flex-col justify-stretch"},
         layout: {Auth2024Web.Layouts, :app}
 
       unquote(view_helpers())
