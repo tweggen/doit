@@ -10,6 +10,14 @@
   <section class="flex-1 flex flex-col justify-stretch">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
     <ul role="list" class="divide-y divide-gray-100 flex-none" id="todo-list-items">
+        <li>
+          <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} kind={:due}>
+            <p><%= item.caption %></p>
+            <:header :let={due}>
+              <p>Date <%= due %></p>
+            </:header>
+          </Auth2024Web.GroupingComponent.for_items>
+        </li>
 
         <li class="flex flex-row">
           <div class="w-8 flex-none">
