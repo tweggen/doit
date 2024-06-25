@@ -10,15 +10,6 @@
   <section class="flex-1 flex flex-col justify-stretch">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
     <ul role="list" class="divide-y divide-gray-100 flex-none" id="todo-list-items">
-        <li>
-          <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} kind={:due}>
-            <p><%= item.caption %></p>
-            <:header :let={due}>
-              <p>Date <%= due %></p>
-            </:header>
-          </Auth2024Web.GroupingComponent.for_items>
-        </li>
-
         <li class="flex flex-row">
           <div class="w-8 flex-none">
           </div>
@@ -47,7 +38,11 @@
           </div>
           <div class="flex-none w-28"></div>
         </li>
-      <%= for item <- @items do %>
+      <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} kind={:due}>
+        <:header :let={group_header}>
+          <p>due <%= group_header %></p>
+        </:header>
+
         <li data-id={item.id} class="flex flex-row" class={completed?(item)}>
           <div class="w-8 flex-none flex flex-col">
             <div class="flex-1">
@@ -102,7 +97,7 @@
             </div>
           </div>
         </li>
-      <% end %>
+      </Auth2024Web.GroupingComponent.for_items>
     </ul>
     <!-- This one to stretch to full screen height -->
     <div class="flex-1">&nbsp;</div>
@@ -118,7 +113,7 @@
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
           >
-            All
+            all
           </.link>
         </li>
         <li class="me-1">
@@ -129,7 +124,7 @@
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
           >
-            Active
+            active
           </.link>
           </li>
         <li class="me-1">
@@ -140,13 +135,13 @@
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
           >
-            Completed
+            completed
           </.link>
         </li>
-      </ul>
+      <!-- /ul>
     </div>
     <div>
-      <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
+      <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400" -->
         <li class="me-1">
           <.link 
             class={

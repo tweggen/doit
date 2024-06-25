@@ -90,7 +90,7 @@ defmodule Auth2024Web.PageLive do
       editing_item_datalist: [],
       items: nil,
       filter_by_value: "active",
-      sort_by_column: "date"
+      sort_by_column: "date",
     }
     # subscribe to the channel
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
