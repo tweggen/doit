@@ -38,9 +38,9 @@
           </div>
           <div class="flex-none w-28"></div>
         </li>
-      <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} kind={:due}>
+      <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
         <:header :let={group_header}>
-          <p>due <%= group_header %></p>
+          <p class="text-xs font-semiboldbold py-2"><%= group_header %></p>
         </:header>
 
         <li data-id={item.id} class="flex flex-row" class={completed?(item)}>
