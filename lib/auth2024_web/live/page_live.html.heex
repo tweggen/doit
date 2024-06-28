@@ -6,38 +6,40 @@
   user={@current_user}
 />
 
-<section class="flex-1 flex flex-col justify-stretch">
-  <section class="flex-1 flex flex-col justify-stretch">
+<section class="min-h-0 flex-1 flex flex-col justify-stretch">
+  <ul role="list" class="divide-y divide-gray-100 flex-none">
+    <li class="flex flex-row">
+      <div class="w-8 flex-none">
+      </div>
+      <!-- div>
+        <button class="destroy" disabled="true">x</button>
+      </div -->
+      <div class="flex-1 min-w-0 leading-6 text-gray-900">
+        <div>
+          <form
+            phx-submit="create"
+            id="form"
+          >
+            <div class="flex">
+              <input
+                class="flex-1 focus:bg-yellow-100 focus:ring-0 font-semibold text-sm border-none p-0"
+                id="new_todo"
+                type="text"
+                name="text"
+                placeholder="Write a new task."
+                autofocus=""
+                required="required"                  
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="flex-none w-28"></div>
+    </li>
+  </ul>
+  <section class="min-h-0 flex-1 overflow-y-scroll">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
     <ul role="list" class="divide-y divide-gray-100 flex-none" id="todo-list-items">
-        <li class="flex flex-row">
-          <div class="w-8 flex-none">
-          </div>
-          <!-- div>
-            <button class="destroy" disabled="true">x</button>
-          </div -->
-          <div class="flex-1 min-w-0 leading-6 text-gray-900">
-            <div>
-              <form
-                phx-submit="create"
-                id="form"
-              >
-                <div class="flex">
-                  <input
-                    class="flex-1 focus:bg-yellow-100 focus:ring-0 font-semibold text-sm border-none p-0"
-                    id="new_todo"
-                    type="text"
-                    name="text"
-                    placeholder="Write a new task."
-                    autofocus=""
-                    required="required"                  
-                  />
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="flex-none w-28"></div>
-        </li>
       <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
         <:header :let={group_header}>
           <p class="text-xs font-semiboldbold py-2"><%= group_header %></p>
