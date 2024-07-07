@@ -106,8 +106,8 @@
   </section>
   <footer class="flex-none">
     <div>
-      <ul class="flex text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
-        <li class="me-1">
+      <ul class="flex text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
+        <li class="flex-grow-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -118,7 +118,7 @@
             all
           </.link>
         </li>
-        <li class="me-1">
+        <li class="flex-grow-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -129,7 +129,7 @@
             active
           </.link>
           </li>
-        <li class="me-1">
+        <li class="flex-grow-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -144,7 +144,7 @@
     </div>
     <div>
       <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400" -->
-        <li class="me-1">
+        <li class="flex-grow-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -152,10 +152,10 @@
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "date"})}
           >
-            by date
+            by&nbsp;date
           </.link>
         </li>
-        <li class="me-1">
+        <li class="flex-grow-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -163,7 +163,7 @@
             }
             patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "contact"})}
           >
-            by contact
+            by&nbsp;contact
           </.link>
           </li>
       </ul>

@@ -6,5 +6,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities"; 
 
+[hidden] { display: none !important; } 
 
 /* This file is for your main application CSS */
