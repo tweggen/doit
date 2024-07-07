@@ -71,7 +71,12 @@ if config_env() == :prod do
     github: [
       client_id: System.get_env("GITHUB_CLIENT_ID"),
       client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
+    ],
+    google: [
+      client_id: System.get_env("GOOGLE_CLIENT_ID"),
+      client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
     ]
+
 
 
   # ## SSL Support
