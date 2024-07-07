@@ -19,4 +19,7 @@ config :logger, level: :info
 config :assent,
   github: [
     redirect_uri: "https://geoffrey.fly.dev/auth/github/callback",
+  ],
+  google: [
+    redirect_uri: "https://geoffrey.fly.dev/auth/google/callback",
   ]

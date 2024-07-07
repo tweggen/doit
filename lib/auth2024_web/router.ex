@@ -4,7 +4,6 @@ defmodule Auth2024Web.Router do
   #use Auth2024Web, :router
 
   import Auth2024Web.UserAuth
-  #import Auth2024Web.GithubAuth, only: [fetch_github_user: 2]
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -92,6 +91,12 @@ defmodule Auth2024Web.Router do
     pipe_through [:browser]
     get "/", GithubAuthController, :request
     get "/callback", GithubAuthController, :callback
+  end
+
+  scope "/auth/google", Auth2024Web do
+    pipe_through [:browser]
+    get "/", GoogleAuthController, :request
+    get "/callback", GoogleAuthController, :callback
   end
 
 end

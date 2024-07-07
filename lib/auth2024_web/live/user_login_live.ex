@@ -4,8 +4,11 @@ defmodule Auth2024Web.UserLoginLive do
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        Sign in to account
+      <.header>
+        Welcome to Geoffrey!
+      </.header>
+      <.header class="mt-4">
+        Sign up!
         <:subtitle>
           Don't have an account?
           <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
@@ -14,6 +17,29 @@ defmodule Auth2024Web.UserLoginLive do
           for an account now.
         </:subtitle>
       </.header>
+      <.header class="mt-4">
+        Sign in to account
+      </.header>
+
+      <ul>
+        <li>
+          <.link
+            href={~p"/auth/google"}
+            class="font-semibold text-brand hover:underline"
+          >
+            ...with google
+          </.link>
+        </li>
+        <li>
+          <.link
+            href={~p"/auth/github"}
+            class="font-semibold text-brand hover:underline"
+          >
+            ...with github
+          </.link>
+        </li>
+      </ul>
+
 
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
         <.input field={@form[:email]} type="email" label="Email" required />

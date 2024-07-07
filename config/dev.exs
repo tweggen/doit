@@ -86,4 +86,9 @@ config :assent,
     redirect_uri: "http://localhost:4000/auth/github/callback",
     client_id: System.get_env("GITHUB_CLIENT_ID"),
     client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+  ],
+  google: [
+    redirect_uri: "http://localhost:4000/auth/google/callback",
+    client_id: System.get_env("GOOGLE_CLIENT_ID"),
+    client_secret: System.get_env("GOOGLE_CLIENT_SECRET")
   ]
