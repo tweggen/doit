@@ -3,19 +3,19 @@ defmodule Auth2024Web.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header>
+    <div class="mx-auto max-w-sm flex flex-1 flex-col">
+      <.header class="mt-6">
         Welcome to Geoffrey!
       </.header>
       <.header class="mt-4">
-        Sign in to account
+        Sign in
       </.header>
 
-      <div class="flex flex-wrap items-center flex-row gap-2">
+      <div class="mt-4 flex flex-wrap items-center flex-row gap-2">
         <.link
           href={~p"/auth/google"}
           class="transition flex-1 inline-flex justify-center font-semibold text-sm bg-gray-50 hover:bg-gray-100 
-          focus:bg-gray-100 font-medium border px-4 py-3.5 rounded-xl whitespace-nowrap"
+          focus:bg-gray-100 font-medium border px-4 py-2 rounded-xl whitespace-nowrap"
         >
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: inline; width: 20px; height: 20px;">
             <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
@@ -29,7 +29,7 @@ defmodule Auth2024Web.UserLoginLive do
         <.link
           href={~p"/auth/github"}
           class="transition flex-1 inline-flex justify-center font-semibold text-sm bg-gray-50 hover:bg-gray-100 
-          focus:bg-gray-100 font-medium border px-4 py-3.5 rounded-xl hover:underline whitespace-nowrap"
+          focus:bg-gray-100 font-medium border px-4 py-2 rounded-xl whitespace-nowrap"
         >
 
           <svg  
@@ -46,6 +46,7 @@ defmodule Auth2024Web.UserLoginLive do
       </div>
         
 
+      <.header class="mt-4">or</.header>
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
         <.input field={@form[:email]} type="email" label="Email" required />
         <.input field={@form[:password]} type="password" label="Password" required />

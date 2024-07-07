@@ -6,7 +6,7 @@
   user={@current_user}
 />
 
-<section class="min-h-0 flex-1 flex flex-col justify-stretch">
+<section class="mt-2 min-h-0 flex-1 flex flex-col justify-stretch">
   <ul role="list" class="divide-y divide-gray-100 flex-none">
     <li class="flex flex-row">
       <div class="w-8 flex-none">
@@ -22,11 +22,11 @@
           >
             <div class="flex">
               <input
-                class="flex-1 bg-yellow-100 focus:bg-white focus:ring-0 font-semibold text-sm border-none p-0"
+                class="flex-1 bg-yellow-100 focus:bg-yellow-50 focus:ring-0 font-semibold text-sm border-none p-0"
                 id="new_todo"
                 type="text"
                 name="text"
-                placeholder="enter new task..."
+                placeholder="Enter new task..."
                 autofocus=""
                 required="required"                  
               />
@@ -42,7 +42,7 @@
     <ul role="list" class="divide-y divide-gray-100 flex-none" id="todo-list-items">
       <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
         <:header :let={group_header}>
-          <p class="text-xs font-semiboldbold py-2"><%= group_header %></p>
+          <p class="text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
         </:header>
 
         <li data-id={item.id} class="flex flex-row" class={completed?(item)}>
@@ -66,49 +66,33 @@
               user={@current_user}
               onitemchanged="on_itemlist_itemchanged"
             />
-            <%= if @sort_by_column=="date" do %>
-              <.live_component
-                module={Auth2024Web.ListItemPersonLive}
-                id={"listitem_contact_#{item.id}"}
-                item={item}
-                available_persons={@available_persons}
-                onediting="on_editing"
-                user={@current_user}
-                kind={:contact}
-                onitemchanged="on_itemlist_itemchanged"
-              />
-            <% else %>
-            <% end %>
+            <.live_component
+              module={Auth2024Web.ListItemPersonLive}
+              id={"listitem_contact_#{item.id}"}
+              item={item}
+              available_persons={@available_persons}
+              onediting="on_editing"
+              user={@current_user}
+              kind={:contact}
+              onitemchanged="on_itemlist_itemchanged"
+            />
           </div>
           <div class="flex-none flex flex-col items-end">
             <div class="flex-1">
-              <%= if @sort_by_column=="date" do %>
-                <form 
-                  phx-submit="submit-todo-item-due" 
-                  id={form_todo_item_due_id(item)}>
-                  <input 
-                    type="date" 
-                    name="duedate"
-                    class="w-24 text-xs border-none text-gray-900 sm:text-sm p-0" 
-                    phx-change="validate-todo-item-due"
-                    phx-blur={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
-                    phx-select={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
-                    value={display_due_date(item)}
-                  />
-                  <input type="hidden" name="item_id" value={item.id}/>
-                </form>
-              <% else %>
-                <.live_component
-                  module={Auth2024Web.ListItemPersonLive}
-                  id={"listitem_contact_#{item.id}"}
-                  item={item}
-                  available_persons={@available_persons}
-                  onediting="on_editing"
-                  user={@current_user}
-                  kind={:contact}
-                  onitemchanged="on_itemlist_itemchanged"
+              <form 
+                phx-submit="submit-todo-item-due" 
+                id={form_todo_item_due_id(item)}>
+                <input 
+                  type="date" 
+                  name="duedate"
+                  class="w-24 text-xs border-none text-gray-900 sm:text-sm p-0" 
+                  phx-change="validate-todo-item-due"
+                  phx-blur={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
+                  phx-select={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
+                  value={display_due_date(item)}
                 />
-              <% end %>
+                <input type="hidden" name="item_id" value={item.id}/>
+              </form>
             </div>
             <div class="flex-1">
               <button class="">&gt;&gt;</button>
