@@ -81,9 +81,6 @@ defmodule Auth2024.Todos do
     user
     |> Ecto.build_assoc(:todos, attrs)
     |> Repo.insert()
-    #%Item{}
-    #|> Item.changeset(attrs)
-    #|> Repo.insert()
   end
 
 
