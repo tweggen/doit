@@ -1,4 +1,4 @@
-<div class="flex-1 flex" id={"list_item_caption_top-#{@id}"}>
+<div class="flex-1 flex flex-col" id={"list_item_caption_top-#{@id}"}>
   <%= if @is_list_item_caption_editing do %>
     <form
       phx-submit="submit-todo-item-caption" 
@@ -22,7 +22,7 @@
     </form>
   <% else %>
     <label 
-      class="flex-1 font-semibold text-slate-900 text-m margin-1 text-nowrap" 
+      class="w-56 flex-1 font-semibold text-slate-900 text-m margin-1 text-nowrap text-ellipsis overflow-hidden" 
       phx-click="edit-item-caption"
       phx-target={@myself}
       phx-value-item_id={@item.id}

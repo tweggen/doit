@@ -7,7 +7,7 @@
 />
 
 <section class="mt-2 min-h-0 flex-1 flex flex-col justify-stretch">
-  <ul role="list" class="divide-y divide-gray-100 flex-none">
+  <ul role="list" class="flex flex-col divide-y divide-gray-100 flex-none">
     <li class="flex flex-row">
       <div class="w-8 flex-none">
       </div>
@@ -37,9 +37,9 @@
       <div class="flex-none w-28"></div>
     </li>
   </ul>
-  <section class="min-h-0 flex-1 overflow-y-scroll">
+  <section class="flex flex-col min-h-0 max-w-100vw flex-1 overflow-y-scroll">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
-    <ul role="list" class="divide-y divide-gray-100 flex-none" id="todo-list-items">
+    <ul role="list" class="flex flex-col max-w-100vw divide-y divide-gray-100 flex-none" id="todo-list-items">
       <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
         <:header :let={group_header}>
           <p class="text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
