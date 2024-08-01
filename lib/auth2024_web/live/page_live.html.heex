@@ -27,7 +27,7 @@
       <div class="flex-none w-28"></div>
     </li>
   </ul>
-  <section class="flex flex-col min-h-0 max-w-100vw flex-1 overflow-y-scroll">
+  <section class="min-h-0 max-w-90vw flex-1 overflow-y-hidden">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
     <ul role="list" class="flex flex-col max-w-100vw divide-y divide-gray-100 relative" id="todo-list-items">
       <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
@@ -118,8 +118,8 @@
           >
             active
           </.link>
-          </li>
-        <li class="flex-grow-1">
+        </li>
+        <!-- li class="flex-grow-1">
           <.link 
             class={
               ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
@@ -140,7 +140,7 @@
           >
             by&nbsp;date
           </.link>
-        </li>
+        </li -->
         <li class="flex-grow-1">
           <.link 
             class={

@@ -1,6 +1,7 @@
 <div class="flex-1 flex flex-col" id={"list_item_caption_top-#{@id}"}>
   <%= if @is_list_item_caption_editing do %>
     <form
+      class="flex-0 flex flex-col"
       phx-submit="submit-todo-item-caption" 
       phx-target={@myself}
       id="form-todo-item-caption"
@@ -11,7 +12,7 @@
           phx-change="validate-todo-item-caption"
           phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
           phx-target={@myself}
-          class="flex-1 m-0 b-0 focus:bg-yellow-100 focus:ring-0 font-semibold text-sm border-none p-0"
+          class="flex-0 m-0 b-0 focus:bg-yellow-100 focus:ring-0 font-semibold text-m border-none p-0"
           type="text"
           name="text"
           required="required"
@@ -22,7 +23,7 @@
     </form>
   <% else %>
     <label 
-      class="w-56 flex-1 font-semibold text-slate-900 text-m margin-1 text-nowrap text-ellipsis overflow-hidden" 
+      class="w-48 flex-0 font-semibold text-slate-900 text-m p-0 margin-none text-nowrap text-ellipsis overflow-hidden" 
       phx-click="edit-item-caption"
       phx-target={@myself}
       phx-value-item_id={@item.id}
