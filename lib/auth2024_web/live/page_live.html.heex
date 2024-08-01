@@ -1,19 +1,9 @@
 
-<.live_component
-  id="confirm-new-person"
-  module={Auth2024Web.ConfirmNewPersonLive}
-  onperson="confirm_new_person_onperson"
-  user={@current_user}
-/>
-
 <section class="mt-2 min-h-0 flex-1 flex flex-col justify-stretch">
   <ul role="list" class="min-h-0 flex flex-col divide-y divide-gray-100 flex-none">
     <li class="flex flex-row">
       <div class="w-8 flex-none">
       </div>
-      <!-- div>
-        <button class="destroy" disabled="true">x</button>
-      </div -->
       <div class="flex-1 min-w-0 leading-6 text-gray-900">
         <div>
           <form
@@ -39,7 +29,7 @@
   </ul>
   <section class="flex flex-col min-h-0 max-w-100vw flex-1 overflow-y-scroll">
     <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
-    <ul role="list" class="flex flex-col max-w-100vw divide-y divide-gray-100 flex-none" id="todo-list-items">
+    <ul role="list" class="flex flex-col max-w-100vw divide-y divide-gray-100 relative" id="todo-list-items">
       <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
         <:header :let={group_header}>
           <p class="text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
@@ -104,9 +94,9 @@
     <!-- This one to stretch to full screen height -->
     <div class="flex-1">&nbsp;</div>
   </section>
-  <footer class="flex-none">
-    <div>
-      <ul class="flex text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
+  <footer class="flex-none flex flex-col">
+    <div class="flex-none flex flex-col">
+      <ul class="flex-none flex flex-row text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
         <li class="flex-grow-1">
           <.link 
             class={
@@ -140,10 +130,6 @@
             completed
           </.link>
         </li>
-      <!-- /ul>
-    </div>
-    <div>
-      <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400" -->
         <li class="flex-grow-1">
           <.link 
             class={
@@ -168,8 +154,13 @@
           </li>
       </ul>
     </div>
-    <!-- button class="clear-completed" style="display: block;">
-      Clear completed
-    </button -->
   </footer>
 </section>
+
+<.live_component
+  id="confirm-new-person"
+  module={Auth2024Web.ConfirmNewPersonLive}
+  onperson="confirm_new_person_onperson"
+  user={@current_user}
+/>
+

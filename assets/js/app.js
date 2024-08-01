@@ -97,3 +97,10 @@ window.addEventListener('DOMContentLoaded', () => {
   // Log launch display mode to analytics
   console.log('DISPLAY_MODE_LAUNCH:', displayMode);
 });
+
+const documentHeight = () => {
+ const doc = document.documentElement
+ doc.style.setProperty('--doc-height', `${window.innerHeight}px`)
+}
+window.addEventListener(‘resize’, documentHeight)
+documentHeight()
