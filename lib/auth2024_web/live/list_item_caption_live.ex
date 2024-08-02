@@ -78,21 +78,54 @@ defmodule Auth2024Web.ListItemCaptionLive do
 
 
   @doc """
-  Activates editing the item's caption.
+  Open the item editing dialogue
+  (if configured to open modally)
   """
   @impl true
+  def open_edit_item(
+    %Phoenix.LiveView.Socket{} = socket,
+    data
+  ) do
+    assign(socket,
+      is_list_item_caption_editing: true,
+      list_item_caption_editing_value: data["text"],
+      list_item_caption_editing_item: String.to_integer(data["item_id"])
+    )
+  end
+
+
+  @doc """
+  Activates editing the item's caption.
+  (if configured to open in place)
+  """
+  @impl true
+  defp edit_item_caption(
+    %Phoenix.LiveView.Socket{} = socket,
+    data
+  ) do
+    assign(socket,
+      is_list_item_caption_editing: true,
+      list_item_caption_editing_value: data["text"],
+      list_item_caption_editing_item: String.to_integer(data["item_id"])
+    )
+  end
+
+
+  @impl true
   def handle_event(
-    "edit-item-caption", 
-    data, 
+    "click-item",
+    data,
     %Phoenix.LiveView.Socket{} = socket
   ) do
     {
       :noreply,
-      assign(socket,
-        is_list_item_caption_editing: true,
-        list_item_caption_editing_value: data["text"],
-        list_item_caption_editing_item: String.to_integer(data["item_id"])
-      )
+      if true do
+        socket 
+        |> edit_item_caption(data)
+      else
+        socket
+        |> open_edit_item(data)
+      end
     }
   end
 
