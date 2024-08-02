@@ -8,4 +8,15 @@
 
 [hidden] { display: none !important; } 
 
+:root {
+ --doc-height: 100%;
+}
+
+html,
+body {
+ padding: 0;
+ margin: 0;
+ height: 100vh; /* fallback for Js load */
+ height: var(--doc-height);
+}
 /* This file is for your main application CSS */
