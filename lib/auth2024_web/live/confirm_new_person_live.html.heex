@@ -27,8 +27,14 @@
         field={@new_person_form[:given_name]} 
       />
       <:actions>
-        <Auth2024Web.CoreComponents.button>OK</Auth2024Web.CoreComponents.button>
-        <Auth2024Web.CoreComponents.button phx-click={Auth2024Web.CoreComponents.hide_modal("confirm-new-person")}>No</Auth2024Web.CoreComponents.button>
+        <Auth2024Web.CoreComponents.button>
+          OK
+        </Auth2024Web.CoreComponents.button>
+        <Auth2024Web.CoreComponents.button 
+          phx-click={Auth2024Web.CoreComponents.hide_modal("confirm_new_person_modal-#{@id}")}
+        >
+          No
+        </Auth2024Web.CoreComponents.button>
       </:actions>
     </Auth2024Web.CoreComponents.simple_form>
   </Auth2024Web.CoreComponents.modal>

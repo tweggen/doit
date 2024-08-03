@@ -6,6 +6,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
   alias Auth2024.Todos
 
   @topic "live"
+  @form_name_edit_item "edit-todo"
 
   @impl true
   def terminate(reason, state) do
@@ -86,10 +87,14 @@ defmodule Auth2024Web.ListItemCaptionLive do
     %Phoenix.LiveView.Socket{} = socket,
     data
   ) do
-    assign(socket,
-      is_list_item_caption_editing: true,
-      list_item_caption_editing_value: data["text"],
-      list_item_caption_editing_item: String.to_integer(data["item_id"])
+    item_id = String.to_integer(data["item_id"])
+    current_item = Todos.get_item!(item_id)
+
+    socket 
+    |> Auth2024Web.EditTodoLive.show(
+      @form_name_edit_item, 
+      item_id,
+      current_item
     )
   end
 
@@ -119,7 +124,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
   ) do
     {
       :noreply,
-      if true do
+      if false do
         socket 
         |> edit_item_caption(data)
       else
@@ -152,6 +157,4 @@ defmodule Auth2024Web.ListItemCaptionLive do
       )
     }
   end
-
-
 end

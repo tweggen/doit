@@ -21,11 +21,27 @@ defmodule Auth2024.Todo.Item do
   end
   
   @doc false
+  def create_changeset(attrs) do
+    %__MODULE__{}
+    |> cast(attrs, [:status, :due, :caption, :content])
+    |> validate_required([:user, :status, :caption])
+  end
+
+
+  @doc false
   def changeset(item, attrs) do
     item
     |> cast(attrs, [:status, :due, :caption, :content])
     |> validate_required([:user, :status, :caption])
   end
+
+  def changeset_caption_content(item, attrs) do
+    item
+    |> cast(attrs, [:caption, :content])
+    |> validate_caption()
+    |> validate_content()
+  end    
+
 
   def changeset_caption(item, attrs) do
     item

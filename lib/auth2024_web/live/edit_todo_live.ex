@@ -33,14 +33,23 @@ defmodule Auth2024Web.EditTodoLive do
     socket, 
     form_name, 
     item_id,
-    content
+    item
   ) do
-    if nil != content do
+    if nil != item do
+      IO.inspect("have item")
+      IO.inspect(item)
+
+      caption = if item.caption==nil do ""  else item.caption end
+      content = if item.content==nil do ""  else item.content end
+
       push_js(socket, root_id(form_name), 
         %JS{} 
+        |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
+        |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
         |> JS.set_attribute({"value", content}, to: "#edit_todo-content")
       )
     else
+      IO.inspect("no item")
       socket
     end
     |> push_js(
@@ -64,7 +73,7 @@ defmodule Auth2024Web.EditTodoLive do
     default_assigns = %{
       create_edit_todo_form: nil,
       edit_todo_form: 
-        Phoenix.Component.to_form(Person.create_changeset(%{})),
+        Phoenix.Component.to_form(Item.create_changeset(%{})),
       edit_todo_form_errors: []
     }
     {:ok, socket |> assign(default_assigns)}
@@ -76,5 +85,46 @@ defmodule Auth2024Web.EditTodoLive do
       |> assign(assigns)
     }
   end
+ @impl true
 
+  def handle_event(
+    "edit_todo-submit",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    # Inform the view that this is the currently editing item
+
+    %{"item" => item_params} = params
+    user = socket.assigns.user
+    item_id = String.to_integer(item_params["id"])
+    caption = item_params["caption"]
+    content = item_params["content"]
+
+    IO.inspect(item_params)
+    case Todos.update_item_caption_content(user, %Item{:id => item_id}, item_params) do
+      {:error, message} ->
+        { :noreply, 
+          socket 
+          |> assign(edit_todo_form_errors: [message])
+        }
+
+      {:ok, person} ->
+        new_assigns = %{
+          # TXWTODO: Optimize this by just merging in the new person
+          edit_todo_form_errors: [],
+          edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
+        }
+
+        send( self(), %{ 
+          event: socket.assigns.onitem,
+          changed_item_id: item_id
+        } )
+
+        { 
+          :noreply, 
+          socket 
+          |> assign(new_assigns)
+        }
+    end
+  end
 end

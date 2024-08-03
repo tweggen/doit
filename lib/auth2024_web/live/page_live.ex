@@ -327,6 +327,19 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  def handle_info(
+    %{event: "edit_todo_onitem", changed_item_id: item_id},
+    socket
+  ) do
+    socket
+    {:noreply,
+      socket
+      |> just_edit_done()
+      |> push_event("close_modal", %{to: "#edit-todo"})
+    }
+  end
+
+
   @impl true
   def handle_info(
     %{event: "update", payload: %{items: items}}, 

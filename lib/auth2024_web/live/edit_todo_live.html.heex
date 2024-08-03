@@ -16,17 +16,30 @@
     >
       <Auth2024Web.CoreComponents.error :for={msg <- @edit_todo_form_errors}><p><%= msg %></p></Auth2024Web.CoreComponents.error>
       <Auth2024Web.CoreComponents.input 
-        id="edit_todo-content"
-        label="Content"
-        field={@edit_todo_form[:family_name]} 
+        id="edit_todo-caption"
+        label="Caption"
+        field={@edit_todo_form[:caption]} 
       />
       <Auth2024Web.CoreComponents.input 
+        id="edit_todo-content"
         label="Content"
-        field={@edit_todo_form[:given_name]} 
+        type="textarea"
+        field={@edit_todo_form[:content]} 
+      />
+      <Auth2024Web.CoreComponents.input 
+        id="edit_todo-id"
+        type="hidden"
+        field={@edit_todo_form[:id]} 
       />
       <:actions>
-        <Auth2024Web.CoreComponents.button>OK</Auth2024Web.CoreComponents.button>
-        <Auth2024Web.CoreComponents.button phx-click={Auth2024Web.CoreComponents.hide_modal("edit-todo")}>No</Auth2024Web.CoreComponents.button>
+        <Auth2024Web.CoreComponents.button>
+          OK
+        </Auth2024Web.CoreComponents.button>
+        <Auth2024Web.CoreComponents.button 
+          phx-click={Auth2024Web.CoreComponents.hide_modal("edit_todo_modal-#{@id}")}
+        >
+          No
+        </Auth2024Web.CoreComponents.button>
       </:actions>
     </Auth2024Web.CoreComponents.simple_form>
   </Auth2024Web.CoreComponents.modal>

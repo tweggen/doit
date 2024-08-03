@@ -27,7 +27,6 @@ defmodule Auth2024Web.GroupingComponent do
       {attr, Enum.sort_by(items, & &1.id)}
     end)
     |> Enum.into(%{})	
-    IO.inspect(item_map)
     ~H"""
     	<%= for {attr, item_list} <- item_map do %>
     		<div>

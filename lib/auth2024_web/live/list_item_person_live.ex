@@ -27,7 +27,6 @@ defmodule Auth2024Web.ListItemPersonLive do
 
 
   def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
-    IO.inspect("list_item_person_just_edit_done")
     socket = socket 
     |> assign(empty_assigns())
     socket
@@ -90,10 +89,8 @@ defmodule Auth2024Web.ListItemPersonLive do
     contact_person_name
   ) do
     contact_person = Todos.search_person_family_name(contact_person_name)
-    IO.inspect(["contact person", contact_person_name, contact_person])
     
     if contact_person != nil do
-      IO.inspect(contact_person)
       socket |> save_edit_done(:contact, contact_person)
     else
       socket 

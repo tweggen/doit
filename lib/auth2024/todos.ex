@@ -49,7 +49,6 @@ defmodule Auth2024.Todos do
   def list_items(user, filter_by_value, sort_by_column) do
     # We have different base queries depending on if we order by date
     # or by user, eventually grouping by each.
-    IO.inspect(["filter: ", filter_by_value, "sort: ", sort_by_column])
     case sort_by_column do
       "date" -> 
         Item
@@ -200,21 +199,17 @@ defmodule Auth2024.Todos do
 
   ## Settings
 
-  @doc """
-  Updates a item.
-
-  ## Examples
-
-      iex> update_item(item, %{field: new_value})
-      {:ok, %Item{}}
-
-      iex> update_item(item, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def update_item(_user, %Item{} = item, attrs) do
     item
     |> Item.changeset_status(attrs)
+    |> Repo.update()
+  end
+
+  @doc false
+  def update_item_caption_content(_user, %Item{} = item, attrs) do
+    item
+    |> Item.changeset_caption_content(attrs)
     |> Repo.update()
   end
 
