@@ -7,7 +7,6 @@ defmodule Auth2024.Todos do
   alias Auth2024.Repo
 
   alias Auth2024.Todo.{Item, Person}
-  alias Auth2024.Accounts.User
 
   ## Database getters
 
@@ -202,16 +201,16 @@ defmodule Auth2024.Todos do
   @doc false
   def update_item(_user, %Item{} = item, attrs) do
     item
-    |> Item.changeset_status(attrs)
+    |> Item.update_changeset(attrs)
     |> Repo.update()
   end
 
-  @doc false
-  def update_item_caption_content(_user, %Item{} = item, attrs) do
-    item
-    |> Item.changeset_caption_content(attrs)
-    |> Repo.update()
-  end
+  #@doc false
+  #def update_item_caption_content(_user, %Item{} = item, attrs) do
+  #  item
+  #  |> Item.update_changeset(attrs)
+  #  |> Repo.update()
+  #end
 
   @doc """
   Updates an item contact
@@ -238,61 +237,10 @@ defmodule Auth2024.Todos do
     |> Repo.update()
   end
 
-  @doc """
-  Updates a item caption
-
-  ## Examples
-
-      iex> update_item(item, %{field: new_value})
-      {:ok, %Item{}}
-
-      iex> update_item(item, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_item_caption(_user, %Item{} = item, attrs) do
-    item
-    |> Item.changeset_caption(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Updates a item due date
-
-  ## Examples
-
-      iex> update_item_due(item, %{field: new_value})
-      {:ok, %Item{}}
-
-      iex> update_item_due(item, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_item_due(_user, %Item{} = item, attrs) do
-    item
-    |> Item.changeset_due(attrs)
-    |> Repo.update()
-  end
-
-  ## Settings
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking item content.
-
-  ## Examples
-
-      iex> change_item_content(item)
-      %Ecto.Changeset{data: %Item{}}
-
-  """
-  #def change_item_content(%Item{} = item, attrs \\ %{}) do
-  #  Item.content_changeset(item, attrs)
-  #end
-
   # "soft" delete
   def delete_item(_user, id) do
     get_item!(id)
-    |> Item.changeset_status(%{status: 2})
+    |> Item.update_changeset(%{status: 2})
     |> Repo.update()
   end
 

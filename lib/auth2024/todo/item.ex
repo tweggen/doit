@@ -29,25 +29,26 @@ defmodule Auth2024.Todo.Item do
 
 
   @doc false
-  def changeset(item, attrs) do
+  def update_changeset(item, attrs) do
     item
     |> cast(attrs, [:status, :due, :caption, :content])
-    |> validate_required([:user, :status, :caption])
-  end
-
-  def changeset_caption_content(item, attrs) do
-    item
-    |> cast(attrs, [:caption, :content])
     |> validate_caption()
     |> validate_content()
-  end    
-
-
-  def changeset_caption(item, attrs) do
-    item
-    |> cast(attrs, [:caption])
-    |> validate_caption()
   end
+
+  #def changeset_caption_content(item, attrs) do
+  #  item
+  #  |> cast(attrs, [:caption, :content])
+  #  |> validate_caption()
+  #  |> validate_content()
+  #end    
+
+
+  #def changeset_caption(item, attrs) do
+  #  item
+  #  |> cast(attrs, [:caption])
+  #  |> validate_caption()
+  #end
 
   def changeset_contact(item, attrs) do
     item
@@ -55,17 +56,16 @@ defmodule Auth2024.Todo.Item do
     |> validate_required([:contact])
   end
 
-  def changeset_due(item, attrs) do
-    item
-    |> cast(attrs, [:due])
-    |> validate_required([:due])
-  end
+  #def update_due_changeset(item, attrs) do
+  #  update_changeset(item, attrs)
+  #  |> validate_required([:due])
+  #end
 
-  def changeset_status(item, attrs) do
-    item
-    |> cast(attrs, [:status])
-    |> validate_required([:status])
-  end
+  #def changeset_status(item, attrs) do
+  #  item
+  #  |> cast(attrs, [:status])
+  #  |> validate_required([:status])
+  #end
 
   defp validate_caption(changeset) do
     changeset

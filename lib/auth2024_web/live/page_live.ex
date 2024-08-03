@@ -1,7 +1,7 @@
 defmodule Auth2024Web.PageLive do
   use Auth2024Web, :live_view
   alias Phoenix.LiveView.JS
-  alias Auth2024.Todo.{Item,Person}
+  alias Auth2024.Todo.{Item}
   alias Auth2024.Todos
 
   @topic "live"
@@ -153,8 +153,8 @@ defmodule Auth2024Web.PageLive do
     kind, 
     value
   ) do
-    user = socket.assigns.current_user
-    current_item = Todos.get_item!(socket.assigns.editing_item)
+    # user = socket.assigns.current_user
+    # current_item = Todos.get_item!(socket.assigns.editing_item)
     case kind do
       :due ->
         socket |> save_edit_done(item_id, kind, value)
@@ -178,11 +178,11 @@ defmodule Auth2024Web.PageLive do
     current_item = Todos.get_item!(item_id)
     case kind do
       :caption ->
-        Todos.update_item_caption(user, current_item, easy_changeset_attrs(kind, value))
+        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
       :due ->
-        Todos.update_item_due(user, current_item, easy_changeset_attrs(kind, value))
+        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
       :contact ->
-        Todos.update_item_contact(user, current_item, easy_changeset_attrs(kind, value))
+        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
     end
     socket |> just_edit_done()
   end
@@ -285,7 +285,7 @@ defmodule Auth2024Web.PageLive do
 
   # Called by the contact changed box.
   def handle_info(
-    %{event: "on_itemlist_itemchanged", item_id: item_id, kind: kind, value: value},
+    %{event: "on_itemlist_itemfield_changed", item_id: item_id, kind: kind, value: value},
     socket
   ) do
     {
@@ -297,7 +297,7 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_info(
-    %{event: "on_editing", item_id: item_id},
+    %{event: "on_editing_item", item_id: item_id},
     socket
   ) do
     IO.inspect(["Setting editing item to ", item_id])
@@ -317,7 +317,7 @@ defmodule Auth2024Web.PageLive do
       available_persons: Todos.list_persons!(socket.assigns.current_user),
     }
 
-    socket
+    #socket
     {:noreply,
       socket
       |> save_edit_done(socket.assigns.editing_item, :contact, person)
@@ -328,10 +328,10 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_info(
-    %{event: "edit_todo_onitem", changed_item_id: item_id},
+    %{event: "edit_todo_onitem", changed_item_id: _item_id},
     socket
   ) do
-    socket
+    #socket
     {:noreply,
       socket
       |> just_edit_done()
@@ -362,6 +362,7 @@ defmodule Auth2024Web.PageLive do
   def form_todo_item_due_id(item) do
     "form-todo-item-due-#{item.id}"
   end
+
 
   def display_due_date(item) do
     if is_nil(item.due) do

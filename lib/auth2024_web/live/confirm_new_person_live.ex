@@ -2,10 +2,8 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   use Auth2024Web, :live_component
 
   #alias Phoenix.LiveView.JS
-  alias Auth2024.Todo.{Item,Person}
   alias Auth2024.Todos
-
-  @form_topic "confirm_new_person_live"
+  alias Auth2024.Todo.Person
 
 
   def push_js(
@@ -32,7 +30,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   def show(
     socket, 
     form_name, 
-    item_id,
+    _item_id,
     family_name
   ) do
     if nil != family_name do
@@ -50,7 +48,6 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   end
 
 
-  @impl true
   def terminate(reason, state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
@@ -58,6 +55,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   end
 
 
+  @impl true
   def mount(
     %Phoenix.LiveView.Socket{} = socket
   ) do
@@ -70,6 +68,8 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
     {:ok, socket |> assign(default_assigns)}
   end
 
+
+  @impl true
   def update(assigns, socket) do
     { :ok,
       socket

@@ -1,14 +1,11 @@
 defmodule Auth2024Web.ListItemCaptionLive do
   use Auth2024Web, :live_component
 
-  #alias Phoenix.LiveView.JS
-  alias Auth2024.Todo.{Item,Person}
   alias Auth2024.Todos
 
-  @topic "live"
   @form_name_edit_item "edit-todo"
 
-  @impl true
+
   def terminate(reason, state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
@@ -30,6 +27,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
+  @impl true
   def mount(
     %Phoenix.LiveView.Socket{} = socket
   ) do
@@ -37,6 +35,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
+  @impl true
   def update(assigns, socket) do
     { :ok,
       socket
@@ -78,11 +77,6 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
-  @doc """
-  Open the item editing dialogue
-  (if configured to open modally)
-  """
-  @impl true
   def open_edit_item(
     %Phoenix.LiveView.Socket{} = socket,
     data
@@ -99,11 +93,6 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
-  @doc """
-  Activates editing the item's caption.
-  (if configured to open in place)
-  """
-  @impl true
   defp edit_item_caption(
     %Phoenix.LiveView.Socket{} = socket,
     data

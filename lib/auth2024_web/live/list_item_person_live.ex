@@ -2,21 +2,17 @@ defmodule Auth2024Web.ListItemPersonLive do
   use Auth2024Web, :live_component
 
   #alias Phoenix.LiveView.JS
-  alias Auth2024.Todo.{Item,Person}
   alias Auth2024.Todos
-
-  @topic "live"
-
 
   @form_name_new_person "confirm-new-person"
 
 
-  @impl true
   def terminate(reason, state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
     IO.inspect({:state, state})
   end
+
 
   def empty_assigns() do
     %{
@@ -33,6 +29,7 @@ defmodule Auth2024Web.ListItemPersonLive do
   end
 
 
+  @impl true
   def mount(
     %Phoenix.LiveView.Socket{} = socket
   ) do
@@ -40,6 +37,7 @@ defmodule Auth2024Web.ListItemPersonLive do
   end
 
 
+  @impl true
   def update(assigns, socket) do
     { :ok,
       socket
@@ -59,9 +57,6 @@ defmodule Auth2024Web.ListItemPersonLive do
   end
 
 
-  @doc """
-  Finalize the editing by saving the data to the databse.
-  """
   def save_edit_done(
     %Phoenix.LiveView.Socket{} = socket,
     kind,
@@ -103,6 +98,7 @@ defmodule Auth2024Web.ListItemPersonLive do
   end
 
 
+  @impl true
   def handle_event(
     "submit-todo-item-contact", 
     %{"item_id" => item_id, "contact_person_name" => contact_person_name}, 
