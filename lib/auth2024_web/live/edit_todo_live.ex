@@ -39,17 +39,21 @@ defmodule Auth2024Web.EditTodoLive do
 
       caption = if item.caption==nil do ""  else item.caption end
       content = if item.content==nil do ""  else item.content end
+      due = display_due_date(item.due)
 
-      push_js(socket, root_id(form_name), 
+      socket
+      |> push_js(root_id(form_name), 
         %JS{} 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
         |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
         |> JS.set_attribute({"value", content}, to: "#edit_todo-content")
+        |> JS.set_attribute({"value", due}, to: "#edit_todo-due")
       )
     else
       IO.inspect("no item")
       socket
     end
+
     |> push_js(
       modal_id(form_name),
       Auth2024Web.CoreComponents.show_modal(modal_id(form_name))
@@ -61,6 +65,69 @@ defmodule Auth2024Web.EditTodoLive do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
     IO.inspect({:state, state})
+  end
+
+
+  defp display_due_date(item_due) do
+    if is_nil(item_due) do
+      # Get the current local date
+      current_date = :calendar.local_time()
+
+      # Format the date as "YYYY-MM-DD"
+      formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
+      formatted_date
+    else
+      Date.to_string(item_due)
+    end
+  end
+
+
+  @impl true
+  def handle_event(
+    "edit_todo-submit",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    # Inform the view that this is the currently editing item
+
+    %{"item" => item_params} = params
+
+
+    IO.inspect("item_params are")
+    IO.inspect(item_params)
+
+
+    user = socket.assigns.user
+    item_id = String.to_integer(item_params["id"])
+    caption = item_params["caption"]
+    content = item_params["content"]
+    due = item_params["due"]
+
+    case Todos.update_item(user, %Item{:id => item_id}, item_params) do
+      {:error, message} ->
+        { :noreply, 
+          socket 
+          |> assign(edit_todo_form_errors: [message])
+        }
+
+      {:ok, item} ->
+        new_assigns = %{
+          # TXWTODO: Optimize this by just merging in the new person
+          edit_todo_form_errors: [],
+          edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
+        }
+
+        send( self(), %{ 
+          event: socket.assigns.onitem,
+          changed_item: item
+        } )
+
+        { 
+          :noreply, 
+          socket 
+          |> assign(new_assigns)
+        }
+    end
   end
 
 
@@ -86,46 +153,4 @@ defmodule Auth2024Web.EditTodoLive do
     }
   end
 
-
-  @impl true
-  def handle_event(
-    "edit_todo-submit",
-    params,
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    # Inform the view that this is the currently editing item
-
-    %{"item" => item_params} = params
-    user = socket.assigns.user
-    item_id = String.to_integer(item_params["id"])
-    #caption = item_params["caption"]
-    #content = item_params["content"]
-
-    IO.inspect(item_params)
-    case Todos.update_item(user, %Item{:id => item_id}, item_params) do
-      {:error, message} ->
-        { :noreply, 
-          socket 
-          |> assign(edit_todo_form_errors: [message])
-        }
-
-      {:ok, _item} ->
-        new_assigns = %{
-          # TXWTODO: Optimize this by just merging in the new person
-          edit_todo_form_errors: [],
-          edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
-        }
-
-        send( self(), %{ 
-          event: socket.assigns.onitem,
-          changed_item_id: item_id
-        } )
-
-        { 
-          :noreply, 
-          socket 
-          |> assign(new_assigns)
-        }
-    end
-  end
 end

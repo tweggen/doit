@@ -328,7 +328,7 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_info(
-    %{event: "edit_todo_onitem", changed_item_id: _item_id},
+    %{event: "edit_todo_onitem", changed_item: item},
     socket
   ) do
     #socket
@@ -364,7 +364,7 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  def display_due_date(item) do
+  defp display_due_date(item) do
     if is_nil(item.due) do
       # Get the current local date
       current_date = :calendar.local_time()

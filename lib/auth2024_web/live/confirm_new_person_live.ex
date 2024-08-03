@@ -119,8 +119,6 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
             confirmed_person: person
           } )
 
-          # send_update(@myself, id: socket.assigns.for_id, confirmed_person: person)
-
           { 
             :noreply, 
             socket 

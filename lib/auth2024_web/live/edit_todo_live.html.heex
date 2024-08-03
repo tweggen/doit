@@ -14,15 +14,18 @@
       phx-submit="edit_todo-submit"
       phx-target={@myself}
     >
-      <Auth2024Web.CoreComponents.error :for={msg <- @edit_todo_form_errors}><p><%= msg %></p></Auth2024Web.CoreComponents.error>
+      
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-caption"
-        label="Caption"
         field={@edit_todo_form[:caption]} 
       />
       <Auth2024Web.CoreComponents.input 
+        id="edit_todo-due"
+        type="date" 
+        field={@edit_todo_form[:due]}
+      />
+      <Auth2024Web.CoreComponents.input 
         id="edit_todo-content"
-        label="Content"
         type="textarea"
         field={@edit_todo_form[:content]} 
       />
