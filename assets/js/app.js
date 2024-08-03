@@ -49,10 +49,7 @@ Hooks.SetValue = {
   mounted() {
     console.log("mounting set value");
     this.handleEvent("set-value", (e) => {
-      console.log("Setting a value");
-      console.log(e);
       let el = document.getElementById(e.id);
-      console.log(el);
       el.value = e.value;
     });
   },

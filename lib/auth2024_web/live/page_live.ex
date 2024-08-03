@@ -78,20 +78,25 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  @impl true
-  def mount(
-    _params, session, %Phoenix.LiveView.Socket{} = socket
-  ) do
-    default_assigns = %{
+  defp default_assigns() do
+    %{
       editing_item: nil,
       editing_kind: nil,
       current_user: nil,
+      current_item: nil,
       current_person: nil,
       editing_item_datalist: [],
       items: nil,
       filter_by_value: "active",
       sort_by_column: "date",
     }
+  end
+
+  @impl true
+  def mount(
+    _params, session, %Phoenix.LiveView.Socket{} = socket
+  ) do
+    default_assigns = default_assigns()
     # subscribe to the channel
     if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
     with token when is_bitstring(token) <- session["user_token"],
@@ -126,7 +131,8 @@ defmodule Auth2024Web.PageLive do
 
   def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
     IO.inspect("just_edit_done")
-    socket = socket |> assign(
+    socket = socket 
+      |> assign(
       items: query_items(socket),
       editing_item: nil,
       editing_kind: nil,
@@ -328,7 +334,7 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_info(
-    %{event: "edit_todo_onitem", changed_item: item},
+    %{event: "edit_todo_onitem", changed_item: _item},
     socket
   ) do
     #socket

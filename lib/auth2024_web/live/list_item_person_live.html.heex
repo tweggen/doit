@@ -3,28 +3,28 @@
     phx-submit="submit-todo-item-contact"
     phx-target={@myself}
     class="flex-1 flex"
-    id={"form-todo-item-contact-#{@item.id}"}
+    id={"form-todo-item-contact-#{@item_id}"}
   >
-    <input type="hidden" name="item_id" value={@item.id}/>
+    <input type="hidden" name="item_id" value={@item_id}/>
     <select 
-      id={"select-todo-item-contact-#{@item.id}"}
+      id={"select-todo-item-contact-#{@item_id}"}
       name="contact_person_name"
       class="flex-1 m-0 truncate text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0"
       phx-target={@myself}
-      phx-value-id={@item.id}
-      phx-change={JS.dispatch("submit", to: "#form-todo-item-contact-#{@item.id}")}
+      phx-value-id={@item_id}
+      phx-change={JS.dispatch("submit", to: "#form-todo-item-contact-#{@item_id}")}
     >
       <%= for contact <- @available_persons do %>
         <option 
-          selected={contact.id == @item.contact_id}
+          selected={contact.id == @contact_id}
           value={contact.family_name} 
-          id={"select-todo-item-contact-#{@item.id}-#{contact.id}"}
+          id={"select-todo-item-contact-#{@item_id}-#{contact.id}"}
         >
           <%= contact.family_name %>                      
         </option>
       <% end %>
       <option 
-        id={"select-todo-iten-new-contact-#{@item.id}"}
+        id={"select-todo-iten-new-contact-#{@item_id}"}
       >
         Create new...
       </option>

@@ -5,7 +5,7 @@
   >
     <Auth2024Web.CoreComponents.header>
       <:subtitle>
-        Read short caption of todo here
+        Edit item
       </:subtitle>
     </Auth2024Web.CoreComponents.header> 
 
@@ -26,6 +26,7 @@
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-content"
         type="textarea"
+        rows="10"
         field={@edit_todo_form[:content]} 
         phx-hook="SetValue"
       />
@@ -34,15 +35,16 @@
         type="hidden"
         field={@edit_todo_form[:id]} 
       />
+
       <:actions>
         <Auth2024Web.CoreComponents.button>
-          OK
+          Apply
         </Auth2024Web.CoreComponents.button>
         <Auth2024Web.CoreComponents.button 
           type="button"
           phx-click={Auth2024Web.CoreComponents.hide_modal("edit_todo_modal-#{@id}")}
         >
-          No
+          Cancel
         </Auth2024Web.CoreComponents.button>
       </:actions>
     </Auth2024Web.CoreComponents.simple_form>

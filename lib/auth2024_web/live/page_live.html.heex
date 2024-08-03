@@ -60,6 +60,8 @@
               module={Auth2024Web.ListItemPersonLive}
               id={"listitem_contact_#{item.id}"}
               item={item}
+              item_id={item.id}
+              contact_id={item.contact_id}
               available_persons={@available_persons}
               onediting="on_editing_item"
               user={@current_user}
