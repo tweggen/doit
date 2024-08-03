@@ -42,11 +42,11 @@ defmodule Auth2024Web.EditTodoLive do
       due = display_due_date(item.due)
 
       socket
+      |> push_event("set-value", %{id: "edit_todo-content", value: content})
       |> push_js(root_id(form_name), 
         %JS{} 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
         |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
-        |> JS.set_attribute({"value", content}, to: "#edit_todo-content")
         |> JS.set_attribute({"value", due}, to: "#edit_todo-due")
       )
     else

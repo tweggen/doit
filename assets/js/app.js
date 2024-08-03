@@ -22,34 +22,47 @@ import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
-const hooks = {
-  ModalCloser: {
-    mounted() {
-      this.handleEvent("close_modal", () => {
-          console.log("Pushing close modal");
-        this.el.dispatchEvent(new Event("click", { bubbles: true }));
-      });
-    },
+let Hooks = {};
+Hooks.ModalCloser = {
+  mounted() {
+    console.log("mounting ModalCloser");
+    this.handleEvent("close_modal", () => {
+      console.log("Pushing close modal");
+      this.el.dispatchEvent(new Event("click", { bubbles: true }));
+    });
   },
-  RelayHook: {
-    mounted() {
-      relay = this;
-      document.addEventListener("relay-event", (e) =>
-        {
-          console.log("Pushing");
-          console.log(e.detail.event);
-          relay.pushEvent(e.detail.event, e.detail.payload);
-        }
-      );
-    },
-  }
-}
+};
+Hooks.RelayHook = {
+  mounted() {
+    console.log("mounting RelayHook");
+    relay = this;
+    document.addEventListener("relay-event", (e) =>
+      {
+        console.log("Pushing");
+        console.log(e.detail.event);
+        relay.pushEvent(e.detail.event, e.detail.payload);
+      }
+    );
+  },
+};
+Hooks.SetValue = {
+  mounted() {
+    console.log("mounting set value");
+    this.handleEvent("set-value", (e) => {
+      console.log("Setting a value");
+      console.log(e);
+      let el = document.getElementById(e.id);
+      console.log(el);
+      el.value = e.value;
+    });
+  },
+};
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: hooks,
+  hooks: Hooks,
 })
 
 // Show progress bar on live navigation and form submits
@@ -94,8 +107,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (window.matchMedia('(display-mode: standalone)').matches) {
     displayMode = 'standalone';
   }
-  // Log launch display mode to analytics
-  console.log('DISPLAY_MODE_LAUNCH:', displayMode);
 });
 
 const documentHeight = () => {

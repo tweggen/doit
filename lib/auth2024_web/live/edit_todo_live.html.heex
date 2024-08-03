@@ -14,7 +14,6 @@
       phx-submit="edit_todo-submit"
       phx-target={@myself}
     >
-      
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-caption"
         field={@edit_todo_form[:caption]} 
@@ -28,6 +27,7 @@
         id="edit_todo-content"
         type="textarea"
         field={@edit_todo_form[:content]} 
+        phx-hook="SetValue"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-id"
@@ -39,6 +39,7 @@
           OK
         </Auth2024Web.CoreComponents.button>
         <Auth2024Web.CoreComponents.button 
+          type="button"
           phx-click={Auth2024Web.CoreComponents.hide_modal("edit_todo_modal-#{@id}")}
         >
           No
