@@ -54,17 +54,17 @@
               id={"listitem_caption_#{item.id}"}
               item={item}
               user={@current_user}
-              onitemchanged="on_itemlist_itemchanged"
+              onitemchanged="on_itemlist_itemfield_changed"
             />
             <.live_component
               module={Auth2024Web.ListItemPersonLive}
               id={"listitem_contact_#{item.id}"}
               item={item}
               available_persons={@available_persons}
-              onediting="on_editing"
+              onediting="on_editing_item"
               user={@current_user}
               kind={:contact}
-              onitemchanged="on_itemlist_itemchanged"
+              onitemchanged="on_itemlist_itemfield_changed"
             />
           </div>
           <div class="flex-none flex flex-col items-end">
