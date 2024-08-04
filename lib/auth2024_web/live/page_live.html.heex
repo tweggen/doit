@@ -1,6 +1,6 @@
 
-<div class="min-h-0 flex-1 flex flex-col justify-stretch lg:w-3/5">
-  <section class="flex-1 flex flex-col min-h-0 mt-2justify-stretch">
+<div class="flex-1 flex flex-col justify-stretch min-h-0 min-w-0 lg:w-3/5">
+  <section class="flex-1 flex flex-col min-h-0 mt-2 justify-stretch">
     <ul class="flex-none flex flex-col min-h-0 divide-y divide-gray-100" role="list">
       <li class="flex flex-row flex-none">
         <div class="flex-none w-8">
@@ -28,9 +28,13 @@
         <div class="flex-none w-28"></div>
       </li>
     </ul>
-    <section class="flex-1 flex flex-col min-h-0 overflow-y-hidden">
+    <section class="flex-1 min-h-0 min-w-0 overflow-y-scroll">
       <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
-      <ul role="list" class="flex-none flex flex-col min-h-0 divide-y divide-gray-100 relative" id="todo-list-items">
+      <ul 
+        role="list" 
+        class="flex flex-col min-h-0 divide-y divide-gray-100 relative w-full max-w-full min-w-0 min-h-0" 
+        id="todo-list-items"
+      >
         <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
           <:header :let={group_header}>
             <p class="flex-0 text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
@@ -67,7 +71,7 @@
                   onediting="on_editing_item"
                   onitemchanged="on_itemlist_itemfield_changed"
                 />
-              <%= end %>
+              <% end %>
             </div>
             <div class="flex-none flex flex-col items-end">
               <div class="flex-1">
@@ -94,8 +98,11 @@
       <!-- This one to stretch to full screen height -->
       <div class="flex-1">&nbsp;</div>
     </section>
-    <footer class="flex-none flex flex-col">
-      <div class="flex-none flex flex-col">
+    <footer 
+      class="bg-white bottom-0 left-0 w-full max-w-full min-w-[11rem] overflow-x-auto z-[9999] fixed"
+      notcurrent-class="flex-none flex flex-col min-h-0 min-w-0"
+    >
+      <div class="flex-none flex flex-col min-h-0 min-w-0">
         <ul class="flex-none flex flex-row min-w-0 min-h-0 text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
           <li class="flex-grow-1 flex flex-col min-w-0 min-h-0">
             <.link 

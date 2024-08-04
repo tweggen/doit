@@ -92,8 +92,6 @@ defmodule Auth2024Web.EditTodoLive do
     %{event: "on_edittodo_contact_changed", item_id: item_id, kind: kind, value: value},
     socket
   ) do
-    IO.inspect("on_edittodo_contact_changed")
-    IO.inpsect(socket)
     {
       :noreply,
       socket

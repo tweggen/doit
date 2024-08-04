@@ -13,7 +13,7 @@ config :auth2024,
 
 # Configures the endpoint
 config :auth2024, Auth2024Web.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "0.0.0.0"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: Auth2024Web.ErrorHTML, json: Auth2024Web.ErrorJSON],
