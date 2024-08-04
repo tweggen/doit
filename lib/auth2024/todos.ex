@@ -63,6 +63,12 @@ defmodule Auth2024.Todos do
   end
 
 
+  def hydrate_item(item) do
+    item
+    |> Repo.preload([:contact, :author])
+  end
+
+
   @doc """
   Adds an item
 

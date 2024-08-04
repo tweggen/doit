@@ -59,13 +59,13 @@
             <.live_component
               module={Auth2024Web.ListItemPersonLive}
               id={"listitem_contact_#{item.id}"}
-              item={item}
               item_id={item.id}
               contact_id={item.contact_id}
               available_persons={@available_persons}
               onediting="on_editing_item"
               user={@current_user}
               kind={:contact}
+              look="list"
               onitemchanged="on_itemlist_itemfield_changed"
             />
           </div>
@@ -170,6 +170,7 @@
   id="edit-todo"
   module={Auth2024Web.EditTodoLive}
   onitem="edit_todo_onitem"
-  user={@current_user}
+  current_user={@current_user}
+  available_persons={@available_persons}
 />
-
+x

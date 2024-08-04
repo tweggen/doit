@@ -18,12 +18,21 @@
         id="edit_todo-caption"
         field={@edit_todo_form[:caption]} 
       />
+      <.live_component
+        module={Auth2024Web.ListItemPersonLive}
+        id={"listitem_contact_in_edit_todo_modal"}
+        item_id="in_edit_todo_modal"
+        contact_id={nil}
+        look="modal"
+        available_persons={@available_persons}
+        user={@current_user}
+      />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-due"
         type="date" 
         field={@edit_todo_form[:due]}
       />
-      <Auth2024Web.CoreComponents.input 
+      <Auth2024Web.CoreComponents.input  
         id="edit_todo-content"
         type="textarea"
         rows="10"

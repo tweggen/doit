@@ -104,11 +104,13 @@ defmodule Auth2024Web.ListItemPersonLive do
     %{"item_id" => item_id, "contact_person_name" => contact_person_name}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    send( self(), %{ 
-      event: socket.assigns.onediting,
-      item_id: item_id
-    } )
-
+    if nil != socket.assigns.onediting do
+      send( self(), %{ 
+        event: socket.assigns.onediting,
+        item_id: item_id
+      } )
+    end
+    
     socket = socket |> assign(list_item_person_editing_item: item_id)
     if contact_person_name == "Create new..." do
       {:noreply, 

@@ -37,12 +37,19 @@ defmodule Auth2024Web.EditTodoLive do
       IO.inspect("have item")
       IO.inspect(item)
 
+      item = Todos.hydrate_item(item)
+
+      IO.inspect("have hydrated item")
+      IO.inspect(item)
+
       caption = if item.caption==nil do ""  else item.caption end
       content = if item.content==nil do ""  else item.content end
+      contact = item.contact.family_name
       due = display_due_date(item.due)
 
       socket
       |> push_event("set-value", %{id: "edit_todo-content", value: content})
+      |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact})
       |> push_js(root_id(form_name), 
         %JS{} 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
@@ -82,6 +89,17 @@ defmodule Auth2024Web.EditTodoLive do
   end
 
 
+  def handle_info(
+    %{event: "on_edittodo_contact_changed", item_id: item_id, kind: kind, value: value},
+    socket
+  ) do
+    {
+      :noreply,
+      socket
+    }
+  end
+
+
   @impl true
   def handle_event(
     "edit_todo-submit",
@@ -96,8 +114,7 @@ defmodule Auth2024Web.EditTodoLive do
     IO.inspect("item_params are")
     IO.inspect(item_params)
 
-
-    user = socket.assigns.user
+    user = socket.assigns.current_user
     item_id = String.to_integer(item_params["id"])
     caption = item_params["caption"]
     content = item_params["content"]
@@ -117,10 +134,12 @@ defmodule Auth2024Web.EditTodoLive do
           edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
         }
 
-        send( self(), %{ 
-          event: socket.assigns.onitem,
-          changed_item: item
-        } )
+        if nil != socket.assigns.onitem do
+          send( self(), %{ 
+            event: socket.assigns.onitem,
+            changed_item: item
+          } )
+        end
 
         { 
           :noreply, 

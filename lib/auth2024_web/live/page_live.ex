@@ -89,6 +89,7 @@ defmodule Auth2024Web.PageLive do
       items: nil,
       filter_by_value: "active",
       sort_by_column: "date",
+      available_persons: []
     }
   end
 
