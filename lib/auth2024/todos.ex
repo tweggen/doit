@@ -206,13 +206,9 @@ defmodule Auth2024.Todos do
 
   @doc false
   def update_item(_user, %Item{} = item, attrs) do
-    IO.inspect("update_item")
-    IO.inspect(attrs)
-    IO.inspect(item)
-    updateres = item
-    |> Item.update_changeset(Map.put(attrs, :id, item.id))
-    IO.inspect(updateres)
-    updateres
+    attrs = Map.put(attrs, "id", item.id)
+    item
+    |> Item.update_changeset(attrs)
     |> Repo.update()
   end
 

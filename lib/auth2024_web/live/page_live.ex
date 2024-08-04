@@ -131,7 +131,6 @@ defmodule Auth2024Web.PageLive do
 
 
   def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
-    IO.inspect("just_edit_done")
     socket = socket 
       |> assign(
       items: query_items(socket),
@@ -181,14 +180,12 @@ defmodule Auth2024Web.PageLive do
     kind, 
     value
   ) do
-    IO.inspect("save_edit_done")
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
     case kind do
       :caption ->
         Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
       :due ->
-        IO.inspect("due")
         Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
       :contact ->
         Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
@@ -250,7 +247,6 @@ defmodule Auth2024Web.PageLive do
     %{"item_id" => item_id, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    IO.inspect("submit-todo-item-due called")
     {
       :noreply, 
       socket
@@ -266,7 +262,6 @@ defmodule Auth2024Web.PageLive do
     %{"_target" => _target, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    IO.inspect("validate-todo-item-due")
     {:noreply,
       assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
@@ -311,7 +306,6 @@ defmodule Auth2024Web.PageLive do
     %{event: "on_editing_item", item_id: item_id},
     socket
   ) do
-    IO.inspect(["Setting editing item to ", item_id])
     {
       :noreply,
       socket
