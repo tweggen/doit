@@ -30,10 +30,13 @@ defmodule Auth2024.Todo.Item do
 
   @doc false
   def update_changeset(item, attrs) do
-    item
-    |> cast(attrs, [:status, :due, :caption, :content])
+    res = item |> cast(attrs, [:status, :due, :caption, :content])
+    IO.inspect(res)
+    res2 = res
     |> validate_caption()
     |> validate_content()
+    IO.inspect(res2)
+    res2
   end
 
   #def changeset_caption_content(item, attrs) do
@@ -69,13 +72,11 @@ defmodule Auth2024.Todo.Item do
 
   defp validate_caption(changeset) do
     changeset
-    |> validate_required([:caption])
     |> validate_length(:caption, max: 160)
   end
 
   defp validate_content(changeset) do
     changeset
-    |> validate_required([:content])
     |> validate_length(:content, max: 2030)
   end
 

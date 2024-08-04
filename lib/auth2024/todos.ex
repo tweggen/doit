@@ -206,17 +206,16 @@ defmodule Auth2024.Todos do
 
   @doc false
   def update_item(_user, %Item{} = item, attrs) do
-    item
-    |> Item.update_changeset(attrs)
+    IO.inspect("update_item")
+    IO.inspect(attrs)
+    IO.inspect(item)
+    updateres = item
+    |> Item.update_changeset(Map.put(attrs, :id, item.id))
+    IO.inspect(updateres)
+    updateres
     |> Repo.update()
   end
 
-  #@doc false
-  #def update_item_caption_content(_user, %Item{} = item, attrs) do
-  #  item
-  #  |> Item.update_changeset(attrs)
-  #  |> Repo.update()
-  #end
 
   @doc """
   Updates an item contact
@@ -242,6 +241,7 @@ defmodule Auth2024.Todos do
     |> Item.changeset_contact(attrs)
     |> Repo.update()
   end
+
 
   # "soft" delete
   def delete_item(_user, id) do

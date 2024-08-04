@@ -81,7 +81,7 @@
                   phx-change="validate-todo-item-due"
                   phx-blur={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
                   phx-select={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
-                  value={display_due_date(item)}
+                  value={display_due_date(item.due)}
                 />
                 <input type="hidden" name="item_id" value={item.id}/>
               </form>

@@ -181,12 +181,14 @@ defmodule Auth2024Web.PageLive do
     kind, 
     value
   ) do
+    IO.inspect("save_edit_done")
     user = socket.assigns.current_user
     current_item = Todos.get_item!(item_id)
     case kind do
       :caption ->
         Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
       :due ->
+        IO.inspect("due")
         Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
       :contact ->
         Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
@@ -248,6 +250,7 @@ defmodule Auth2024Web.PageLive do
     %{"item_id" => item_id, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    IO.inspect("submit-todo-item-due called")
     {
       :noreply, 
       socket
@@ -263,6 +266,7 @@ defmodule Auth2024Web.PageLive do
     %{"_target" => _target, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    IO.inspect("validate-todo-item-due")
     {:noreply,
       assign(socket,
         editing_item_values: Map.put(socket.assigns.editing_item_values,
@@ -371,8 +375,8 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  defp display_due_date(item) do
-    if is_nil(item.due) do
+  defp display_due_date(due) do
+    if is_nil(due) do
       # Get the current local date
       current_date = :calendar.local_time()
 
@@ -380,7 +384,7 @@ defmodule Auth2024Web.PageLive do
       formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
       formatted_date
     else
-      Date.to_string(item.due)
+      Date.to_string(due)
     end
   end
 
