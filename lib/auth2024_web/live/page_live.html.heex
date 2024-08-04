@@ -1,160 +1,162 @@
 
-<section class="mt-2 min-h-0 flex-1 flex flex-col justify-stretch">
-  <ul role="list" class="min-h-0 flex flex-col divide-y divide-gray-100 flex-none">
-    <li class="flex flex-row">
-      <div class="w-8 flex-none">
-      </div>
-      <div class="flex-1 min-w-0 leading-6 text-gray-900">
-        <div>
-          <form
-            phx-submit="create"
-            id="form"
-          >
-            <div class="flex">
-              <input
-                class="flex-1 bg-yellow-100 focus:bg-yellow-50 focus:ring-0 font-semibold text-sm border-none p-0"
-                id="new_todo"
-                type="text"
-                name="text"
-                placeholder="Enter new task..."
-                autofocus=""
-                required="required"                  
-              />
-            </div>
-          </form>
+<div class="min-h-0 flex-1 flex flex-col justify-stretch lg:w-3/5">
+  <section class="flex-1 flex flex-col min-h-0 mt-2justify-stretch">
+    <ul class="flex-none flex flex-col min-h-0 divide-y divide-gray-100" role="list">
+      <li class="flex flex-row flex-none">
+        <div class="flex-none w-8">
         </div>
-      </div>
-      <div class="flex-none w-28"></div>
-    </li>
-  </ul>
-  <section class="min-h-0 max-w-90vw flex-1 overflow-y-hidden">
-    <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
-    <ul role="list" class="flex flex-col max-w-100vw divide-y divide-gray-100 relative" id="todo-list-items">
-      <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
-        <:header :let={group_header}>
-          <p class="text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
-        </:header>
-
-        <li data-id={item.id} class="flex flex-row" class={completed?(item)}>
-          <div class="w-8 flex-none flex flex-col">
-            <div class="flex-1">
-              <%= if checked?(item) do %>
-                <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" checked />
-              <% else %>
-                <input class="flex-none toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" />
-              <% end %>
-            </div>
+        <div class="flex-1 min-w-0 leading-6 text-gray-900">
+          <div>
+            <form
+              phx-submit="create"
+              id="form"
+            >
+              <div class="flex">
+                <input
+                  class="flex-1 bg-yellow-100 focus:bg-yellow-50 focus:ring-0 font-semibold text-sm border-none p-0"
+                  id="new_todo"
+                  type="text"
+                  name="text"
+                  placeholder="Enter new task..."
+                  autofocus=""
+                  required="required"                  
+                />
+              </div>
+            </form>
           </div>
-          <div class="flex-1 min-w-0 leading-6 text-gray-900 flex flex-col items-stretch">
-            <.live_component
-              module={Auth2024Web.ListItemCaptionLive}
-              id={"listitem_caption_#{item.id}"}
-              item={item}
-              user={@current_user}
-              onitemchanged="on_itemlist_itemfield_changed"
-            />
-            <%= if @sort_by_column != "contact" do %>
+        </div>
+        <div class="flex-none w-28"></div>
+      </li>
+    </ul>
+    <section class="flex-1 flex flex-col min-h-0 overflow-y-hidden">
+      <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
+      <ul role="list" class="flex-none flex flex-col min-h-0 divide-y divide-gray-100 relative" id="todo-list-items">
+        <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
+          <:header :let={group_header}>
+            <p class="flex-0 text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
+          </:header>
+
+          <li data-id={item.id} class="flex-none flex flex-row min-w-0 min-h-0" class={completed?(item)}>
+            <div class="flex-none flex flex-col w-8 min-w-0 min-h-0">
+              <div class="flex-1 min-w-0 min-h-0">
+                <%= if checked?(item) do %>
+                  <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" checked />
+                <% else %>
+                  <input class="flex-none toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" />
+                <% end %>
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col leading-6 text-gray-900 items-stretch min-w-0 min-h-0">
               <.live_component
-                module={Auth2024Web.ListItemPersonLive}
-                id={"listitem_contact_#{item.id}"}
-                item_id={item.id}
-                contact_id={item.contact_id}
-                look="list"
-                available_persons={@available_persons}
+                module={Auth2024Web.ListItemCaptionLive}
+                id={"listitem_caption_#{item.id}"}
+                item={item}
                 user={@current_user}
-                kind={:contact}
-                onediting="on_editing_item"
                 onitemchanged="on_itemlist_itemfield_changed"
               />
-            <%= end %>
-          </div>
-          <div class="flex-none flex flex-col items-end">
-            <div class="flex-1">
-              <form 
-                phx-submit="submit-todo-item-due" 
-                id={form_todo_item_due_id(item)}>
-                <input 
-                  type="date" 
-                  name="duedate"
-                  class="w-24 text-xs border-none text-gray-900 sm:text-sm p-0" 
-                  phx-change="validate-todo-item-due"
-                  phx-blur={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
-                  phx-select={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
-                  value={display_due_date(item.due)}
+              <%= if @sort_by_column != "contact" do %>
+                <.live_component
+                  module={Auth2024Web.ListItemPersonLive}
+                  id={"listitem_contact_#{item.id}"}
+                  item_id={item.id}
+                  contact_id={item.contact_id}
+                  look="list"
+                  available_persons={@available_persons}
+                  user={@current_user}
+                  kind={:contact}
+                  onediting="on_editing_item"
+                  onitemchanged="on_itemlist_itemfield_changed"
                 />
-                <button class="" type="button">&gt;&gt;</button>
-                <input type="hidden" name="item_id" value={item.id}/>
-              </form>
-           </div>
-          </div>
-        </li>
-      </Auth2024Web.GroupingComponent.for_items>
-    </ul>
-    <!-- This one to stretch to full screen height -->
-    <div class="flex-1">&nbsp;</div>
-  </section>
-  <footer class="flex-none flex flex-col">
-    <div class="flex-none flex flex-col">
-      <ul class="flex-none flex flex-row text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
-        <li class="flex-grow-1">
-          <.link 
-            class={
-              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @filter_by_value=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
-            }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
-          >
-            all
-          </.link>
-        </li>
-        <li class="flex-grow-1">
-          <.link 
-            class={
-              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @filter_by_value=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
-            }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
-          >
-            active
-          </.link>
-        </li>
-        <li class="flex-grow-1">
-          <.link 
-            class={
-              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @filter_by_value=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
-            }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
-          >
-            completed
-          </.link>
-        </li>
-        <li class="flex-grow-1">
-          <.link 
-            class={
-              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @sort_by_column=="date", do: ["text-blue-600", "bg-gray-100"], else: [])
-            }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "date"})}
-          >
-            by&nbsp;date
-          </.link>
-        </li>
-        <li class="flex-grow-1">
-          <.link 
-            class={
-              ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-               ++ (if @sort_by_column=="contact", do: ["text-blue-600", "bg-gray-100"], else: [])
-            }
-            patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "contact"})}
-          >
-            by&nbsp;contact
-          </.link>
+              <%= end %>
+            </div>
+            <div class="flex-none flex flex-col items-end">
+              <div class="flex-1">
+                <form 
+                  phx-submit="submit-todo-item-due" 
+                  id={form_todo_item_due_id(item)}>
+                  <input 
+                    type="date" 
+                    name="duedate"
+                    class="w-24 text-xs border-none text-gray-900 sm:text-sm p-0" 
+                    phx-change="validate-todo-item-due"
+                    phx-blur={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
+                    phx-select={JS.dispatch("submit", to: "#" <> form_todo_item_due_id(item))}
+                    value={display_due_date(item.due)}
+                  />
+                  <button class="" type="button">&gt;&gt;</button>
+                  <input type="hidden" name="item_id" value={item.id}/>
+                </form>
+             </div>
+            </div>
           </li>
+        </Auth2024Web.GroupingComponent.for_items>
       </ul>
-    </div>
-  </footer>
-</section>
+      <!-- This one to stretch to full screen height -->
+      <div class="flex-1">&nbsp;</div>
+    </section>
+    <footer class="flex-none flex flex-col">
+      <div class="flex-none flex flex-col">
+        <ul class="flex-none flex flex-row text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
+          <li class="flex-grow-1">
+            <.link 
+              class={
+                ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+                 ++ (if @filter_by_value=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
+              }
+              patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
+            >
+              all
+            </.link>
+          </li>
+          <li class="flex-grow-1">
+            <.link 
+              class={
+                ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+                 ++ (if @filter_by_value=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
+              }
+              patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
+            >
+              active
+            </.link>
+          </li>
+          <li class="flex-grow-1">
+            <.link 
+              class={
+                ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+                 ++ (if @filter_by_value=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
+              }
+              patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
+            >
+              completed
+            </.link>
+          </li>
+          <li class="flex-grow-1">
+            <.link 
+              class={
+                ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+                 ++ (if @sort_by_column=="date", do: ["text-blue-600", "bg-gray-100"], else: [])
+              }
+              patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "date"})}
+            >
+              by&nbsp;date
+            </.link>
+          </li>
+          <li class="flex-grow-1">
+            <.link 
+              class={
+                ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
+                 ++ (if @sort_by_column=="contact", do: ["text-blue-600", "bg-gray-100"], else: [])
+              }
+              patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "contact"})}
+            >
+              by&nbsp;contact
+            </.link>
+            </li>
+        </ul>
+      </div>
+    </footer>
+  </section>
+</div>
 
 <.live_component
   id="confirm-new-person"
@@ -170,4 +172,4 @@
   current_user={@current_user}
   available_persons={@available_persons}
 />
-x
+

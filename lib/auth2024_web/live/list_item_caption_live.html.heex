@@ -1,18 +1,18 @@
-<div class="flex-1 flex flex-col" id={"list_item_caption_top-#{@id}"}>
+<div class="flex-1 flex flex-col min-w-0 min-h-0" id={"list_item_caption_top-#{@id}"}>
   <%= if @is_list_item_caption_editing do %>
     <form
-      class="flex-0 flex flex-col"
+      class="flex-1 flex flex-col min-w-0 min-h-0"
       phx-submit="submit-todo-item-caption" 
       phx-target={@myself}
       id="form-todo-item-caption"
     >
-      <div class="flex-1 flex">
+      <div class="flex-1 flex flex-col min-w-0 min-h-0">
         <input
           phx-mounted={JS.focus()}
           phx-change="validate-todo-item-caption"
           phx-blur={JS.dispatch("submit", to: "#form-todo-item-caption")}
           phx-target={@myself}
-          class="flex-0 m-0 b-0 focus:bg-yellow-100 focus:ring-0 font-semibold text-m border-none p-0"
+          class="flex-none min-w-0 min-h-0 m-0 b-0 focus:bg-yellow-100 focus:ring-0 font-semibold text-m border-none p-0"
           type="text"
           name="text"
           required="required"
@@ -23,7 +23,7 @@
     </form>
   <% else %>
     <label 
-      class="w-48 flex-0 font-semibold text-slate-900 text-m p-0 margin-none text-nowrap text-ellipsis overflow-hidden" 
+      class="flex-none min-w-0 min-h-0 font-semibold text-slate-900 text-m p-0 margin-none text-nowrap text-ellipsis overflow-hidden" 
       phx-click="click-item"
       phx-target={@myself}
       phx-value-item_id={@item.id}

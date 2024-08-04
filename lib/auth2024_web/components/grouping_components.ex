@@ -29,7 +29,7 @@ defmodule Auth2024Web.GroupingComponent do
     |> Enum.into(%{})	
     ~H"""
     	<%= for {attr, item_list} <- item_map do %>
-    		<div>
+    		<div class="flex-none flex flex-col min-h-0">
       		<%= render_slot(@header, attr) || "sort_by_column" %>
     		</div>
     		<%= for item <- item_list do %>
