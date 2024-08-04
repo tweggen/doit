@@ -19,13 +19,13 @@
         field={@edit_todo_form[:caption]} 
       />
       <.live_component
-        module={Auth2024Web.ListItemPersonLive}
-        id={"listitem_contact_in_edit_todo_modal"}
-        item_id="in_edit_todo_modal"
-        contact_id={nil}
-        look="modal"
+        id={"select-todo-item-contact-in_edit_todo_modal"}
+        module={Auth2024Web.SelectPersonComponent}
+        name="contact_person_name"
+        class="flex-1 truncate mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
         available_persons={@available_persons}
-        user={@current_user}
+        look="modal"
+        item_id="in_edit_todo_modal"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-due"

@@ -34,8 +34,6 @@ defmodule Auth2024Web.EditTodoLive do
     item
   ) do
     if nil != item do
-      IO.inspect("have item")
-      IO.inspect(item)
 
       item = Todos.hydrate_item(item)
 
@@ -49,6 +47,7 @@ defmodule Auth2024Web.EditTodoLive do
 
       socket
       |> push_event("set-value", %{id: "edit_todo-content", value: content})
+      
       |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact})
       |> push_js(root_id(form_name), 
         %JS{} 
@@ -93,6 +92,8 @@ defmodule Auth2024Web.EditTodoLive do
     %{event: "on_edittodo_contact_changed", item_id: item_id, kind: kind, value: value},
     socket
   ) do
+    IO.inspect("on_edittodo_contact_changed")
+    IO.inpsect(socket)
     {
       :noreply,
       socket
@@ -109,7 +110,6 @@ defmodule Auth2024Web.EditTodoLive do
     # Inform the view that this is the currently editing item
 
     %{"item" => item_params} = params
-
 
     IO.inspect("item_params are")
     IO.inspect(item_params)

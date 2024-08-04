@@ -67,13 +67,14 @@ defmodule Auth2024Web.ListItemPersonLive do
     current_item = Todos.get_item!(item_id)
     Todos.update_item_contact(user, current_item, %{kind => value})
 
-    send( self(), %{ 
-      event: socket.assigns.onitemchanged,
-      item_id: item_id,
-      kind: :contact,
-      value: value
-    } )
-
+    if socket.assigns.onitemchanged != nil do
+      send( self(), %{ 
+        event: socket.assigns.onitemchanged,
+        item_id: item_id,
+        kind: kind,
+        value: value
+      } )
+    end
     socket |> just_edit_done()
   end
 
@@ -86,7 +87,7 @@ defmodule Auth2024Web.ListItemPersonLive do
     contact_person = Todos.search_person_family_name(contact_person_name)
     
     if contact_person != nil do
-      socket |> save_edit_done(:contact, contact_person)
+      socket |> save_edit_done(socket.assigns.kind, contact_person)
     else
       socket 
       |> Auth2024Web.ConfirmNewPersonLive.show(
@@ -104,30 +105,45 @@ defmodule Auth2024Web.ListItemPersonLive do
     %{"item_id" => item_id, "contact_person_name" => contact_person_name}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    IO.inspect("submit-todo-item-contact called.")
     if nil != socket.assigns.onediting do
       send( self(), %{ 
         event: socket.assigns.onediting,
         item_id: item_id
       } )
     end
-    
-    socket = socket |> assign(list_item_person_editing_item: item_id)
-    if contact_person_name == "Create new..." do
-      {:noreply, 
-        socket 
-        |> Auth2024Web.ConfirmNewPersonLive.show(
-          @form_name_new_person, 
-          item_id,
-          nil
-        )
-      }
-    else
-      {
-        :noreply, 
-        socket 
-        |> possibly_update_item_contact(item_id, contact_person_name)
-      }
+
+    if socket.assigns.kind != nil do
+      socket = socket |> assign(list_item_person_editing_item: item_id)
+      if contact_person_name == "Create new..." do
+        {:noreply, 
+          socket 
+          |> Auth2024Web.ConfirmNewPersonLive.show(
+            @form_name_new_person, 
+            item_id,
+            nil
+          )
+        }
+      else
+        {
+          :noreply, 
+          socket 
+          |> possibly_update_item_contact(item_id, contact_person_name)
+        }
       end
+    else
+      { :noreply, socket }
+    end
+  end
+
+  @impl true
+  def handle_event(
+    "submit-todo-item-contact", 
+    params, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    IO.inspect("submit-todo-item-contact with params")
+    IO.inspect(params)
   end
 
 

@@ -6,28 +6,16 @@
     id={"form-todo-item-contact-#{@item_id}"}
   >
     <input type="hidden" name="item_id" value={@item_id}/>
-    <select 
-      id={"select-todo-item-contact-#{@item_id}"}
-      name="contact_person_name"
-      class={if @look=="list" do "flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0" else "flex-1 truncate mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm" end}
-      phx-target={@myself}
-      phx-value-id={@item_id}
-      phx-change={JS.dispatch("submit", to: "#form-todo-item-contact-#{@item_id}")}
-    >
-      <%= for contact <- @available_persons do %>
-        <option 
-          selected={contact.id == @contact_id}
-          value={contact.family_name} 
-          id={"select-todo-item-contact-#{@item_id}-#{contact.id}"}
-        >
-          <%= contact.family_name %>                      
-        </option>
-      <% end %>
-      <option 
-        id={"select-todo-iten-new-contact-#{@item_id}"}
-      >
-        Create new...
-      </option>
-    </select>
+
+    <.live_component
+        id={"select-todo-item-contact-#{@item_id}"}
+        module={Auth2024Web.SelectPersonComponent}
+        name="contact_person_name"
+        class={if @look=="list" do "flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0" else "flex-1 truncate mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm" end}
+        available_persons={@available_persons}
+        contact_id={@contact_id}
+        item_id={@item_id}
+        autosubmit={true}
+    />
   </form>            
 </div>

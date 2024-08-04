@@ -61,11 +61,11 @@
               id={"listitem_contact_#{item.id}"}
               item_id={item.id}
               contact_id={item.contact_id}
+              look="list"
               available_persons={@available_persons}
-              onediting="on_editing_item"
               user={@current_user}
               kind={:contact}
-              look="list"
+              onediting="on_editing_item"
               onitemchanged="on_itemlist_itemfield_changed"
             />
           </div>
