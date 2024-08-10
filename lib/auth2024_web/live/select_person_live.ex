@@ -2,7 +2,8 @@ defmodule Auth2024Web.SelectPersonComponent do
   use Auth2024Web, :live_component
 
   # In Phoenix apps, the line is typically: use MyAppWeb, :live_component
-  use Phoenix.LiveComponent
+  #use Phoenix.LiveComponent
+
 
   attr :autosubmit, :boolean, default: false
   attr :item_id, :string
@@ -15,9 +16,9 @@ defmodule Auth2024Web.SelectPersonComponent do
       id={@id}
       name={@name}
       class={@class}
-      phx-target={if @autosubmit==true do @myself else nil end}
+      phx-target={if @autosubmit==true do @myself else @myself end}
       phx-value-id={if @autosubmit==true do @item_id else nil end}
-      phx-change={if @autosubmit==true do JS.dispatch("submit", to: "#form-todo-item-contact-#{@item_id}") else nil end}
+      phx-change="select_person_change"
      >
       <%= for contact <- @available_persons do %>
         <option 
@@ -35,5 +36,27 @@ defmodule Auth2024Web.SelectPersonComponent do
       </option>
     </select>
     """
+  end
+
+  @impl true
+  def handle_event("select_person_change",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    if @autosubmit==true do
+      JS.dispatch("submit", to: "#form-todo-item-contact-#{@item_id}")
+    else 
+      nil
+    end
+    {:noreply, socket}
+  end
+
+
+  @impl true
+  def mount(
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    default_assigns = %{}
+    {:ok, socket |> assign(default_assigns)}
   end
 end
