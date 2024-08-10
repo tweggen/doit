@@ -157,6 +157,7 @@ defmodule Auth2024Web.CoreComponents do
         title={gettext("We can't find the internet")}
         phx-disconnected={show(".phx-client-error #client-error")}
         phx-connected={hide("#client-error")}
+        hidden
       >
         <%= gettext("Attempting to reconnect") %>
         <.icon name="hero-arrow-path" class="ml-1 h-3 w-3 animate-spin" />
