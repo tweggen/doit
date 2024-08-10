@@ -1,0 +1,44 @@
+<div id={"edit_person_top-#{@id}"} class="top-2 right-2 fixed z-30">
+  <Auth2024Web.CoreComponents.modal 
+    id={"edit_person_modal-#{@id}"}
+    phx-hook="ModalCloser"
+  >
+    <Auth2024Web.CoreComponents.header>
+      <:subtitle>
+        Edit item
+      </:subtitle>
+    </Auth2024Web.CoreComponents.header> 
+
+    <Auth2024Web.CoreComponents.simple_form 
+      for={@edit_person_form} 
+      phx-submit="edit_person-submit"
+      phx-target={@myself}
+    >
+      <Auth2024Web.CoreComponents.input 
+        id="edit_person-family_name"
+        field={@edit_person_form[:family_name]} 
+      />
+      <Auth2024Web.CoreComponents.input 
+        id="edit_person-given_name"
+        field={@edit_person_form[:given_name]} 
+      />
+      <Auth2024Web.CoreComponents.input 
+        id="edit_person-id"
+        type="hidden"
+        field={@edit_person_form[:id]} 
+      />
+
+      <:actions>
+        <Auth2024Web.CoreComponents.button>
+          Apply
+        </Auth2024Web.CoreComponents.button>
+        <Auth2024Web.CoreComponents.button 
+          type="button"
+          phx-click={Auth2024Web.CoreComponents.hide_modal("edit_person_modal-#{@id}")}
+        >
+          Cancel
+        </Auth2024Web.CoreComponents.button>
+      </:actions>
+    </Auth2024Web.CoreComponents.simple_form>
+  </Auth2024Web.CoreComponents.modal>
+</div>    

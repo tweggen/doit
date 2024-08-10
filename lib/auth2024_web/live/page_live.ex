@@ -3,8 +3,9 @@ defmodule Auth2024Web.PageLive do
   alias Phoenix.LiveView.JS
   alias Auth2024.Todo.{Item}
   alias Auth2024.Todos
+  alias Auth2024Web.Tools
 
-  @topic "live"
+  @topic "page_live"
 
   @impl true
   def terminate(reason, state) do
@@ -56,17 +57,6 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  def push_js(
-    %Phoenix.LiveView.Socket{} = socket, to, js
-  ) do
-    event_details = %{
-      to: to,
-      encodedJS: Phoenix.json_library().encode!(js.ops)
-    }
-    socket |> Phoenix.LiveView.push_event("exec-js", event_details);
-  end
-
-
   defp query_items(
     %Phoenix.LiveView.Socket{} = socket
   ) do
@@ -92,6 +82,7 @@ defmodule Auth2024Web.PageLive do
       available_persons: []
     }
   end
+
 
   @impl true
   def mount(
@@ -125,12 +116,7 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  defp easy_changeset_attrs(kind, value) do
-    %{kind => value}
-  end
-
-
-  def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
+ def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
     socket = socket 
       |> assign(
       items: query_items(socket),
@@ -158,11 +144,11 @@ defmodule Auth2024Web.PageLive do
     # IO.inspect(current_item)
     case kind do
       :caption ->
-        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
+        Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
       :due ->
-        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
+        Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
       :contact ->
-        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
+        Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
     end
     socket |> just_edit_done()
   end
@@ -367,20 +353,6 @@ defmodule Auth2024Web.PageLive do
 
   def form_todo_item_due_id(item) do
     "form-todo-item-due-#{item.id}"
-  end
-
-
-  defp display_due_date(due) do
-    if is_nil(due) do
-      # Get the current local date
-      current_date = :calendar.local_time()
-
-      # Format the date as "YYYY-MM-DD"
-      formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
-      formatted_date
-    else
-      Date.to_string(due)
-    end
   end
 
 end

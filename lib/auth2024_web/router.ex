@@ -24,6 +24,7 @@ defmodule Auth2024Web.Router do
   
     #get "/", PageController, :home
     live "/", PageLive
+    live "/persons", PersonsLive
     #live "/hi", HiWidgetLive
   end
 

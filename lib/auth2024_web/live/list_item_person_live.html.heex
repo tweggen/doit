@@ -10,12 +10,12 @@
     <.live_component
         id={"select-todo-item-contact-#{@item_id}"}
         module={Auth2024Web.SelectPersonComponent}
-        name="contact_person_name"
+        name="contact_person_id"
         class={if @look=="list" do "flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0" else "flex-1 truncate mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm" end}
         available_persons={@available_persons}
         contact_id={@contact_id}
-        item_id={@item_id}
-        autosubmit={true}
+        autosubmit_id={@item_id}
+        autosubmit_to={"form-todo-item-contact-#{@item_id}"}
     />
   </form>            
 </div>

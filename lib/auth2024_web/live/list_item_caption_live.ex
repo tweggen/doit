@@ -44,17 +44,6 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
-  def push_js(
-    %Phoenix.LiveView.Socket{} = socket, to, js
-  ) do
-    event_details = %{
-      to: to,
-      encodedJS: Phoenix.json_library().encode!(js.ops)
-    }
-    socket |> Phoenix.LiveView.push_event("exec-js", event_details);
-  end
-
-
   @doc """
   Finalize the editing by saving the data to the databse.
   """

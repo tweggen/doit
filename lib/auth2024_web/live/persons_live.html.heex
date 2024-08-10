@@ -1,0 +1,26 @@
+<div class="flex-1 flex flex-col justify-stretch min-h-0 min-w-0 lg:w-3/5">
+  <section class="flex-1 min-h-0 min-w-0 overflow-y-scroll">
+    <ul 
+      role="list" 
+      class="flex flex-col min-h-0 divide-y divide-gray-100 relative w-full max-w-full min-w-0 min-h-0" 
+      id="todo-list-items"
+    >
+      <%= for person <- @persons do %>
+        <p
+          phx-click="click-item"
+          phx-value-person_id={person.id}
+        >
+          <%= Tools.display_person_name(person) %>
+        </p>
+      <% end %>
+    </ul>
+  </section>
+</div>
+
+<.live_component
+  id="edit-person"
+  module={Auth2024Web.EditPersonLive}
+  onperson="edit_person_onperson"
+  current_user={@current_user}
+/>
+

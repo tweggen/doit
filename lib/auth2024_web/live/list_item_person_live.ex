@@ -46,17 +46,6 @@ defmodule Auth2024Web.ListItemPersonLive do
   end
 
 
-  def push_js(
-    %Phoenix.LiveView.Socket{} = socket, to, js
-  ) do
-    event_details = %{
-      to: to,
-      encodedJS: Phoenix.json_library().encode!(js.ops)
-    }
-    socket |> Phoenix.LiveView.push_event("exec-js", event_details);
-  end
-
-
   def save_edit_done(
     %Phoenix.LiveView.Socket{} = socket,
     kind,
@@ -82,9 +71,9 @@ defmodule Auth2024Web.ListItemPersonLive do
   defp possibly_update_item_contact(
     %Phoenix.LiveView.Socket{} = socket, 
     item_id,
-    contact_person_name
+    contact_person_id
   ) do
-    contact_person = Todos.search_person_family_name(contact_person_name)
+    contact_person = Todos.get_person!(contact_person_id)
     
     if contact_person != nil do
       socket |> save_edit_done(socket.assigns.kind, contact_person)
@@ -93,7 +82,7 @@ defmodule Auth2024Web.ListItemPersonLive do
       |> Auth2024Web.ConfirmNewPersonLive.show(
         @form_name_new_person, 
         item_id,
-        contact_person_name
+        contact_person_id
       )
     end
   end
@@ -102,20 +91,20 @@ defmodule Auth2024Web.ListItemPersonLive do
   @impl true
   def handle_event(
     "submit-todo-item-contact", 
-    %{"item_id" => item_id, "contact_person_name" => contact_person_name}, 
+    %{"item_id" => item_id, "contact_person_id" => contact_person_id}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
     IO.inspect("submit-todo-item-contact called.")
     if nil != socket.assigns.onediting do
       send( self(), %{ 
         event: socket.assigns.onediting,
-        item_id: item_id
+        item_id: item_id,
       } )
     end
 
     if socket.assigns.kind != nil do
       socket = socket |> assign(list_item_person_editing_item: item_id)
-      if contact_person_name == "Create new..." do
+      if String.ends_with?(contact_person_id, "-create-new") do
         {:noreply, 
           socket 
           |> Auth2024Web.ConfirmNewPersonLive.show(
@@ -128,7 +117,7 @@ defmodule Auth2024Web.ListItemPersonLive do
         {
           :noreply, 
           socket 
-          |> possibly_update_item_contact(item_id, contact_person_name)
+          |> possibly_update_item_contact(item_id, contact_person_id)
         }
       end
     else
@@ -136,15 +125,6 @@ defmodule Auth2024Web.ListItemPersonLive do
     end
   end
 
-  @impl true
-  def handle_event(
-    "submit-todo-item-contact", 
-    params, 
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    IO.inspect("submit-todo-item-contact with params")
-    IO.inspect(params)
-  end
 
 
 end

@@ -4,17 +4,7 @@ defmodule Auth2024Web.EditTodoLive do
   #alias Phoenix.LiveView.JS
   alias Auth2024.Todo.{Item}
   alias Auth2024.Todos
-
-
-  def push_js(
-    %Phoenix.LiveView.Socket{} = socket, to, js
-  ) do
-    event_details = %{
-      to: to,
-      encodedJS: Phoenix.json_library().encode!(js.ops)
-    }
-    socket |> Phoenix.LiveView.push_event("exec-js", event_details);
-  end
+  alias Auth2024Web.Tools
 
 
   defp root_id(name) do
@@ -42,14 +32,14 @@ defmodule Auth2024Web.EditTodoLive do
 
       caption = if item.caption==nil do ""  else item.caption end
       content = if item.content==nil do ""  else item.content end
-      contact = item.contact.family_name
-      due = display_due_date(item.due)
+      contact_id = item.contact.id
+      due = Tools.display_due_date(item.due)
 
       socket
       |> push_event("set-value", %{id: "edit_todo-content", value: content})
       
-      |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact})
-      |> push_js(root_id(form_name), 
+      |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact_id})
+      |> Tools.push_js(root_id(form_name), 
         %JS{} 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
         |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
@@ -60,7 +50,7 @@ defmodule Auth2024Web.EditTodoLive do
       socket
     end
 
-    |> push_js(
+    |> Tools.push_js(
       modal_id(form_name),
       Auth2024Web.CoreComponents.show_modal(modal_id(form_name))
     )
@@ -71,20 +61,6 @@ defmodule Auth2024Web.EditTodoLive do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
     IO.inspect({:state, state})
-  end
-
-
-  defp display_due_date(item_due) do
-    if is_nil(item_due) do
-      # Get the current local date
-      current_date = :calendar.local_time()
-
-      # Format the date as "YYYY-MM-DD"
-      formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
-      formatted_date
-    else
-      Date.to_string(item_due)
-    end
   end
 
 
@@ -108,7 +84,7 @@ defmodule Auth2024Web.EditTodoLive do
   ) do
     # Inform the view that this is the currently editing item
 
-    %{"item" => item_params} = params
+    %{"item" => item_params, "contact_person_id" => contact_id_string} = params
 
     IO.inspect("item_params are")
     IO.inspect(item_params)
@@ -117,7 +93,9 @@ defmodule Auth2024Web.EditTodoLive do
     item_id = String.to_integer(item_params["id"])
     caption = item_params["caption"]
     content = item_params["content"]
+    contact_id = String.to_integer(contact_id_string)
     due = item_params["due"]
+    contact_person = Todos.get_person!(contact_id)
 
     case Todos.update_item(user, %Item{:id => item_id}, item_params) do
       {:error, message} ->
@@ -127,24 +105,33 @@ defmodule Auth2024Web.EditTodoLive do
         }
 
       {:ok, item} ->
-        new_assigns = %{
-          # TXWTODO: Optimize this by just merging in the new person
-          edit_todo_form_errors: [],
-          edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
-        }
+        case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
+          {:error, message} ->
+            { :noreply, 
+              socket 
+              |> assign(edit_todo_form_errors: [message])
+            }
 
-        if nil != socket.assigns.onitem do
-          send( self(), %{ 
-            event: socket.assigns.onitem,
-            changed_item: item
-          } )
-        end
+          {:ok, item} ->
+            new_assigns = %{
+              # TXWTODO: Optimize this by just merging in the new person
+              edit_todo_form_errors: [],
+              edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
+            }
 
-        { 
-          :noreply, 
-          socket 
-          |> assign(new_assigns)
-        }
+            if nil != socket.assigns.onitem do
+              send( self(), %{ 
+                event: socket.assigns.onitem,
+                changed_item: item
+              } )
+            end
+
+            { 
+              :noreply, 
+              socket 
+              |> assign(new_assigns)
+            }
+      end
     end
   end
 

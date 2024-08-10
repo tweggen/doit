@@ -4,17 +4,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   #alias Phoenix.LiveView.JS
   alias Auth2024.Todos
   alias Auth2024.Todo.Person
-
-
-  def push_js(
-    %Phoenix.LiveView.Socket{} = socket, to, js
-  ) do
-    event_details = %{
-      to: to,
-      encodedJS: Phoenix.json_library().encode!(js.ops)
-    }
-    socket |> Phoenix.LiveView.push_event("exec-js", event_details);
-  end
+  alias Auth2024Web.Tools
 
 
   defp root_id(name) do
@@ -34,14 +24,14 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
     family_name
   ) do
     if nil != family_name do
-      push_js(socket, root_id(form_name), 
+      Tools.push_js(socket, root_id(form_name), 
         %JS{} 
         |> JS.set_attribute({"value", family_name}, to: "#new-person-form-family-name")
       )
     else
       socket
     end
-    |> push_js(
+    |> Tools.push_js(
       modal_id(form_name),
       Auth2024Web.CoreComponents.show_modal(modal_id(form_name))
     )

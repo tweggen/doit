@@ -26,11 +26,36 @@ defmodule Auth2024.Todo.Person do
 
 
   @doc false
+  def update_changeset(item, attrs) do
+    res = item |> cast(attrs, [:status, :family_name, :given_name])
+    IO.inspect(res)
+    res2 = res
+    |> validate_family_name()
+    |> validate_given_name()
+    IO.inspect(res2)
+    res2
+  end
+
+
+  @doc false
   def edit_changeset(attrs,  %__MODULE__{} = struct) do
     struct
     |> cast(attrs, [:family_name, :given_name, :status])
     |> validate_required([:family_name, :status])
   end
+  
+
+  defp validate_family_name(changeset) do
+    changeset
+    |> validate_length(:family_name, max: 160)
+  end
+
+
+  defp validate_given_name(changeset) do
+    changeset
+    |> validate_length(:given_name, max: 160)
+  end
+
 
 end
   

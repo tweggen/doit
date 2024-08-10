@@ -10,22 +10,10 @@ defmodule Auth2024.Todos do
 
   ## Database getters
 
-  @doc """
-  Gets a single item.
-
-  Raises `Ecto.NoResultsError` if the Item does not exist.
-
-  ## Examples
-
-      iex> get_item!(123)
-      %User{}
-
-      iex> get_item!(456)
-      ** (Ecto.NoResultsError)
-
-  """
+  @doc false
   def get_item!(id), do: Repo.get!(Item, id)
 
+  def get_person!(id), do: Repo.get!(Person, id)
 
   defp apply_filter(query, filter_by_value) do
     case filter_by_value do
@@ -36,15 +24,7 @@ defmodule Auth2024.Todos do
   end
 
 
-  @doc """
-  Returns the list of items.
-
-  ## Examples
-
-      iex> list_items()
-      [%Item{}, ...]
-
-  """
+  @doc false
   def list_items(user, filter_by_value, sort_by_column) do
     # We have different base queries depending on if we order by date
     # or by user, eventually grouping by each.
@@ -63,24 +43,27 @@ defmodule Auth2024.Todos do
   end
 
 
+  def list_persons!(user) do
+    Person
+    |> order_by(asc: :family_name)
+    |> Repo.all()
+  end
+
+
+
   def hydrate_item(item) do
     item
     |> Repo.preload([:contact, :author])
   end
 
 
-  @doc """
-  Adds an item
+  def hydrate_person(person) do
+    person
+    |> Repo.preload([:user])
+  end
 
-  ## Examples
 
-      iex> add_item(%{field: value})
-      {:ok, %User{}}
-
-      iex> add_item(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def add_item(user, attrs) do
     user
     |> Ecto.build_assoc(:todos, attrs)
@@ -88,36 +71,14 @@ defmodule Auth2024.Todos do
   end
 
 
-  @doc """
-  Adds a new person, not associated to any user
-
-  ## Examples
-
-      iex> add_person(%{field: value})
-      {:ok, %User{}}
-
-      iex> add_person(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def add_person(_user, attrs) do
     Person.create_changeset(attrs)
     |> Repo.insert()
   end
 
 
-  @doc """
-  Adds an person to the current user.
-
-  ## Examples
-
-      iex> add_person(%{field: value})
-      {:ok, %Person{}}
-
-      iex> add_person(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def add_person_to_user(user, attrs) do
     user
     |> Ecto.build_assoc(:person, attrs)
@@ -125,18 +86,7 @@ defmodule Auth2024.Todos do
   end
 
 
-  @doc """
-  Return a person for the user, creating it if it doesn't exist.
-
-  ## Examples
-
-      iex> find_person(%{field: value})
-      {:ok, %Person{}}
-
-      iex> find_person(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
+  @doc false
   def find_person_for_user(user) do
     case Repo.get_by(Person, [user_id: user.id]) do
       nil ->
@@ -195,13 +145,6 @@ defmodule Auth2024.Todos do
     List.first(matches)
   end
 
-  def list_persons!(_user) do
-    Person
-    |> order_by(asc: :family_name)
-    |> Repo.all()
-  end
-
-
   ## Settings
 
   @doc false
@@ -215,23 +158,18 @@ defmodule Auth2024.Todos do
   end
 
 
-  @doc """
-  Updates an item contact
+  @doc false
+  def update_person(_user, %Person{} = person, attrs) do
+    if !Map.has_key?(person, :id) && !Map.has_key?(attrs, :id) && !Map.has_key?(attrs, "id") do
+      raise ArgumentError, message: "Expected id as atom or string to be part of person."
+    end
+    person
+    |> Person.update_changeset(attrs)
+    |> Repo.update()
+  end
 
-  ## Examples
 
-      iex> update_item_contact(item, %{field: new_value})
-      {:ok, %Item{}}
-
-      iex> update_item_contact(item, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-
-      Note: For understanding the way ecto works, I fully
-      write this down without using convenience functions in
-      each of the data types.
-
-  """
+  @doc false
   def update_item_contact(_user, %Item{} = item, attrs) do
     item
     # We need the contact pre-loaded in the item we are modifying.
@@ -241,17 +179,14 @@ defmodule Auth2024.Todos do
   end
 
 
-  # "soft" delete
+  @doc false
   def delete_item(_user, id) do
     get_item!(id)
     |> Item.update_changeset(%{status: 2})
     |> Repo.update()
   end
 
-  @doc """
-  Set status to 2 for item with status 1,
-  ie delete completed item
-  """
+  @doc false
   def clear_completed() do
     completed_items = from(i in Item, where: i.status == 1)
     Repo.update_all(completed_items, set: [status: 2])
