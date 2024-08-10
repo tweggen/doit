@@ -1,7 +1,6 @@
 defmodule Auth2024Web.EditTodoLive do
   use Auth2024Web, :live_component
 
-  #alias Phoenix.LiveView.JS
   alias Auth2024.Todo.{Item}
   alias Auth2024.Todos
   alias Auth2024Web.Tools
@@ -16,10 +15,10 @@ defmodule Auth2024Web.EditTodoLive do
     "edit_todo_modal-#{name}"
   end
 
+  @form_name_edit_item "edit-todo"
 
   def show(
     socket, 
-    form_name, 
     item_id,
     item
   ) do
@@ -39,7 +38,7 @@ defmodule Auth2024Web.EditTodoLive do
       |> push_event("set-value", %{id: "edit_todo-content", value: content})
       
       |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact_id})
-      |> Tools.push_js(root_id(form_name), 
+      |> Tools.push_js(root_id(@form_name_edit_item), 
         %JS{} 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
         |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
@@ -51,8 +50,8 @@ defmodule Auth2024Web.EditTodoLive do
     end
 
     |> Tools.push_js(
-      modal_id(form_name),
-      Auth2024Web.CoreComponents.show_modal(modal_id(form_name))
+      modal_id(@form_name_edit_item),
+      Auth2024Web.CoreComponents.show_modal(modal_id(@form_name_edit_item))
     )
   end
 
@@ -65,7 +64,7 @@ defmodule Auth2024Web.EditTodoLive do
 
 
   def handle_info(
-    %{event: "on_edittodo_contact_changed", item_id: item_id, kind: kind, value: value},
+    %{event: "on_edittodo_contact_changed", item_id: _item_id, kind: _kind, value: value},
     socket
   ) do
     IO.inspect(value)
@@ -91,14 +90,15 @@ defmodule Auth2024Web.EditTodoLive do
 
     user = socket.assigns.current_user
     item_id = String.to_integer(item_params["id"])
-    caption = item_params["caption"]
-    content = item_params["content"]
+    #caption = item_params["caption"]
+    #content = item_params["content"]
     contact_id = String.to_integer(contact_id_string)
-    due = item_params["due"]
+    #due = item_params["due"]
     contact_person = Todos.get_person!(contact_id)
 
     case Todos.update_item(user, %Item{:id => item_id}, item_params) do
       {:error, message} ->
+        IO.inspect("update error 1")
         { :noreply, 
           socket 
           |> assign(edit_todo_form_errors: [message])
@@ -107,15 +107,19 @@ defmodule Auth2024Web.EditTodoLive do
       {:ok, item} ->
         case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
           {:error, message} ->
+            IO.inspect("update error 2")
+            IO.inspect(message)
             { :noreply, 
               socket 
               |> assign(edit_todo_form_errors: [message])
             }
 
           {:ok, item} ->
+            IO.inspect("update ok 1")
             new_assigns = %{
               # TXWTODO: Optimize this by just merging in the new person
               edit_todo_form_errors: [],
+              form_name: nil,
               edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
             }
 
@@ -126,9 +130,11 @@ defmodule Auth2024Web.EditTodoLive do
               } )
             end
 
+            IO.inspect("Trying to close #{"##{modal_id(@form_name_edit_item)}"}")
             { 
               :noreply, 
               socket 
+              |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_item)}"})
               |> assign(new_assigns)
             }
       end

@@ -4,7 +4,6 @@ defmodule Auth2024Web.PersonsLive do
   alias Auth2024Web.Tools
  
   @topic "person_live"
-  @form_name_edit_person "edit-person"
 
 
   defp default_assigns() do
@@ -35,7 +34,6 @@ defmodule Auth2024Web.PersonsLive do
 
     socket 
     |> Auth2024Web.EditPersonLive.show(
-      @form_name_edit_person, 
       person_id,
       current_person
     )
@@ -56,6 +54,7 @@ defmodule Auth2024Web.PersonsLive do
   end
 
 
+  @impl true
   def handle_info(
     %{event: "edit_person_onperson", changed_person: _person},
     socket
@@ -64,7 +63,6 @@ defmodule Auth2024Web.PersonsLive do
     {:noreply,
       socket
       |> just_edit_done()
-      |> push_event("close_modal", %{to: "#edit-todo"})
     }
   end
 
@@ -91,7 +89,7 @@ defmodule Auth2024Web.PersonsLive do
         |> assign(
             current_user: user,
             current_person: current_person,
-            persons: persons,
+            persons: persons
         #    available_persons: editing_contact_datalist(user, socket, ""),
         #    editing_item_values: empty_editing_item_values()
         )

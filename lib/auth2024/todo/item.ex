@@ -56,7 +56,7 @@ defmodule Auth2024.Todo.Item do
   def changeset_contact(item, attrs) do
     item
     |> Ecto.Changeset.change(contact_id: attrs.contact.id)
-    |> validate_required([:contact])
+    |> validate_required([:contact_id])
   end
 
   #def update_due_changeset(item, attrs) do

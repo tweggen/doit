@@ -3,7 +3,6 @@ defmodule Auth2024Web.ListItemCaptionLive do
 
   alias Auth2024.Todos
 
-  @form_name_edit_item "edit-todo"
 
 
   def terminate(reason, state) do
@@ -75,7 +74,6 @@ defmodule Auth2024Web.ListItemCaptionLive do
 
     socket 
     |> Auth2024Web.EditTodoLive.show(
-      @form_name_edit_item, 
       item_id,
       current_item
     )

@@ -43,7 +43,7 @@ defmodule Auth2024.Todos do
   end
 
 
-  def list_persons!(user) do
+  def list_persons!(_user) do
     Person
     |> order_by(asc: :family_name)
     |> Repo.all()

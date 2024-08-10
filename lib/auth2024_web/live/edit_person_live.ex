@@ -6,6 +6,7 @@ defmodule Auth2024Web.EditPersonLive do
   alias Auth2024.Todo.{Person}
   alias Auth2024Web.Tools
 
+  @form_name_edit_person "edit-person"
 
   defp root_id(name) do
     "edit_person_top-#{name}"
@@ -19,7 +20,6 @@ defmodule Auth2024Web.EditPersonLive do
 
   def show(
     socket, 
-    form_name, 
     person_id,
     person
   ) do
@@ -38,7 +38,7 @@ defmodule Auth2024Web.EditPersonLive do
       #|> push_event("set-value", %{id: "edit_person-content", value: content})
       
       #|> push_event("set-value", %{id: "select-person-item-contact-in_edit_person_modal", value: contact})
-      |> Tools.push_js(root_id(form_name), 
+      |> Tools.push_js(root_id(@form_name_edit_person), 
         %JS{} 
         |> JS.set_attribute({"value", person_id}, to: "#edit_person-id")
         |> JS.set_attribute({"value", family_name}, to: "#edit_person-family_name")
@@ -50,8 +50,8 @@ defmodule Auth2024Web.EditPersonLive do
     end
 
     |> Tools.push_js(
-      modal_id(form_name),
-      Auth2024Web.CoreComponents.show_modal(modal_id(form_name))
+      modal_id(@form_name_edit_person),
+      Auth2024Web.CoreComponents.show_modal(modal_id(@form_name_edit_person))
     )
   end
 
@@ -78,8 +78,8 @@ defmodule Auth2024Web.EditPersonLive do
 
     user = socket.assigns.current_user
     person_id = String.to_integer(person_params["id"])
-    family_name = person_params["family_name"]
-    given_name = person_params["given_name"]
+    #family_name = person_params["family_name"]
+    #given_name = person_params["given_name"]
 
     case Todos.update_person(user, %Person{:id => person_id}, person_params) do
       {:error, message} ->
@@ -105,6 +105,7 @@ defmodule Auth2024Web.EditPersonLive do
         { 
           :noreply, 
           socket 
+              |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_person)}"})
           |> assign(new_assigns)
         }
     end
