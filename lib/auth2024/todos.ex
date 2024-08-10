@@ -206,7 +206,7 @@ defmodule Auth2024.Todos do
 
   @doc false
   def update_item(_user, %Item{} = item, attrs) do
-    attrs = Map.put(attrs, "id", item.id)
+    attrs = Map.put(attrs, :id, item.id)
     item
     |> Item.update_changeset(attrs)
     |> Repo.update()

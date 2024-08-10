@@ -232,7 +232,7 @@ defmodule Auth2024Web.PageLive do
     user = socket.assigns.current_user
 	  status = if Map.has_key?(data, "value"), do: 1, else: 0
 	  item = Todos.get_item!(Map.get(data, "item_id"))
-	  Todos.update_item(user, item, %{status: status})
+	  Todos.update_item(user, item, %{"status": status})
     socket = assign(socket, 
       items: query_items(socket), 
       active: %Item{}

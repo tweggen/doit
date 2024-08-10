@@ -46,7 +46,8 @@
                 <%= if checked?(item) do %>
                   <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" checked />
                 <% else %>
-                  <input class="flex-none toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" />
+                  <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" 
+                  />
                 <% end %>
               </div>
             </div>
