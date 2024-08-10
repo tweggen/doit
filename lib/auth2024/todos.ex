@@ -206,7 +206,9 @@ defmodule Auth2024.Todos do
 
   @doc false
   def update_item(_user, %Item{} = item, attrs) do
-    attrs = Map.put(attrs, :id, item.id)
+    if !Map.has_key?(item, :id) && !Map.has_key?(attrs, :id) && !Map.has_key?(attrs, "id") do
+      raise ArgumentError, message: "Expected id as atom or string to be part of item."
+    end
     item
     |> Item.update_changeset(attrs)
     |> Repo.update()

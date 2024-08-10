@@ -145,6 +145,30 @@ defmodule Auth2024Web.PageLive do
 
 
   @doc """
+  Finalize the editing by saving the data to the databse.
+  """
+  def save_edit_done(
+    %Phoenix.LiveView.Socket{} = socket,
+    item_id,
+    kind, 
+    value
+  ) do
+    user = socket.assigns.current_user
+    current_item = Todos.get_item!(item_id)
+    # IO.inspect(current_item)
+    case kind do
+      :caption ->
+        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
+      :due ->
+        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
+      :contact ->
+        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
+    end
+    socket |> just_edit_done()
+  end
+
+
+  @doc """
   Find associated data with the new value in the database or other
   sources, possibly cancelling the edit or opening a modal user flow.
 
@@ -169,29 +193,6 @@ defmodule Auth2024Web.PageLive do
 
   # TXWTODO: A proper validation path is missing, we are directly going into the
   # save path, treating validation as a special case.
-
-
-  @doc """
-  Finalize the editing by saving the data to the databse.
-  """
-  def save_edit_done(
-    %Phoenix.LiveView.Socket{} = socket,
-    item_id,
-    kind, 
-    value
-  ) do
-    user = socket.assigns.current_user
-    current_item = Todos.get_item!(item_id)
-    case kind do
-      :caption ->
-        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
-      :due ->
-        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
-      :contact ->
-        Todos.update_item(user, current_item, easy_changeset_attrs(kind, value))
-    end
-    socket |> just_edit_done()
-  end
 
 
   @impl true
