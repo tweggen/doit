@@ -30,13 +30,10 @@ defmodule Auth2024.Todo.Item do
 
   @doc false
   def update_changeset(item, attrs) do
-    res = item |> cast(attrs, [:status, :due, :caption, :content])
-    IO.inspect(res)
-    res2 = res
+    item 
+    |> cast(attrs, [:status, :due, :caption, :content])
     |> validate_caption()
     |> validate_content()
-    IO.inspect(res2)
-    res2
   end
 
   #def changeset_caption_content(item, attrs) do

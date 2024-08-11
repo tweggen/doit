@@ -28,26 +28,23 @@ defmodule Auth2024Web.EditPersonLive do
       # load the user if there is one
       person = Todos.hydrate_person(person)
 
-      IO.inspect("have hydrated person")
-      IO.inspect(person)
-
       family_name = Tools.display_string(person.family_name)
       given_name = Tools.display_string(person.given_name)
       email = Tools.display_string(person.email)
 
       socket
-      #|> push_event("set-value", %{id: "edit_person-content", value: content})
-      
-      #|> push_event("set-value", %{id: "select-person-item-contact-in_edit_person_modal", value: contact})
       |> Tools.push_js(root_id(@form_name_edit_person), 
         %JS{} 
+        |> JS.remove_attribute("value", to: "#edit_person-id") 
         |> JS.set_attribute({"value", person_id}, to: "#edit_person-id")
+        |> JS.remove_attribute("value", to: "#edit_person-family_name") 
         |> JS.set_attribute({"value", family_name}, to: "#edit_person-family_name")
+        |> JS.remove_attribute("value", to: "#edit_person-given_name") 
         |> JS.set_attribute({"value", given_name}, to: "#edit_person-given_name")
+        |> JS.remove_attribute("value", to: "#edit_person-email") 
         |> JS.set_attribute({"value", email}, to: "#edit_person-email")
       )
     else
-      IO.inspect("no person")
       socket
     end
 
@@ -75,9 +72,6 @@ defmodule Auth2024Web.EditPersonLive do
 
     %{"person" => person_params} = params
 
-    IO.inspect("person_params are")
-    IO.inspect(person_params)
-
     user = socket.assigns.current_user
     person_id = String.to_integer(person_params["id"])
     #family_name = person_params["family_name"]
@@ -94,7 +88,7 @@ defmodule Auth2024Web.EditPersonLive do
         new_assigns = %{
           # TXWTODO: Optimize this by just merging in the new person
           edit_person_form_errors: [],
-          edit_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+          edit_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, user)),
         }
 
         if nil != socket.assigns.onperson do

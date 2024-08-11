@@ -32,6 +32,10 @@ defmodule Auth2024Web.PersonsLive do
     person_id = String.to_integer(data["person_id"])
     current_person = Todos.get_person!(person_id)
 
+    IO.inspect("opening edit person for")
+    IO.inspect(person_id)
+    IO.inspect(current_person)
+
     socket 
     |> Auth2024Web.EditPersonLive.show(
       person_id,
@@ -64,6 +68,15 @@ defmodule Auth2024Web.PersonsLive do
       socket
       |> just_edit_done()
     }
+  end
+
+
+  @impl true
+  def handle_info(
+    %{event: "update", payload: %{persons: persons}}, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    {:noreply, assign(socket, persons: persons)}
   end
 
 

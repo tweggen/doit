@@ -40,8 +40,11 @@ defmodule Auth2024Web.EditTodoLive do
       |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact_id})
       |> Tools.push_js(root_id(@form_name_edit_item), 
         %JS{} 
+        |> JS.remove_attribute("value", to: "#edit_todo-id") 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
+        |> JS.remove_attribute("value", to: "#edit_todo-caption") 
         |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
+        |> JS.remove_attribute("value", to: "#edit_todo-due") 
         |> JS.set_attribute({"value", due}, to: "#edit_todo-due")
       )
     else
@@ -67,7 +70,6 @@ defmodule Auth2024Web.EditTodoLive do
     %{event: "on_edittodo_contact_changed", item_id: _item_id, kind: _kind, value: value},
     socket
   ) do
-    IO.inspect(value)
     {
       :noreply,
       socket
@@ -84,9 +86,6 @@ defmodule Auth2024Web.EditTodoLive do
     # Inform the view that this is the currently editing item
 
     %{"item" => item_params, "contact_person_id" => contact_id_string} = params
-
-    IO.inspect("item_params are")
-    IO.inspect(item_params)
 
     user = socket.assigns.current_user
     item_id = String.to_integer(item_params["id"])
@@ -115,7 +114,6 @@ defmodule Auth2024Web.EditTodoLive do
             }
 
           {:ok, item} ->
-            IO.inspect("update ok 1")
             new_assigns = %{
               # TXWTODO: Optimize this by just merging in the new person
               edit_todo_form_errors: [],
@@ -130,7 +128,6 @@ defmodule Auth2024Web.EditTodoLive do
               } )
             end
 
-            IO.inspect("Trying to close #{"##{modal_id(@form_name_edit_item)}"}")
             { 
               :noreply, 
               socket 

@@ -26,6 +26,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
     if nil != family_name do
       Tools.push_js(socket, root_id(form_name), 
         %JS{} 
+        |> JS.remove_attribute("value", to: "#new-person-form-family-name")
         |> JS.set_attribute({"value", family_name}, to: "#new-person-form-family-name")
       )
     else
@@ -93,10 +94,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
         |> assign(new_person_form_errors: ["Person with similar name or email already exists."])
       }
     else
-      IO.inspect("adding person to user")
-      IO.inspect(user)
       all_person_params = Map.merge(person_params, %{"status" => 0, "owning_user_id" => user.id})
-      IO.inspect(all_person_params)
       case Todos.add_person(user, all_person_params) do
         {:error, message} ->
           { :noreply, 
