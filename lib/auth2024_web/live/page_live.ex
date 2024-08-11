@@ -148,7 +148,8 @@ defmodule Auth2024Web.PageLive do
       :due ->
         Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
       :contact ->
-        Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
+        Todos.update_item_contact(user, current_item, %{:contact => value})
+        #Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
     end
     socket |> just_edit_done()
   end
@@ -308,7 +309,8 @@ defmodule Auth2024Web.PageLive do
     new_assigns = %{
       available_persons: Todos.list_persons!(socket.assigns.current_user),
     }
-
+    IO.inspect("confirm_new_person_onperson")
+    IO.inspect(socket.assigns)
     #socket
     {:noreply,
       socket

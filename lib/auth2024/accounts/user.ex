@@ -10,7 +10,9 @@ defmodule Auth2024.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
     
-    has_one :person, Person
+    has_one :person, Person, foreign_key: :user_id
+
+    has_many :persons, Person, foreign_key: :owning_user_id
     has_many :todos, Item
 
     timestamps(type: :utc_datetime)

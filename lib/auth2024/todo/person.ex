@@ -7,10 +7,13 @@ defmodule Auth2024.Todo.Person do
 
   schema "todo_persons" do
     field :status, :integer
+    field :email, :string
     field :family_name, :string
     field :given_name, :string
 
+    belongs_to :owning_user, User
     belongs_to :user, User
+
     has_many :authored_items, Item, foreign_key: :author_id
     has_many :contacted_items, Item, foreign_key: :contact_id
 
@@ -18,10 +21,11 @@ defmodule Auth2024.Todo.Person do
   end
 
   @doc false
-  def create_changeset(attrs) do
+  def create_changeset(attrs, owning_user_id) do
     %__MODULE__{}
-    |> cast(attrs, [:family_name, :given_name, :status])
-    |> validate_required([:family_name, :status])
+    |> cast(attrs, [:status, :email, :family_name, :given_name])
+    |> Ecto.Changeset.change(owning_user_id: owning_user_id)
+    |> validate_required([:family_name, :status, :owning_user_id])
   end
 
 

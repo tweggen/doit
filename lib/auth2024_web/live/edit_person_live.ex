@@ -33,6 +33,7 @@ defmodule Auth2024Web.EditPersonLive do
 
       family_name = Tools.display_string(person.family_name)
       given_name = Tools.display_string(person.given_name)
+      email = Tools.display_string(person.email)
 
       socket
       #|> push_event("set-value", %{id: "edit_person-content", value: content})
@@ -43,6 +44,7 @@ defmodule Auth2024Web.EditPersonLive do
         |> JS.set_attribute({"value", person_id}, to: "#edit_person-id")
         |> JS.set_attribute({"value", family_name}, to: "#edit_person-family_name")
         |> JS.set_attribute({"value", given_name}, to: "#edit_person-given_name")
+        |> JS.set_attribute({"value", email}, to: "#edit_person-email")
       )
     else
       IO.inspect("no person")
@@ -119,7 +121,7 @@ defmodule Auth2024Web.EditPersonLive do
     default_assigns = %{
       create_edit_person_form: nil,
       edit_person_form: 
-        Phoenix.Component.to_form(Person.create_changeset(%{})),
+        Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
       edit_person_form_errors: []
     }
     {:ok, socket |> assign(default_assigns)}

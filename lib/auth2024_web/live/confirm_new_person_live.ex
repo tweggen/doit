@@ -49,10 +49,10 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   def mount(
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    default_assigns = %{
+     default_assigns = %{
       create_confirm_new_person_form: nil,
       new_person_form: 
-        Phoenix.Component.to_form(Person.create_changeset(%{})),
+        Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
       new_person_form_errors: []
     }
     {:ok, socket |> assign(default_assigns)}
@@ -80,17 +80,24 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
     user = socket.assigns.user
     family_name = person_params["family_name"]
     given_name = person_params["given_name"]
+    email = person_params["email"]
 
     similarily_named_person = Todos.search_person_by_name(
-      family_name, given_name)
+      user, family_name, given_name)
+    person_with_email = Todos.search_person_by_email(
+      user, email)
 
-    if [] != similarily_named_person do
+    if [] != similarily_named_person ||  [] != person_with_email do
       { :noreply, 
         socket 
-        |> assign(new_person_form_errors: ["Person with similar name already exists."])
+        |> assign(new_person_form_errors: ["Person with similar name or email already exists."])
       }
     else
-      case Todos.add_person(user, Map.merge(person_params, %{"status" => 0})) do
+      IO.inspect("adding person to user")
+      IO.inspect(user)
+      all_person_params = Map.merge(person_params, %{"status" => 0, "owning_user_id" => user.id})
+      IO.inspect(all_person_params)
+      case Todos.add_person(user, all_person_params) do
         {:error, message} ->
           { :noreply, 
             socket 
@@ -101,7 +108,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
           new_assigns = %{
             # TXWTODO: Optimize this by just merging in the new person
             new_person_form_errors: [],
-            new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{})),
+            new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, user.id)),
           }
 
           send( self(), %{ 

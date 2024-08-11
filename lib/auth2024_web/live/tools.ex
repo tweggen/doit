@@ -32,16 +32,16 @@ defmodule Auth2024Web.Tools do
 
   def display_person_name(%Person{} = person) do
   	if nil != person.family_name do
-	  if nil != person.given_name do
-  		"#{person.family_name}, #{person.given_name}"
+  	  if nil != person.given_name do
+    		"#{person.family_name}, #{person.given_name}"
   	  else
-  		"#{person.family_name}"
+    		"#{person.family_name}"
   	  end
   	else
-	  if nil != person.given_name do
-  		"#{person.given_name}"
+  	  if nil != person.given_name do
+    		"#{person.given_name}"
   	  else
-  		"(unnamed person)"
+    		"(unnamed person)"
   	  end
   	end
   end

@@ -72,8 +72,8 @@ defmodule Auth2024.Todos do
 
 
   @doc false
-  def add_person(_user, attrs) do
-    Person.create_changeset(attrs)
+  def add_person(user, attrs) do
+    Person.create_changeset(attrs, user.id)
     |> Repo.insert()
   end
 
@@ -88,7 +88,7 @@ defmodule Auth2024.Todos do
 
   @doc false
   def find_person_for_user(user) do
-    case Repo.get_by(Person, [user_id: user.id]) do
+    case Repo.get_by(Person, [user_id: user.id, owning_user_id: user.id]) do
       nil ->
         # Entity doesn't exist, create it
         #changeset = %{
@@ -97,7 +97,7 @@ defmodule Auth2024.Todos do
         #}
         #{:ok, entity} = Repo.insert(changeset)
         #entity
-        add_person_to_user(user, %{family_name: user.email, status: 0})
+        add_person_to_user(user, %{owning_user_id: user.id, family_name: user.email, email: user.email, status: 0})
 
       entity ->
         # Entity already exists, return it
@@ -106,31 +106,49 @@ defmodule Auth2024.Todos do
   end
 
 
-  def search_person_by_name(family_name, given_name) do
+  def search_person_by_name(user, family_name, given_name) do
     Person
     |> where([p], 
+        p.owning_user_id == ^user.id
+        and
         p.family_name == ^family_name 
         and (
           (^given_name == "" and is_nil(p.given_name)) 
           or ^given_name == p.given_name
-        )
+        )        
       )
     |> order_by(asc: :family_name)
     |> Repo.all()
   end
 
 
-  def search_person_family_names(name) do
+  def search_person_by_email(user, email) do
     Person
-    |> where([p], p.family_name == ^name)
-    |> order_by(asc: :family_name)
+    |> where([p], 
+        p.owning_user_id == ^user.id
+        and
+        p.email == ^email
+      )
+    |> order_by(asc: :email)
     |> Repo.all()
   end
 
 
-  def search_person_family_name(name) do
-    List.first(search_person_family_names(name))
-  end
+  #def search_person_family_names(user, name) do
+  #  Person
+  #  |> where([p], 
+  #      p.owning_user_id == ^user.id
+  #      and
+  #      p.family_name == ^name
+  #    )
+  #  |> order_by(asc: :family_name)
+  #  |> Repo.all()
+  #end
+
+
+  #def search_person_family_name(user, name) do
+  #  List.first(search_person_family_names(user, name))
+  #end
 
 
   def search_persons_beginning(stem) do
