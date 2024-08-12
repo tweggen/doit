@@ -29,12 +29,14 @@
       </li>
     </ul>
     <section class="flex-1 min-h-0 min-w-0 overflow-y-scroll">
-      <!-- input id="toggle-all" class="toggle-all" type="checkbox" / -->
       <ul 
         role="list" 
         class="flex flex-col min-h-0 divide-y divide-gray-100 relative w-full max-w-full min-w-0 min-h-0" 
         id="todo-list-items"
       >
+        <%= if @items == [] do %>
+          <center>&nbsp;<br>Seems there are no todos for you.<br>So maybe you want to create a new todo item above?<br>&nbsp;</center>
+        <% end %>
         <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
           <:header :let={group_header}>
             <p class="flex-0 text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>

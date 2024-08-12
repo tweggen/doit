@@ -15,7 +15,12 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
-      }
+      },
+      fontFamily: {
+        "sans": ["Karla"],
+        // "KarlaBold": ["KarlaBold"],
+        // Add more custom font families as needed
+      },
     },
   },
   plugins: [
