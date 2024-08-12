@@ -17,7 +17,7 @@ module.exports = {
         brand: "#FD4F00",
       },
       fontFamily: {
-        "sans": ["Karla"],
+        "sans": ["Jost"],
         // "KarlaBold": ["KarlaBold"],
         // Add more custom font families as needed
       },

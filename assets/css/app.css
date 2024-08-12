@@ -21,16 +21,17 @@ body {
 }
 /* This file is for your main application CSS */
 
+
 @font-face {
-	font-family: 'Karla';
-	src: url('/fonts/Karla-Bold.ttf') format('truetype');
+	font-family: 'Jost';
+	src: url('/fonts/Jost-Bold.ttf') format('truetype');
 	font-weight: bold;
 	font-style: normal;
 }
 
 @font-face {
-	font-family: 'Karla';
-	src: url('/fonts/Karla-Light.ttf') format('truetype');
+	font-family: 'Jost';
+	src: url('/fonts/Karla-Regular.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
