@@ -18,34 +18,56 @@ defmodule Auth2024Web.EditTodoLive do
   @form_name_edit_item "edit-todo"
 
   def show(
-    socket, 
+    %Phoenix.LiveView.Socket{} = socket, 
     item_id,
-    item
+    %Item{} = item
   ) do
+    IO.inspect("show1")
+    IO.inspect(item)
+
     if nil != item do
 
-      item = Todos.hydrate_item(item)
+      IO.inspect("show2")
 
-      IO.inspect("have hydrated item")
-      IO.inspect(item)
+      template = 
+        if Map.has_key?(item, :id) && item.id != nil && item.id != -1 do
+          hydrated_item = Todos.hydrate_item(item)
+          tmp = %{
+            :item => Todos.hydrate_item(hydrated_item),
+            :caption => Tools.display_string(hydrated_item.caption),
+            :content => Tools.display_string(hydrated_item.content),
+            :contact_id => hydrated_item.contact.id,
+            :due => hydrated_item.due
+          }
+          IO.inspect("have hydrated item")
+          IO.inspect(tmp.item)
+          tmp
+        else
+          tmp = %{
+            :item => nil,
+            :caption => "",
+            :content => "",
+            :contact_id => -1,
+            :due => Timex.format!(:calendar.local_time(), "{YYYY}-{0M}-{0D}")
+          }
+          IO.inspect("have a new item")
+          IO.inspect(tmp.item)
+          tmp
+        end
 
-      caption = if item.caption==nil do ""  else item.caption end
-      content = if item.content==nil do ""  else item.content end
-      contact_id = item.contact.id
-      due = Tools.display_due_date(item.due)
+      IO.inspect("show3")
 
       socket
-      |> push_event("set-value", %{id: "edit_todo-content", value: content})
-      
-      |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: contact_id})
+      |> push_event("set-value", %{id: "edit_todo-content", value: template.content})
+      |> push_event("set-value", %{id: "select-todo-item-contact-in_edit_todo_modal", value: template.contact_id})
       |> Tools.push_js(root_id(@form_name_edit_item), 
         %JS{} 
         |> JS.remove_attribute("value", to: "#edit_todo-id") 
         |> JS.set_attribute({"value", item_id}, to: "#edit_todo-id")
         |> JS.remove_attribute("value", to: "#edit_todo-caption") 
-        |> JS.set_attribute({"value", caption}, to: "#edit_todo-caption")
+        |> JS.set_attribute({"value", template.caption}, to: "#edit_todo-caption")
         |> JS.remove_attribute("value", to: "#edit_todo-due") 
-        |> JS.set_attribute({"value", due}, to: "#edit_todo-due")
+        |> JS.set_attribute({"value", template.due}, to: "#edit_todo-due")
       )
     else
       IO.inspect("no item")
@@ -62,7 +84,7 @@ defmodule Auth2024Web.EditTodoLive do
   def terminate(reason, state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
-    IO.inspect({:state, state})
+    # IO.inspect({:state, state})
   end
 
 

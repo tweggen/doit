@@ -39,7 +39,23 @@
         <% end %>
         <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
           <:header :let={group_header}>
-            <p class="flex-0 text-xs font-semibold py-2 text-gray-400"><%= group_header %></p>
+            <%= if @sort_by_column == "contact" do %>
+              <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
+                <%= Tools.display_person_name(group_header) %>
+                &nbsp;
+                <span phx-click="on-header-click">
+                  <.icon name="hero-plus-solid" class="h-4 w-4"/>
+                </span>
+              </p>
+            <% else %>
+              <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
+                <%= group_header %>
+                &nbsp;
+                <span phx-click="on-header-click">
+                  <.icon name="hero-plus-solid" class="h-4 w-4"/>
+                </span>
+              </p>
+            <% end %>
           </:header>
 
           <li data-id={item.id} class="flex-none flex flex-row min-w-0 min-h-0" class={completed?(item)}>

@@ -11,7 +11,7 @@ defmodule Auth2024Web.PageLive do
   def terminate(reason, state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
-    IO.inspect({:state, state})
+    # IO.inspect({:state, state})
   end
 
 
@@ -244,6 +244,19 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  def handle_event(
+    "on-header-click",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    socket = socket |> Auth2024Web.EditTodoLive.show(
+      -1,
+      %Item{:caption => "foocaption"}
+    )
+    {:noreply, socket}
+  end
+
+
   @impl true
   def handle_event(
     "validate-todo-item-due", 
@@ -309,8 +322,6 @@ defmodule Auth2024Web.PageLive do
     new_assigns = %{
       available_persons: Todos.list_persons!(socket.assigns.current_user),
     }
-    IO.inspect("confirm_new_person_onperson")
-    IO.inspect(socket.assigns)
     #socket
     {:noreply,
       socket
