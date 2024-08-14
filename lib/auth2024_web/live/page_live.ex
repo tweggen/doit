@@ -249,9 +249,15 @@ defmodule Auth2024Web.PageLive do
     params,
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    IO.inspect(params)
     socket = socket |> Auth2024Web.EditTodoLive.show(
       -1,
-      %Item{:caption => "foocaption"}
+      case socket.assigns.sort_by_column do
+        "date" ->
+          %Item{:due => params["header"]}
+        "contact" ->
+          %Item{:contact_id => params["header"]}
+      end
     )
     {:noreply, socket}
   end

@@ -43,7 +43,7 @@
               <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
                 <%= Tools.display_person_name(group_header) %>
                 &nbsp;
-                <span phx-click="on-header-click">
+                <span phx-click="on-header-click" phx-value-header={group_header.id}>
                   <.icon name="hero-plus-solid" class="h-4 w-4"/>
                 </span>
               </p>
@@ -51,7 +51,7 @@
               <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
                 <%= group_header %>
                 &nbsp;
-                <span phx-click="on-header-click">
+                <span phx-click="on-header-click" phx-value-header={group_header}>
                   <.icon name="hero-plus-solid" class="h-4 w-4"/>
                 </span>
               </p>

@@ -22,13 +22,7 @@ defmodule Auth2024Web.EditTodoLive do
     item_id,
     %Item{} = item
   ) do
-    IO.inspect("show1")
-    IO.inspect(item)
-
     if nil != item do
-
-      IO.inspect("show2")
-
       template = 
         if Map.has_key?(item, :id) && item.id != nil && item.id != -1 do
           hydrated_item = Todos.hydrate_item(item)
@@ -39,23 +33,19 @@ defmodule Auth2024Web.EditTodoLive do
             :contact_id => hydrated_item.contact.id,
             :due => hydrated_item.due
           }
-          IO.inspect("have hydrated item")
-          IO.inspect(tmp.item)
           tmp
         else
+          IO.inspect(item)
           tmp = %{
             :item => nil,
-            :caption => "",
-            :content => "",
-            :contact_id => -1,
-            :due => Timex.format!(:calendar.local_time(), "{YYYY}-{0M}-{0D}")
+            :caption => Tools.display_string(item && Map.get(item, :caption, nil)),
+            :content => Tools.display_string(item && Map.get(item, :content, nil)),
+            :contact_id => item && Map.get(item, :contact_id, nil) || socket.assigns.current_user.id,
+            :due => item && Map.get(item, :due, nil) || Timex.format!(:calendar.local_time(), "{YYYY}-{0M}-{0D}")
           }
-          IO.inspect("have a new item")
-          IO.inspect(tmp.item)
+          IO.inspect(tmp)
           tmp
         end
-
-      IO.inspect("show3")
 
       socket
       |> push_event("set-value", %{id: "edit_todo-content", value: template.content})
@@ -70,7 +60,6 @@ defmodule Auth2024Web.EditTodoLive do
         |> JS.set_attribute({"value", template.due}, to: "#edit_todo-due")
       )
     else
-      IO.inspect("no item")
       socket
     end
 

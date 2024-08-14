@@ -13,8 +13,7 @@ defmodule Auth2024Web.Tools do
       current_date = :calendar.local_time()
 
       # Format the date as "YYYY-MM-DD"
-      formatted_date = Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
-      formatted_date
+      Timex.format!(current_date, "{YYYY}-{0M}-{0D}")
     else
       Date.to_string(item_due)
     end
