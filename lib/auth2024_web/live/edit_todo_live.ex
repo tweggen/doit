@@ -108,15 +108,17 @@ defmodule Auth2024Web.EditTodoLive do
     contact_id = String.to_integer(contact_id_string)
     #due = item_params["due"]
     contact_person = Todos.get_person!(contact_id)
-
+    {:ok, due_date } = Date.from_iso8601(item_params["due"])
 
     if -1 == item_id do
-      new_params = Map.merge(item_params,
-        %{
-         "status" => 0,
-         "author" => current_person
-         #"contact" => socket.assigns.current_user.person,
-        })
+      new_params = %{
+        status: 0,
+        author: current_person,
+        contact: contact_person,
+        content: item_params["content"],
+        caption: item_params["caption"],
+        due: due_date
+      }
       IO.inspect(new_params)
       case Todos.add_item(user, new_params) do
         {:error, message} ->
