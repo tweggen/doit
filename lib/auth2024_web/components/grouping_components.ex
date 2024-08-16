@@ -19,6 +19,15 @@ defmodule Auth2024Web.GroupingComponent do
 	end
 
 
+	def sort_groups_func(sort_by_column) do
+		case sort_by_column do
+			"date" -> fn (attr) -> attr end
+			"contact" -> fn ({attr,_persons}) -> attr.family_name end
+			#_x -> fn (item) -> item.id end
+		end
+	end
+
+
 	def group_by_header_data(sort_by_column) do
 		case sort_by_column do
 			"date" -> fn (item) -> item.due end
@@ -38,6 +47,7 @@ defmodule Auth2024Web.GroupingComponent do
     |> Enum.map(fn {attr, items} -> 
       {attr, Enum.sort_by(items, sort_items_func(assigns.sort_by_column))}
     end)
+    |> Enum.sort_by(sort_groups_func(assigns.sort_by_column))
     |> Enum.into(%{})	
     ~H"""
     	<%= for {attr, item_list} <- item_map do %>
