@@ -29,6 +29,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
         |> JS.remove_attribute("value", to: "#new-person-form-family-name")
         |> JS.set_attribute({"value", family_name}, to: "#new-person-form-family-name")
       )
+      |> push_event("set-value", %{id: "new-person-form-family-name", value: family_name})
     else
       socket
     end

@@ -60,6 +60,9 @@ defmodule Auth2024Web.EditTodoLive do
         |> JS.remove_attribute("value", to: "#edit_todo-due") 
         |> JS.set_attribute({"value", template.due}, to: "#edit_todo-due")
       )
+      |> push_event("set-value", %{id: "edit_todo-id", value: item_id})
+      |> push_event("set-value", %{id: "edit_todo-caption", value: template.caption})
+      |> push_event("set-value", %{id: "edit_todo-due", value: template.due})
     else
       socket
     end
