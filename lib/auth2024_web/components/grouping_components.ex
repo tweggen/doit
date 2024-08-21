@@ -12,7 +12,7 @@ defmodule Auth2024Web.GroupingComponent do
 
 	def sort_items_func(sort_by_column) do
 		case sort_by_column do
-			"date" -> fn (item) -> Tools.display_person_name(item.contact) end
+			"date" -> fn (item) -> item.caption end
 			"contact" -> fn (item) -> item.due end
 			#_x -> fn (item) -> item.id end
 		end
@@ -22,7 +22,7 @@ defmodule Auth2024Web.GroupingComponent do
 	def sort_groups_func(sort_by_column) do
 		case sort_by_column do
 			"date" -> fn (attr) -> attr end
-			"contact" -> fn ({attr,_persons}) -> attr.family_name end
+			"contact" -> fn ({attr, _persons}) -> attr.family_name end
 			#_x -> fn (item) -> item.id end
 		end
 	end

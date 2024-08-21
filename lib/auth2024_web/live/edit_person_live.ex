@@ -44,6 +44,10 @@ defmodule Auth2024Web.EditPersonLive do
         |> JS.remove_attribute("value", to: "#edit_person-email") 
         |> JS.set_attribute({"value", email}, to: "#edit_person-email")
       )
+      |> push_event("set-value", %{id: "edit_person-id", value: person_id})
+      |> push_event("set-value", %{id: "edit_person-family_name", value: family_name})
+      |> push_event("set-value", %{id: "edit_person-given_name", value: given_name})
+      |> push_event("set-value", %{id: "edit_person-email", value: email})
     else
       socket
     end
