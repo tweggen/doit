@@ -13,7 +13,7 @@ defmodule Auth2024Web.GroupingComponent do
 	def sort_items_func(sort_by_column) do
 		case sort_by_column do
 			"date" -> fn (item) -> item.caption end
-			"contact" -> fn (item) -> item.due end
+			"contact" -> fn (item) -> {item.due, item.caption} end
 			#_x -> fn (item) -> item.id end
 		end
 	end
@@ -21,8 +21,8 @@ defmodule Auth2024Web.GroupingComponent do
 
 	def sort_groups_func(sort_by_column) do
 		case sort_by_column do
-			"date" -> fn (attr) -> attr end
-			"contact" -> fn ({attr, _persons}) -> attr.family_name end
+			"date" -> fn (arg = {attr, _items}) -> attr end
+			"contact" -> fn (arg = {attr, _items}) -> attr.family_name end
 			#_x -> fn (item) -> item.id end
 		end
 	end
@@ -48,7 +48,8 @@ defmodule Auth2024Web.GroupingComponent do
       {attr, Enum.sort_by(items, sort_items_func(assigns.sort_by_column))}
     end)
     |> Enum.sort_by(sort_groups_func(assigns.sort_by_column))
-    |> Enum.into(%{})	
+    # |> Enum.into(%{})	
+    #IO.inspect(item_map)
     ~H"""
     	<%= for {attr, item_list} <- item_map do %>
     		<div class="flex-none flex flex-col min-h-0">
