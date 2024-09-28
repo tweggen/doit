@@ -1,5 +1,6 @@
 defmodule Auth2024Web.Tools do
   alias Auth2024.Todo.{Person}
+  alias Auth2024.Todos
 
 
   def easy_changeset_attrs(kind, value) do
@@ -43,6 +44,21 @@ defmodule Auth2024Web.Tools do
     		"(unnamed person)"
   	  end
   	end
+  end
+
+
+  def open_edit_item(
+    %Phoenix.LiveView.Socket{} = socket,
+    data
+  ) do
+    item_id = String.to_integer(data["item_id"])
+    current_item = Todos.get_item!(item_id)
+
+    socket 
+    |> Auth2024Web.EditTodoLive.show(
+      item_id,
+      current_item
+    )
   end
 
 

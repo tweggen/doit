@@ -65,21 +65,6 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
-  def open_edit_item(
-    %Phoenix.LiveView.Socket{} = socket,
-    data
-  ) do
-    item_id = String.to_integer(data["item_id"])
-    current_item = Todos.get_item!(item_id)
-
-    socket 
-    |> Auth2024Web.EditTodoLive.show(
-      item_id,
-      current_item
-    )
-  end
-
-
   defp edit_item_caption(
     %Phoenix.LiveView.Socket{} = socket,
     data
@@ -105,7 +90,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
         |> edit_item_caption(data)
       else
         socket
-        |> open_edit_item(data)
+        |> Tools.open_edit_item(data)
       end
     }
   end

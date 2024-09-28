@@ -78,18 +78,28 @@
                 onitemchanged="on_itemlist_itemfield_changed"
               />
               <%= if @sort_by_column != "contact" do %>
-                <.live_component
-                  module={Auth2024Web.ListItemPersonLive}
-                  id={"listitem_contact_#{item.id}"}
-                  item_id={item.id}
-                  contact_id={item.contact_id}
-                  look="list"
-                  available_persons={@available_persons}
-                  user={@current_user}
-                  kind={:contact}
-                  onediting="on_editing_item"
-                  onitemchanged="on_itemlist_itemfield_changed"
-                />
+                <%= if true do %>
+                  <label 
+                    class="flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0 text-ellipsis overflow-hidden" 
+                    phx-click="edit-item"
+                    phx-value-item_id={item.id}
+                  >
+                    <%= Tools.display_person_name(item.contact) %>
+                  </label>
+                <% else %>
+                  <.live_component
+                    module={Auth2024Web.ListItemPersonLive}
+                    id={"listitem_contact_#{item.id}"}
+                    item_id={item.id}
+                    contact_id={item.contact_id}
+                    look="list"
+                    available_persons={@available_persons}
+                    user={@current_user}
+                    kind={:contact}
+                    onediting="on_editing_item"
+                    onitemchanged="on_itemlist_itemfield_changed"
+                  />
+                <% end %>
               <% end %>
             </div>
             <div class="flex-none flex flex-col items-end">

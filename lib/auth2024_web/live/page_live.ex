@@ -351,6 +351,20 @@ defmodule Auth2024Web.PageLive do
 
 
   @impl true
+  def handle_event(
+    "edit-item",
+    data,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    {
+      :noreply,
+      socket
+      |> Tools.open_edit_item(data)
+    }
+  end
+
+
+  @impl true
   def handle_info(
     %{event: "update", payload: %{items: items}}, 
     %Phoenix.LiveView.Socket{} = socket
