@@ -81,7 +81,6 @@ defmodule Auth2024Web.ListItemPersonLive do
       socket 
       |> Auth2024Web.ConfirmNewPersonLive.show(
         @form_name_new_person, 
-        item_id,
         contact_person_id
       )
     end
@@ -109,7 +108,6 @@ defmodule Auth2024Web.ListItemPersonLive do
           socket 
           |> Auth2024Web.ConfirmNewPersonLive.show(
             @form_name_new_person, 
-            item_id,
             nil
           )
         }

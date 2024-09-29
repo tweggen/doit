@@ -92,6 +92,33 @@ defmodule Auth2024Web.EditTodoLive do
   end
 
 
+  @impl true 
+  def handle_event(
+    "edit_todo-new_person_selected",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    IO.inspect("edit_todo-new_person_selected")
+    IO.inspect(params)
+    contact_person_id = params["contact_person_id"]
+
+    if String.ends_with?(contact_person_id, "-create-new") do
+      {:noreply, 
+        socket 
+        |> Auth2024Web.ConfirmNewPersonLive.show(
+          "confirm-new-person", 
+          nil
+        )
+      }
+    else
+      {
+        :noreply,
+        socket
+      }
+    end
+  end
+
+
   @impl true
   def handle_event(
     "edit_todo-submit",

@@ -18,13 +18,14 @@
         id="edit_todo-caption"
         field={@edit_todo_form[:caption]} 
       />
-      <.live_component
+      <Auth2024Web.SelectPersonComponent.combobox
         id={"select-todo-item-contact-in_edit_todo_modal"}
         module={Auth2024Web.SelectPersonComponent}
         name="contact_person_id"
         class="flex-1 truncate mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
         available_persons={@available_persons}
         look="modal"
+        on_change="edit_todo-new_person_selected"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-due"

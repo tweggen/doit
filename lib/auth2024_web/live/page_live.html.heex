@@ -78,7 +78,7 @@
                 onitemchanged="on_itemlist_itemfield_changed"
               />
               <%= if @sort_by_column != "contact" do %>
-                <%= if true do %>
+                <%= if false do %>
                   <label 
                     class="flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0 text-ellipsis overflow-hidden" 
                     phx-click="edit-item"
@@ -197,17 +197,19 @@
 </div>
 
 <.live_component
-  id="confirm-new-person"
-  module={Auth2024Web.ConfirmNewPersonLive}
-  onperson="confirm_new_person_onperson"
-  user={@current_user}
-/>
-
-<.live_component
   id="edit-todo"
   module={Auth2024Web.EditTodoLive}
   onitem="edit_todo_onitem"
   current_user={@current_user}
   available_persons={@available_persons}
+/>
+
+<!-- TXWTODO: Fix z order -->
+
+<.live_component
+  id="confirm-new-person"
+  module={Auth2024Web.ConfirmNewPersonLive}
+  onperson="confirm_new_person_onperson"
+  user={@current_user}
 />
 

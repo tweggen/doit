@@ -20,7 +20,6 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   def show(
     socket, 
     form_name, 
-    _item_id,
     family_name
   ) do
     if nil != family_name do
