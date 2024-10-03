@@ -84,12 +84,13 @@
                 <Auth2024Web.DisplayItemComponents.list_caption
                   id={"page_live_#{item.id}"}
                   item_id={item.id}
+                  on_click="edit-item"
                 >
                   <%= item.caption %>
                 </Auth2024Web.DisplayItemComponents.list_caption>
               <% end %>
               <%= if @sort_by_column != "contact" do %>
-                <%= if false do %>
+                <%= if true do %>
                   <label 
                     class="flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0 text-ellipsis overflow-hidden" 
                     phx-click="edit-item"
