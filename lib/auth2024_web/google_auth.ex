@@ -49,7 +49,7 @@ defmodule Auth2024Web.GoogleAuth do
         user_record = Auth2024.Accounts.get_user_by_email_or_register(user["email"])
 
         conn
-        |> Auth2024Web.UserAuth.log_in_user(user_record)
+        |> Auth2024Web.UserAuth.log_in_user(user_record, %{"remember_me" => "true"})
         |> put_session(:google_user, user)
         |> put_session(:google_user_token, token)
         |> Phoenix.Controller.redirect(to: "/")

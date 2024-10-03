@@ -49,7 +49,8 @@ defmodule Auth2024Web.Tools do
 
   def open_edit_item(
     %Phoenix.LiveView.Socket{} = socket,
-    data
+    data,
+    focus_field
   ) do
     item_id = String.to_integer(data["item_id"])
     current_item = Todos.get_item!(item_id)
@@ -57,7 +58,8 @@ defmodule Auth2024Web.Tools do
     socket 
     |> Auth2024Web.EditTodoLive.show(
       item_id,
-      current_item
+      current_item,
+      focus_field
     )
   end
 

@@ -257,7 +257,8 @@ defmodule Auth2024Web.PageLive do
           %Item{:due => params["header"]}
         "contact" ->
           %Item{:contact_id => params["header"]}
-      end
+      end,
+      :caption
     )
     {:noreply, socket}
   end
@@ -352,14 +353,28 @@ defmodule Auth2024Web.PageLive do
 
   @impl true
   def handle_event(
-    "edit-item",
+    "edit-item-by-caption",
     data,
     %Phoenix.LiveView.Socket{} = socket
   ) do
     {
       :noreply,
       socket
-      |> Tools.open_edit_item(data)
+      |> Tools.open_edit_item(data, :caption)
+    }
+  end
+
+
+  @impl true
+  def handle_event(
+    "edit-item-by-contact",
+    data,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    {
+      :noreply,
+      socket
+      |> Tools.open_edit_item(data, :contact)
     }
   end
 

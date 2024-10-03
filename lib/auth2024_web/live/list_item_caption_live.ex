@@ -87,7 +87,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
     {
       :noreply,
       socket
-      |> Tools.open_edit_item(data)
+      |> Tools.open_edit_item(data, :caption)
     }
   end
 

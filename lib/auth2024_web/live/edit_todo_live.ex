@@ -20,7 +20,8 @@ defmodule Auth2024Web.EditTodoLive do
   def show(
     %Phoenix.LiveView.Socket{} = socket, 
     item_id,
-    %Item{} = item
+    %Item{} = item,
+    focus_field
   ) do
     if nil != item do
       template = 
@@ -67,9 +68,17 @@ defmodule Auth2024Web.EditTodoLive do
       socket
     end
 
+    # We need to focus only after we show.
     |> Tools.push_js(
       modal_id(@form_name_edit_item),
       Auth2024Web.CoreComponents.show_modal(modal_id(@form_name_edit_item))
+      |> JS.focus(to: 
+        case focus_field do
+          :caption -> "#edit_todo-caption"
+          :contact -> "#select-todo-item-contact-in_edit_todo_modal"
+          _ -> "#edit_todo-content"
+        end
+      )
     )
   end
 
