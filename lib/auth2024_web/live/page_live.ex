@@ -62,8 +62,8 @@ defmodule Auth2024Web.PageLive do
   ) do
     Todos.list_items(
       socket.assigns.current_user, 
-      socket.assigns.filter_by_value,
-      socket.assigns.sort_by_column
+      Todos.config_filter_by_value(socket.assigns.user_config),
+      Todos.config_sort_by_column(socket.assigns.user_config)
     )
   end
 
@@ -77,8 +77,6 @@ defmodule Auth2024Web.PageLive do
       current_person: nil,
       editing_item_datalist: [],
       items: nil,
-      filter_by_value: "active",
-      sort_by_column: "date",
       available_persons: []
     }
   end
@@ -94,15 +92,17 @@ defmodule Auth2024Web.PageLive do
     with token when is_bitstring(token) <- session["user_token"],
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person_for_user(user)
+        user_config = Todos.find_config_for_user(user)
         items = Todos.list_items(
           user, 
-          default_assigns.filter_by_value, 
-          default_assigns.sort_by_column
+          Todos.config_filter_by_value(user_config),
+          Todos.config_sort_by_column(user_config)
         )
       {:ok, 
         socket 
         |> assign(default_assigns) 
         |> assign(
+            user_config: user_config,
             current_user: user,
             current_person: current_person,
             items: items,
@@ -285,14 +285,31 @@ defmodule Auth2024Web.PageLive do
   ) do
     user = socket.assigns.current_user
 
-    sort_by_column = if Map.has_key?(params, "sort_by") do params["sort_by"] else socket.assigns.sort_by_column end
-    filter_by_value = if Map.has_key?(params, "filter_by") do params["filter_by"] else socket.assigns.filter_by_value end
+    user_config = socket.assigns.user_config
+
+    current_filter_by_value = Todos.config_filter_by_value(user_config)
+    new_filter_by_value = if Map.has_key?(params, "filter_by") do params["filter_by"] else current_filter_by_value end
+    current_sort_by_column = Todos.config_sort_by_column(user_config)
+    new_sort_by_column = if Map.has_key?(params, "sort_by") do params["sort_by"] else current_sort_by_column end
+
+    user_config = 
+      if current_filter_by_value != new_filter_by_value || current_sort_by_column != new_sort_by_column do
+        new_config_properties = Map.merge(user_config.properties, %{
+          "filterByValue" => new_filter_by_value, 
+          "sortByColumn" => new_sort_by_column
+        })
+        case Todos.update_config(user, user_config, %{"properties" => new_config_properties}) do
+          {:ok, written_config} -> written_config
+          _ -> user_config
+        end
+      else
+        user_config
+      end
 
     {:noreply,
       assign(socket,
-        sort_by_column: sort_by_column,
-        filter_by_value: filter_by_value,
-        items: Todos.list_items(user, filter_by_value, sort_by_column)
+        user_config: user_config,
+        items: Todos.list_items(user, new_filter_by_value, new_sort_by_column)
       )
     }
   end

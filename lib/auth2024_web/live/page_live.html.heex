@@ -37,9 +37,9 @@
         <%= if @items == [] do %>
           <center>&nbsp;<br>Seems there are no todos for you.<br>So maybe you want to create a new todo item above?<br>&nbsp;</center>
         <% end %>
-        <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={@sort_by_column}>
+        <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={Todos.config_sort_by_column(@user_config)}>
           <:header :let={group_header}>
-            <%= if @sort_by_column == "contact" do %>
+            <%= if Todos.config_sort_by_column(@user_config) == "contact" do %>
               <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
                 <%= Tools.display_person_name(group_header) %>
                 &nbsp;
@@ -89,7 +89,7 @@
                   <%= item.caption %>
                 </Auth2024Web.DisplayItemComponents.list_caption>
               <% end %>
-              <%= if @sort_by_column != "contact" do %>
+              <%= if Todos.config_sort_by_column(@user_config) != "contact" do %>
                 <%= if true do %>
                   <label 
                     class="flex-1 truncate m-0 text-gray-500 text-xs focus:bg-yellow-100 focus:ring-0 leading-5 border-none p-0 text-ellipsis overflow-hidden" 
@@ -151,7 +151,7 @@
             <.link 
               class={
                 ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-                 ++ (if @filter_by_value=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
+                 ++ (if Todos.config_filter_by_value(@user_config)=="all", do: ["text-blue-600", "bg-gray-100"], else: [])
               }
               patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "all"})}
             >
@@ -162,7 +162,7 @@
             <.link 
               class={
                 ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-                 ++ (if @filter_by_value=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
+                 ++ (if Todos.config_filter_by_value(@user_config)=="active", do: ["text-blue-600", "bg-gray-100"], else: [])
               }
               patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "active"})}
             >
@@ -173,7 +173,7 @@
             <.link 
               class={
                 ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-                 ++ (if @filter_by_value=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
+                 ++ (if Todos.config_filter_by_value(@user_config)=="completed", do: ["text-blue-600", "bg-gray-100"], else: [])
               }
               patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{filter_by: "completed"})}
             >
@@ -184,7 +184,7 @@
             <.link 
               class={
                 ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-                 ++ (if @sort_by_column=="date", do: ["text-blue-600", "bg-gray-100"], else: [])
+                 ++ (if Todos.config_sort_by_column(@user_config)=="date", do: ["text-blue-600", "bg-gray-100"], else: [])
               }
               patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "date"})}
             >
@@ -195,7 +195,7 @@
             <.link 
               class={
                 ["inline-block", "p-4", "rounded-t-lg", "hover:text-gray-600", "hover:bg-gray-50", "dark:hover:bg-gray-800", "dark:hover:text-gray-300"]
-                 ++ (if @sort_by_column=="contact", do: ["text-blue-600", "bg-gray-100"], else: [])
+                 ++ (if Todos.config_sort_by_column(@user_config)=="contact", do: ["text-blue-600", "bg-gray-100"], else: [])
               }
               patch={Routes.live_path(@socket, Auth2024Web.PageLive, %{sort_by: "contact"})}
             >

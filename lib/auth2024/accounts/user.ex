@@ -1,7 +1,7 @@
 defmodule Auth2024.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Auth2024.Todo.{Item,Person}
+  alias Auth2024.Todo.{Item,Person,Config}
 
 
   schema "users" do
@@ -11,6 +11,7 @@ defmodule Auth2024.Accounts.User do
     field :confirmed_at, :naive_datetime
     
     has_one :person, Person, foreign_key: :user_id
+    has_one :config, Config, foreign_key: :user_id
 
     has_many :persons, Person, foreign_key: :owning_user_id
     has_many :todos, Item

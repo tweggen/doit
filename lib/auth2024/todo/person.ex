@@ -30,8 +30,8 @@ defmodule Auth2024.Todo.Person do
 
 
   @doc false
-  def update_changeset(item, attrs) do
-    item 
+  def update_changeset(person, attrs) do
+    person 
     |> cast(attrs, [:status, :email, :family_name, :given_name])
     |> validate_family_name()
     |> validate_given_name()
