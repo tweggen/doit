@@ -252,7 +252,7 @@ defmodule Auth2024Web.PageLive do
     IO.inspect(params)
     socket = socket |> Auth2024Web.EditTodoLive.show(
       -1,
-      case socket.assigns.sort_by_column do
+      case Todos.config_sort_by_column(socket.assigns.user_config) do
         "date" ->
           %Item{:due => params["header"]}
         "contact" ->
@@ -351,7 +351,6 @@ defmodule Auth2024Web.PageLive do
       socket
       |> save_edit_done(socket.assigns.editing_item, :contact, person)
       |> assign(new_assigns)
-      |> push_event("close_modal", %{to: "#confirm-new-person"})
     }
   end
 

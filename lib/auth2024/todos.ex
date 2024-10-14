@@ -224,8 +224,12 @@ defmodule Auth2024.Todos do
     case Repo.get_by(Config, [user_id: user.id]) do
       nil ->
         # Entity doesn't exist, create it
-        add_config_to_user(user, %{properties: %{}})
-
+        case add_config_to_user(user, %{properties: %{}}) do
+          {:ok, config} ->
+            config
+          _ ->
+            %{properties: %{}}
+        end
       entity ->
         # Entity already exists, return it
         entity

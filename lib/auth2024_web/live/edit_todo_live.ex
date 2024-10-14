@@ -268,4 +268,20 @@ defmodule Auth2024Web.EditTodoLive do
     }
   end
 
+
+  def handle_info(
+    %{event: "confirm_new_person_onperson", confirmed_person: person},
+    socket
+  ) do
+    new_assigns = %{
+      available_persons: Todos.list_persons!(socket.assigns.current_user),
+    }
+    #socket
+    {:noreply,
+      socket
+      |> assign(new_assigns)
+    }
+  end
+
+
 end

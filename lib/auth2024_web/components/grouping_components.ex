@@ -54,12 +54,13 @@ defmodule Auth2024Web.GroupingComponent do
 
   def for_items(assigns) do
 		# In this, group the files by date, sorted by id.		
+		sort_by_column = assigns.sort_by_column
 		item_map = assigns.items
-    |> Enum.group_by(group_by_func(assigns.sort_by_column))
+    |> Enum.group_by(group_by_func(sort_by_column))
     |> Enum.map(fn {attr, items} -> 
-      {attr, Enum.sort_by(items, sort_items_func(assigns.sort_by_column))}
+      {attr, Enum.sort_by(items, sort_items_func(sort_by_column))}
     end)
-    |> Enum.sort_by(sort_groups_map_func(assigns.sort_by_column), sort_groups_sort_func(assigns.sort_by_column))
+    |> Enum.sort_by(sort_groups_map_func(sort_by_column), sort_groups_sort_func(sort_by_column))
     # |> Enum.into(%{})	
     #IO.inspect(item_map)
     ~H"""
