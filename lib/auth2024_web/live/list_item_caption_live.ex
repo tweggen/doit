@@ -84,10 +84,11 @@ defmodule Auth2024Web.ListItemCaptionLive do
     data,
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    item_id = String.to_integer(data["item_id"])
     {
       :noreply,
       socket
-      |> Tools.open_edit_item(data, :caption)
+      |> Tools.open_edit_item(item_id, :caption)
     }
   end
 

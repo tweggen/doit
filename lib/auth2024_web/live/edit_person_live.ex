@@ -105,7 +105,7 @@ defmodule Auth2024Web.EditPersonLive do
         { 
           :noreply, 
           socket 
-              |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_person)}"})
+          # |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_person)}"})
           |> assign(new_assigns)
         }
     end

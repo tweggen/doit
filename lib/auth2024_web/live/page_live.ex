@@ -188,13 +188,21 @@ defmodule Auth2024Web.PageLive do
     %{"text" => text}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    Todos.add_item(socket.assigns.current_user, default_editing_item_values(socket, text));
-    socket = assign(socket, 
-      items: query_items(socket), 
-      active: %Item{}
-    )
-    Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
-    {:noreply, socket}
+    case Todos.add_item(socket.assigns.current_user, default_editing_item_values(socket, text)) do
+      {:ok, item} ->
+        {:noreply,
+          socket 
+          |> Tools.open_edit_item(item.id, :content)
+        }
+      _ ->
+        socket
+        |> assign(
+          items: query_items(socket), 
+          active: %Item{}
+        )
+        Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
+        {:noreply, socket}
+    end
   end
 
 
@@ -373,10 +381,11 @@ defmodule Auth2024Web.PageLive do
     data,
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    item_id = String.to_integer(data["item_id"])
     {
       :noreply,
       socket
-      |> Tools.open_edit_item(data, :caption)
+      |> Tools.open_edit_item(item_id, :caption)
     }
   end
 
@@ -387,10 +396,11 @@ defmodule Auth2024Web.PageLive do
     data,
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    item_id = String.to_integer(data["item_id"])
     {
       :noreply,
       socket
-      |> Tools.open_edit_item(data, :contact)
+      |> Tools.open_edit_item(item_id, :contact)
     }
   end
 
