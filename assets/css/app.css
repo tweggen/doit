@@ -35,3 +35,15 @@ body {
 	font-weight: normal;
 	font-style: normal;
 }
+
+@media screen and (max-width: 480px) {
+  .show-desktop-only {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 481px) {
+  .show-mobile-only {
+    display: none;
+  }
+}
