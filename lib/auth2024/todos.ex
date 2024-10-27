@@ -24,6 +24,23 @@ defmodule Auth2024.Todos do
   end
 
 
+  def list_items_normalized(user, filter_by_value, sort_by_column) do
+    # We have different base queries depending on if we order by date
+    # or by user, eventually grouping by each.
+    case sort_by_column do
+      "date" -> 
+        Item
+        |> order_by(desc: :inserted_at)
+      "contact" -> 
+        Item
+        |> order_by(asc: :contact_id, desc: :inserted_at)
+    end
+    |> where([a], a.user_id == ^user.id)
+    |> apply_filter(filter_by_value)
+    |> Repo.all()
+  end
+
+
   @doc false
   def list_items(user, filter_by_value, sort_by_column) do
     # We have different base queries depending on if we order by date
@@ -48,7 +65,6 @@ defmodule Auth2024.Todos do
     |> order_by(asc: :family_name)
     |> Repo.all()
   end
-
 
 
   def hydrate_item(item) do

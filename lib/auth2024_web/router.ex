@@ -26,6 +26,8 @@ defmodule Auth2024Web.Router do
     live "/", PageLive
     live "/persons", PersonsLive
     #live "/hi", HiWidgetLive
+
+    get "/dump", DumpController, :index
   end
 
   # Other scopes may use custom stacks.

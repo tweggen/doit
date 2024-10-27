@@ -17,6 +17,7 @@
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-caption"
         field={@edit_todo_form[:caption]} 
+        label="caption"
       />
       <Auth2024Web.SelectPersonComponent.combobox
         id={"select-todo-item-contact-in_edit_todo_modal"}
@@ -38,6 +39,7 @@
         rows="10"
         field={@edit_todo_form[:content]} 
         phx-hook="SetValue"
+        label="notes"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-id"
