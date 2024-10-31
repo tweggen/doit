@@ -137,7 +137,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
             :noreply, 
             socket 
             |> assign(new_assigns)
-            |> push_event("close_modal", %{to: "#confirm-new-person"})
+            # |> push_event("close_modal", %{to: "#confirm-new-person"})
           }
       end
     end

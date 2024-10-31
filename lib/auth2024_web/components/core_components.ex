@@ -19,6 +19,7 @@ defmodule Auth2024Web.CoreComponents do
   alias Phoenix.LiveView.JS
   import Auth2024Web.Gettext
 
+
   @doc """
   Renders a modal.
 
