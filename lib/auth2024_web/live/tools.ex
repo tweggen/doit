@@ -13,8 +13,9 @@ defmodule Auth2024Web.Tools do
 
   def send_notification(socket, topic, event) do
     full_topic = topic_id(socket, topic)
-    PubSub.broadcast(Auth2024.PubSub, full_topic, event)
+    Phoenix.PubSub.broadcast(Auth2024.PubSub, full_topic, event)
   end
+
 
   def easy_changeset_attrs(kind, value) do
     %{kind => value}

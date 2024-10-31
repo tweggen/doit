@@ -62,8 +62,7 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   ) do
      default_assigns = %{
       create_confirm_new_person_form: nil,
-      new_person_form: 
-        Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
+      new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
       new_person_form_errors: []
     }
     {:ok, socket |> assign(default_assigns)}
@@ -72,9 +71,12 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
 
   @impl true
   def update(assigns, socket) do
+    socket = socket
+    |> assign(assigns)
+    |> Auth2024Web.Tools.assign_session_id(assigns.session)
+
     { :ok,
       socket
-      |> assign(assigns)
     }
   end
  

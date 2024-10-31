@@ -239,6 +239,7 @@
   onitem="edit_todo_onitem"
   current_user={@current_user}
   available_persons={@available_persons}
+  session={@current_session}
 />
 
 <!-- TXWTODO: Fix z order -->
@@ -247,5 +248,6 @@
   id="confirm-new-person"
   module={Auth2024Web.ConfirmNewPersonLive}
   user={@current_user}
+  session={@current_session}
 />
 

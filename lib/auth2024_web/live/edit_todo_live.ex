@@ -253,24 +253,31 @@ defmodule Auth2024Web.EditTodoLive do
   ) do
     default_assigns = %{
       create_edit_todo_form: nil,
-      edit_todo_form: 
-        Phoenix.Component.to_form(Item.create_changeset(%{})),
+      edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
       edit_todo_form_errors: []
     }
 
-    if connected?(socket) do
-      Auth2024Web.ConfirmNewPersonLive.subscribe(socket, "edit_todo-confirm_new_person")
-    end
+    socket = socket 
+    |> assign(default_assigns)
 
-    {:ok, socket |> assign(default_assigns)}
+    {:ok, socket}
   end
 
 
   @impl true
   def update(assigns, socket) do
+
+    had_session_id_before = Map.has_key?(assigns, :session_id)
+    socket = socket
+    |> assign(assigns)
+    |> Auth2024Web.Tools.assign_session_id(assigns.session)
+ 
+    if !had_session_id_before do
+      Auth2024Web.ConfirmNewPersonLive.subscribe(socket, "edit_todo-confirm_new_person")
+    end
+
     { :ok,
       socket
-      |> assign(assigns)
     }
   end
 
@@ -279,11 +286,14 @@ defmodule Auth2024Web.EditTodoLive do
     %{event: "edit_todo-confirm_new_person", confirmed_person: person},
     socket
   ) do
+    IO.inspect("Called edit_todo-confirm_new_person")
+    IO.inspect(person)
     new_assigns = %{
       available_persons: Todos.list_persons!(socket.assigns.current_user),
     }
     #socket
-    {:noreply,
+    {
+      :noreply,
       socket
       |> assign(new_assigns)
     }

@@ -89,7 +89,6 @@ defmodule Auth2024Web.PageLive do
     default_assigns = default_assigns()
 
     socket = Auth2024Web.Tools.assign_session_id(socket, session)
-    IO.inspect(socket)
 
     # subscribe to the channel
     if connected?(socket) do
@@ -110,6 +109,7 @@ defmodule Auth2024Web.PageLive do
         socket 
         |> assign(default_assigns) 
         |> assign(
+            current_session: session,
             user_config: user_config,
             current_user: user,
             current_person: current_person,
