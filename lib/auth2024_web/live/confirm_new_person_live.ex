@@ -17,18 +17,28 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
   end
 
 
+  def subscribe(socket, topic) do
+    full_topic = Tools.topic_id(socket, topic)
+    Phoenix.PubSub.subscribe(Auth2024.PubSub, full_topic)
+  end
+
+
   def show(
     socket, 
     form_name, 
-    family_name
+    family_name,
+    onsubmit
   ) do
     if nil != family_name do
       Tools.push_js(socket, root_id(form_name), 
         %JS{} 
         |> JS.remove_attribute("value", to: "#new-person-form-family-name")
         |> JS.set_attribute({"value", family_name}, to: "#new-person-form-family-name")
+        |> JS.remove_attribute("value", to: "#new-person-form-submit-event")
+        |> JS.set_attribute({"value", onsubmit}, to: "#new-person-form-submit-event")
       )
       |> push_event("set-value", %{id: "new-person-form-family-name", value: family_name})
+      |> push_event("set-value", %{id: "new-person-form-submit-event", value: onsubmit})
     else
       socket
     end
@@ -82,6 +92,9 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
     family_name = person_params["family_name"]
     given_name = person_params["given_name"]
     email = person_params["email"]
+    onsubmit = person_params["onsubmit"]
+
+    IO.inspect(person_params)
 
     similarily_named_person = Todos.search_person_by_name(
       user, family_name, given_name)
@@ -109,10 +122,14 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
             new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, user.id)),
           }
 
-          send( self(), %{ 
-            event: socket.assigns.onperson,
+          #send( self(), %{ 
+          #  event: onsubmit, #socket.assigns.onperson,
+          #  confirmed_person: person
+          #} )
+          Auth2024Web.Tools.send_notification(socket, onsubmit, %{ 
+            event: onsubmit,
             confirmed_person: person
-          } )
+          })
 
           { 
             :noreply, 

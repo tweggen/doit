@@ -31,6 +31,11 @@
         label="given name"
         field={@new_person_form[:given_name]} 
       />
+      <input 
+        id="new-person-form-submit-event"
+        type="hidden"
+        field="onsubmit"
+      />
       <:actions>
         <Auth2024Web.CoreComponents.button>
           OK

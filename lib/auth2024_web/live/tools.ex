@@ -3,6 +3,19 @@ defmodule Auth2024Web.Tools do
   alias Auth2024.Todos
 
 
+  def assign_session_id(socket, %{"session_id" => session_id}) do
+    Phoenix.Component.assign_new(socket, :session_id, fn -> session_id end)
+  end
+
+
+  def topic_id(%{:assigns => %{:session_id => session_id}}, topic), do: "#{topic}-#{session_id}"
+
+
+  def send_notification(socket, topic, event) do
+    full_topic = topic_id(socket, topic)
+    PubSub.broadcast(Auth2024.PubSub, full_topic, event)
+  end
+
   def easy_changeset_attrs(kind, value) do
     %{kind => value}
   end

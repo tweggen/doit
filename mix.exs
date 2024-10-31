@@ -35,6 +35,7 @@ defmodule Auth2024.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7.14"},
       {:phoenix_ecto, "~> 4.6"},
+      {:phoenix_pubsub, "~> 2.1"},
       {:ecto_sql, "~> 3.11.3"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.0"},

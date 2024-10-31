@@ -83,7 +83,7 @@ defmodule Auth2024Web.EditTodoLive do
   end
 
 
-  def terminate(reason, state) do
+  def terminate(reason, _state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
     # IO.inspect({:state, state})
@@ -116,7 +116,8 @@ defmodule Auth2024Web.EditTodoLive do
         socket 
         |> Auth2024Web.ConfirmNewPersonLive.show(
           "confirm-new-person", 
-          nil
+          nil,
+          "edit_todo_onperson"
         )
       }
     else
@@ -256,6 +257,11 @@ defmodule Auth2024Web.EditTodoLive do
         Phoenix.Component.to_form(Item.create_changeset(%{})),
       edit_todo_form_errors: []
     }
+
+    if connected?(socket) do
+      Auth2024Web.ConfirmNewPersonLive.subscribe(socket, "edit_todo-confirm_new_person")
+    end
+
     {:ok, socket |> assign(default_assigns)}
   end
 
@@ -270,7 +276,7 @@ defmodule Auth2024Web.EditTodoLive do
 
 
   def handle_info(
-    %{event: "confirm_new_person_onperson", confirmed_person: person},
+    %{event: "edit_todo-confirm_new_person", confirmed_person: person},
     socket
   ) do
     new_assigns = %{

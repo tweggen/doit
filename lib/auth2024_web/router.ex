@@ -8,6 +8,7 @@ defmodule Auth2024Web.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
+    plug Auth2024Web.Plugs.SessionId
     plug :fetch_live_flash
     plug :put_root_layout, html: {Auth2024Web.Layouts, :root}
     plug :protect_from_forgery

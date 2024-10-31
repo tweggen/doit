@@ -70,7 +70,7 @@ defmodule Auth2024Web.ListItemPersonLive do
 
   defp possibly_update_item_contact(
     %Phoenix.LiveView.Socket{} = socket, 
-    item_id,
+    _item_id,
     contact_person_id
   ) do
     contact_person = Todos.get_person!(contact_person_id)
@@ -81,7 +81,8 @@ defmodule Auth2024Web.ListItemPersonLive do
       socket 
       |> Auth2024Web.ConfirmNewPersonLive.show(
         @form_name_new_person, 
-        contact_person_id
+        contact_person_id,
+        "confirm_new_person_onperson"
       )
     end
   end
@@ -108,7 +109,8 @@ defmodule Auth2024Web.ListItemPersonLive do
           socket 
           |> Auth2024Web.ConfirmNewPersonLive.show(
             @form_name_new_person, 
-            nil
+            nil,
+            "confirm_new_person_onperson"
           )
         }
       else

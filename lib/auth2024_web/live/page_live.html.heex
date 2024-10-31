@@ -9,12 +9,12 @@
           <div>
             <form
               phx-submit="create"
-              id="form"
+              id="new_todo_form_top"
             >
               <div class="flex">
                 <input
                   class="flex-1 bg-yellow-100 focus:bg-yellow-50 focus:ring-0 font-semibold text-sm border-none p-0"
-                  id="new_todo"
+                  id="new_todo_top"
                   type="text"
                   name="text"
                   placeholder="Enter new task..."
@@ -28,7 +28,7 @@
         <div class="flex-none w-28"></div>
       </li>
     </ul>
-    <section class="flex-1 min-h-0 min-w-0 overflow-y-scroll">
+    <section class="flex-1 minh--0 min-w-0 overflow-y-scroll">
       <ul 
         role="list" 
         class="flex flex-col min-h-0 divide-y divide-gray-100 relative w-full max-w-full min-w-0 min-h-0" 
@@ -153,12 +153,12 @@
             <div>
               <form
                 phx-submit="create"
-                id="form"
+                id="new_todo_form_bottom"
               >
                 <div class="flex">
                   <input
                     class="flex-1 bg-yellow-100 focus:bg-yellow-50 focus:ring-0 font-semibold text-sm border-none p-0"
-                    id="new_todo"
+                    id="new_todo_bottom"
                     type="text"
                     name="text"
                     placeholder="Enter new task..."
@@ -246,7 +246,6 @@
 <.live_component
   id="confirm-new-person"
   module={Auth2024Web.ConfirmNewPersonLive}
-  onperson="confirm_new_person_onperson"
   user={@current_user}
 />
 

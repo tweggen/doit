@@ -8,7 +8,7 @@ defmodule Auth2024Web.PageLive do
   @topic "page_live"
 
   @impl true
-  def terminate(reason, state) do
+  def terminate(reason, _state) do
     IO.inspect("terminate/2 callback")
     IO.inspect({:reason, reason})
     # IO.inspect({:state, state})
@@ -87,8 +87,16 @@ defmodule Auth2024Web.PageLive do
     _params, session, %Phoenix.LiveView.Socket{} = socket
   ) do
     default_assigns = default_assigns()
+
+    socket = Auth2024Web.Tools.assign_session_id(socket, session)
+    IO.inspect(socket)
+
     # subscribe to the channel
-    if connected?(socket), do: Auth2024Web.Endpoint.subscribe(@topic)
+    if connected?(socket) do
+      Auth2024Web.Endpoint.subscribe(@topic)
+      Auth2024Web.ConfirmNewPersonLive.subscribe(socket, "page-confirm_new_person")
+    end
+
     with token when is_bitstring(token) <- session["user_token"],
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person_for_user(user)
@@ -364,7 +372,7 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_info(
-    %{event: "edit_todo_onitem", changed_item: _item},
+    %{event: "page-confirm_new_person", confirmed_person: _person},
     socket
   ) do
     #socket
