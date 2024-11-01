@@ -171,6 +171,100 @@ defmodule Auth2024Web.EditTodoLive do
   end
 
 
+  defp add_or_update_item(user, item_id, params) do
+    if -1 == item_id do
+      Todos.add_item(user, params)
+    else
+      Todos.update_item(user, %Item{:id => item_id}, params)
+    end
+  end
+
+
+  defp handle_fetch_or_create_person_then(
+    %Phoenix.LiveView.Socket{} = socket,
+    params, contact_id,
+    f_person
+  ) do
+    user = socket.assigns.current_user
+    should_create_new_person = socket.assigns.is_new_person_open
+
+    case should_create_new_person do
+      true -> 
+        family_name = params["family_name"]
+        given_name = params["given_name"]
+        email = params["email"]    
+        case Todos.possibly_add_person(user, email, family_name, given_name) do
+          { -1, message } ->
+            {
+              :noreply,
+              socket
+              |> assign(edit_todo_form_errors: [message])
+            }
+          
+          { new_person_id, new_person } ->
+            f_person(new_person)
+        end
+      false -> f_person(Todos.get_person!(contact_id))
+    end
+  end
+
+
+  defp handle_add_update_item(
+    %Phoenix.LiveView.Socket{} = socket,
+    add_update_params, person
+  ) do
+    user = socket.assigns.current_user
+    # Now, depending on wether it is a new item we shall create or an
+    # existing we shall update, perform the database access.
+
+    # add the person passed to us.
+    add_update_params = Map.put(add_update_params, :contact_person, person)
+    case add_or_update_items(user, item_id, add_update_params) do
+      {:error, message} ->
+        IO.inspect("add error 1")
+        { :noreply, 
+          socket 
+          |> assign(edit_todo_form_errors: [message])
+        }
+
+      {:ok, item} ->
+        case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
+          {:error, message} ->
+    
+            IO.inspect("add error 2")
+            IO.inspect(message)
+            { :noreply, 
+              socket 
+              |> assign(edit_todo_form_errors: [message])
+            }
+
+          {:ok, item} ->
+            new_assigns = %{
+              # TXWTODO: Optimize this by just merging in the new person
+              edit_todo_form_errors: [],
+              form_name: nil,
+              edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
+            }
+
+            if nil != socket.assigns.onitem do
+              send( self(), %{ 
+                event: socket.assigns.onitem,
+                changed_item: item
+              } )
+            end
+
+            { 
+              :noreply, 
+              socket 
+              |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_item)}"})
+              |> assign(new_assigns)
+            }
+        end
+      
+    end
+  end
+
+
   @impl true
   def handle_event(
     "edit_todo-submit",
@@ -185,108 +279,26 @@ defmodule Auth2024Web.EditTodoLive do
     user = socket.assigns.current_user
     current_person = Todos.find_person_for_user(user)
     item_id = String.to_integer(item_params["id"])
-    #caption = item_params["caption"]
-    #content = item_params["content"]
     contact_id = String.to_integer(contact_id_string)
-    #due = item_params["due"]
-    contact_person = Todos.get_person!(contact_id)
     {:ok, due_date } = Date.from_iso8601(item_params["due"])
 
-    if -1 == item_id do
-      new_params = %{
-        status: 0,
-        author: current_person,
-        contact: contact_person,
-        content: item_params["content"],
-        caption: item_params["caption"],
-        due: due_date
-      }
-      IO.inspect(new_params)
-      case Todos.add_item(user, new_params) do
-        {:error, message} ->
-          IO.inspect("add error 1")
-          { :noreply, 
-            socket 
-            |> assign(edit_todo_form_errors: [message])
-          }
-
-        {:ok, item} ->
-          case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
-            {:error, message} ->
-      
-              IO.inspect("add error 2")
-              IO.inspect(message)
-              { :noreply, 
-                socket 
-                |> assign(edit_todo_form_errors: [message])
-              }
-
-            {:ok, item} ->
-              new_assigns = %{
-                # TXWTODO: Optimize this by just merging in the new person
-                edit_todo_form_errors: [],
-                form_name: nil,
-                edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
-              }
-
-              if nil != socket.assigns.onitem do
-                send( self(), %{ 
-                  event: socket.assigns.onitem,
-                  changed_item: item
-                } )
-              end
-
-              { 
-                :noreply, 
-                socket 
-                |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_item)}"})
-                |> assign(new_assigns)
-              }
-        end
+    add_update_params = 
+      if -1 == item_id do
+        %{
+          status: 0,
+          author: current_person,
+          contact: contact_person,
+          content: item_params["content"],
+          caption: item_params["caption"],
+          due: due_date
+        }
+      else
+        item_params
       end
-    else
-      case Todos.update_item(user, %Item{:id => item_id}, item_params) do
-        {:error, message} ->
-          IO.inspect("update error 1")
-          { :noreply, 
-            socket 
-            |> assign(edit_todo_form_errors: [message])
-          }
 
-        {:ok, item} ->
-          case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
-            {:error, message} ->
-              IO.inspect("update error 2")
-              IO.inspect(message)
-              { :noreply, 
-                socket 
-                |> assign(edit_todo_form_errors: [message])
-              }
+    handle_fetch_or_create_person_then(socket, add_update_params, contact_id,
+      fn person -> handle_add_update_item(socket, add_update_params, person) end)
 
-            {:ok, item} ->
-              new_assigns = %{
-                # TXWTODO: Optimize this by just merging in the new person
-                edit_todo_form_errors: [],
-                form_name: nil,
-                edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
-              }
-
-              if nil != socket.assigns.onitem do
-                send( self(), %{ 
-                  event: socket.assigns.onitem,
-                  changed_item: item
-                } )
-              end
-
-              { 
-                :noreply, 
-                socket 
-                |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_item)}"})
-                |> assign(new_assigns)
-              }
-        end
-      end
-    end
   end
 
 

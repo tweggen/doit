@@ -98,50 +98,32 @@ defmodule Auth2024Web.ConfirmNewPersonLive do
 
     IO.inspect(person_params)
 
-    similarily_named_person = Todos.search_person_by_name(
-      user, family_name, given_name)
-    person_with_email = Todos.search_person_by_email(
-      user, email)
+    case Todos.possibly_add_person(user, email, family_name, given_name) do
+      { -1, message } ->
+        { 
+          :noreply, 
+          socket
+          |> assign(new_person_form_errors: [message])
+        }
 
-    if [] != similarily_named_person ||  [] != person_with_email do
-      { :noreply, 
-        socket 
-        |> assign(new_person_form_errors: ["Person with similar name or email already exists."])
-      }
-    else
-      all_person_params = Map.merge(person_params, %{"status" => 0, "owning_user_id" => user.id})
-      case Todos.add_person(user, all_person_params) do
-        {:error, message} ->
-          { :noreply, 
-            socket 
-            |> assign(new_person_form_errors: [message])
-          }
+      { person_id, person } ->
+        new_assigns = %{
+          # TXWTODO: Optimize this by just merging in the new person
+          new_person_form_errors: [],
+          new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, user.id)),
+        }
 
-        {:ok, person} ->
-          new_assigns = %{
-            # TXWTODO: Optimize this by just merging in the new person
-            new_person_form_errors: [],
-            new_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, user.id)),
-          }
+        Auth2024Web.Tools.send_notification(socket, onsubmit, %{ 
+          event: onsubmit,
+          confirmed_person: person
+        })
 
-          #send( self(), %{ 
-          #  event: onsubmit, #socket.assigns.onperson,
-          #  confirmed_person: person
-          #} )
-          Auth2024Web.Tools.send_notification(socket, onsubmit, %{ 
-            event: onsubmit,
-            confirmed_person: person
-          })
-
-          { 
-            :noreply, 
-            socket 
-            |> assign(new_assigns)
-            # |> push_event("close_modal", %{to: "#confirm-new-person"})
-          }
-      end
+        { 
+          :noreply, 
+          socket 
+          |> assign(new_assigns)
+        }
     end
   end
-
 
 end

@@ -235,6 +235,33 @@ defmodule Auth2024.Todos do
   end
 
 
+  def possibly_add_person(user, email, family_name, given_name) do
+    similarily_named_person = Todos.search_person_by_name(
+      user, family_name, given_name)
+    person_with_email = Todos.search_person_by_email(
+      user, email)
+
+    if [] != similarily_named_person ||  [] != person_with_email do
+      { -1, "Person with similar name or email already exists." }
+    else
+      all_person_params = %{
+        "status" => 0,
+        "email" => email,
+        "family_name" => family_name,
+        "given_name" => given_name,
+        "owning_user_id" => user.id,
+        "user_id" => user.id
+      }
+      case Todos.add_person(user, all_person_params) do
+        {:error, message} ->
+          { -1, message }
+
+        {:ok, person} ->
+          { person.id, person }
+      end
+    end
+  end
+
   @doc false
   def find_config_for_user(user) do
     case Repo.get_by(Config, [user_id: user.id]) do
