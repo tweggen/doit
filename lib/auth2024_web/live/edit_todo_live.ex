@@ -112,6 +112,8 @@ defmodule Auth2024Web.EditTodoLive do
     if socket.assigns.is_new_person_open do
       Tools.push_js(socket, root_id(@form_name_edit_item), 
         %JS{} 
+        |> JS.remove_attribute("rows", to: "#edit_todo-content") 
+        |> JS.set_attribute({"rows", 6}, to: "#edit_todo-content")
         |> JS.hide(
           to: "#edit_todo-new_person_container",
           #transition:  {
@@ -132,6 +134,8 @@ defmodule Auth2024Web.EditTodoLive do
     else
       Tools.push_js(socket, root_id(@form_name_edit_item), 
         %JS{} 
+        |> JS.remove_attribute("rows", to: "#edit_todo-content") 
+        |> JS.set_attribute({"rows", 2}, to: "#edit_todo-content")
         |> JS.hide(
           to: "#edit_todo-existing_person_container",
           #transition:  {
