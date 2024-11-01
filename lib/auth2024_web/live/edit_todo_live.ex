@@ -190,6 +190,7 @@ defmodule Auth2024Web.EditTodoLive do
 
     case should_create_new_person do
       true -> 
+        IO.inspect("about to create new person")
         family_name = params["family_name"]
         given_name = params["given_name"]
         email = params["email"]    
@@ -202,15 +203,18 @@ defmodule Auth2024Web.EditTodoLive do
             }
           
           { new_person_id, new_person } ->
-            f_person(new_person)
+            f_person.(new_person)
         end
-      false -> f_person(Todos.get_person!(contact_id))
+      false -> 
+        IO.inspect("about to use existing person")
+        f_person.(Todos.get_person!(contact_id))
     end
   end
 
 
   defp handle_add_update_item(
     %Phoenix.LiveView.Socket{} = socket,
+    item_id,
     add_update_params, person
   ) do
     user = socket.assigns.current_user
@@ -218,8 +222,8 @@ defmodule Auth2024Web.EditTodoLive do
     # existing we shall update, perform the database access.
 
     # add the person passed to us.
-    add_update_params = Map.put(add_update_params, :contact_person, person)
-    case add_or_update_items(user, item_id, add_update_params) do
+    add_update_params = Map.put(add_update_params, "contact_person", person)
+    case add_or_update_item(user, item_id, add_update_params) do
       {:error, message} ->
         IO.inspect("add error 1")
         { :noreply, 
@@ -228,7 +232,7 @@ defmodule Auth2024Web.EditTodoLive do
         }
 
       {:ok, item} ->
-        case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
+        case Todos.update_item_contact(user, item, %{:contact => person}) do
           {:error, message} ->
     
             IO.inspect("add error 2")
@@ -284,20 +288,21 @@ defmodule Auth2024Web.EditTodoLive do
 
     add_update_params = 
       if -1 == item_id do
+        IO.inspect("About to create new item")
         %{
-          status: 0,
-          author: current_person,
-          contact: contact_person,
-          content: item_params["content"],
-          caption: item_params["caption"],
-          due: due_date
+          "status" => 0,
+          "author" => current_person,
+          "content" => item_params["content"],
+          "caption" => item_params["caption"],
+          "due" => due_date
         }
       else
+        IO.inspect("About to update item")
         item_params
       end
 
     handle_fetch_or_create_person_then(socket, add_update_params, contact_id,
-      fn person -> handle_add_update_item(socket, add_update_params, person) end)
+      fn person -> handle_add_update_item(socket, item_id, add_update_params, person) end)
 
   end
 

@@ -236,9 +236,9 @@ defmodule Auth2024.Todos do
 
 
   def possibly_add_person(user, email, family_name, given_name) do
-    similarily_named_person = Todos.search_person_by_name(
+    similarily_named_person = search_person_by_name(
       user, family_name, given_name)
-    person_with_email = Todos.search_person_by_email(
+    person_with_email = search_person_by_email(
       user, email)
 
     if [] != similarily_named_person ||  [] != person_with_email do
@@ -252,7 +252,7 @@ defmodule Auth2024.Todos do
         "owning_user_id" => user.id,
         "user_id" => user.id
       }
-      case Todos.add_person(user, all_person_params) do
+      case add_person(user, all_person_params) do
         {:error, message} ->
           { -1, message }
 
