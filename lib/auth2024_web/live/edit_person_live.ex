@@ -6,15 +6,13 @@ defmodule Auth2024Web.EditPersonLive do
   alias Auth2024.Todo.{Person}
   alias Auth2024Web.Tools
 
-  @form_name_edit_person "edit-person"
-
-  defp root_id(name) do
-    "edit_person_top-#{name}"
+  defp root_id() do
+    "edit_person_top"
   end
 
 
-  defp modal_id(name) do
-    "edit_person_modal-#{name}"
+  defp modal_id() do
+    "edit_person_modal"
   end
 
 
@@ -33,7 +31,7 @@ defmodule Auth2024Web.EditPersonLive do
       email = Tools.display_string(person.email)
 
       socket
-      |> Tools.push_js(root_id(@form_name_edit_person), 
+      |> Tools.push_js(root_id(), 
         %JS{} 
         |> JS.remove_attribute("value", to: "#edit_person-id") 
         |> JS.set_attribute({"value", person_id}, to: "#edit_person-id")
@@ -49,12 +47,13 @@ defmodule Auth2024Web.EditPersonLive do
       |> push_event("set-value", %{id: "edit_person-given_name", value: given_name})
       |> push_event("set-value", %{id: "edit_person-email", value: email})
     else
+      IO.inspect("nil person")
       socket
     end
 
     |> Tools.push_js(
-      modal_id(@form_name_edit_person),
-      Auth2024Web.CoreComponents.show_modal(modal_id(@form_name_edit_person))
+      modal_id(),
+      Auth2024Web.CoreComponents.show_modal(modal_id())
     )
   end
 
@@ -78,8 +77,6 @@ defmodule Auth2024Web.EditPersonLive do
 
     user = socket.assigns.current_user
     person_id = String.to_integer(person_params["id"])
-    #family_name = person_params["family_name"]
-    #given_name = person_params["given_name"]
 
     case Todos.update_person(user, %Person{:id => person_id}, person_params) do
       {:error, message} ->
@@ -92,7 +89,7 @@ defmodule Auth2024Web.EditPersonLive do
         new_assigns = %{
           # TXWTODO: Optimize this by just merging in the new person
           edit_person_form_errors: [],
-          edit_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, user)),
+          edit_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
         }
 
         if nil != socket.assigns.onperson do
@@ -105,7 +102,7 @@ defmodule Auth2024Web.EditPersonLive do
         { 
           :noreply, 
           socket 
-          # |> push_event("close_modal",  %{to: "##{modal_id(@form_name_edit_person)}"})
+          |> push_event("close_modal",  %{to: "##{modal_id()}"})
           |> assign(new_assigns)
         }
     end
@@ -118,17 +115,21 @@ defmodule Auth2024Web.EditPersonLive do
   ) do
     default_assigns = %{
       create_edit_person_form: nil,
-      edit_person_form: 
-        Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
+      edit_person_form: Phoenix.Component.to_form(Person.create_changeset(%{}, nil)),
       edit_person_form_errors: []
     }
-    {:ok, socket |> assign(default_assigns)}
+    {
+      :ok,
+      socket 
+      |> assign(default_assigns)
+    }
   end
 
 
   @impl true
   def update(assigns, socket) do
-    { :ok,
+    {
+      :ok,
       socket
       |> assign(assigns)
     }

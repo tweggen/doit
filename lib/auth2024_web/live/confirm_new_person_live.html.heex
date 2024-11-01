@@ -18,11 +18,6 @@
     >
       <Auth2024Web.CoreComponents.error :for={msg <- @new_person_form_errors}><p><%= msg %></p></Auth2024Web.CoreComponents.error>
       <Auth2024Web.CoreComponents.input 
-        id="new-person-form-email"
-        label="email"
-        field={@new_person_form[:email]} 
-      />
-      <Auth2024Web.CoreComponents.input 
         id="new-person-form-family-name"
         label="family name"
         field={@new_person_form[:family_name]} 
@@ -31,6 +26,11 @@
         id="new-person-form-given-name"
         label="given name"
         field={@new_person_form[:given_name]} 
+      />
+      <Auth2024Web.CoreComponents.input 
+        id="new-person-form-email"
+        label="email"
+        field={@new_person_form[:email]} 
       />
       <input 
         id="new-person-form-submit-event"

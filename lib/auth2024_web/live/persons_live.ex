@@ -35,7 +35,6 @@ defmodule Auth2024Web.PersonsLive do
     IO.inspect("opening edit person for")
     IO.inspect(person_id)
     IO.inspect(current_person)
-
     socket 
     |> Auth2024Web.EditPersonLive.show(
       person_id,
@@ -63,8 +62,8 @@ defmodule Auth2024Web.PersonsLive do
     %{event: "edit_person_onperson", changed_person: _person},
     socket
   ) do
-    #socket
-    {:noreply,
+    {
+      :noreply,
       socket
       |> just_edit_done()
     }
@@ -95,7 +94,7 @@ defmodule Auth2024Web.PersonsLive do
         #  ,default_assigns.filter_by_value
         #  ,default_assigns.sort_by_column
         )
-      IO.inspect(persons)
+      #IO.inspect(persons)
       {:ok, 
         socket 
         |> assign(default_assigns) 

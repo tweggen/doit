@@ -60,12 +60,6 @@
         </div>
 
         <Auth2024Web.CoreComponents.input 
-          id="edit_todo-email"
-          field={@edit_todo_form[:email]} 
-          label="Email"
-        />
-
-        <Auth2024Web.CoreComponents.input 
           id="edit_todo-family_name"
           field={@edit_todo_form[:family_name]} 
           label="Family Name"
@@ -76,6 +70,13 @@
           field={@edit_todo_form[:given_name]} 
           label="Given Name"
         />
+
+        <Auth2024Web.CoreComponents.input 
+          id="edit_todo-email"
+          field={@edit_todo_form[:email]} 
+          label="Email"
+        />
+
       </div>
 
       <Auth2024Web.CoreComponents.input 

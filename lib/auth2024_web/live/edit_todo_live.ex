@@ -226,7 +226,8 @@ defmodule Auth2024Web.EditTodoLive do
     case add_or_update_item(user, item_id, add_update_params) do
       {:error, message} ->
         IO.inspect("add error 1")
-        { :noreply, 
+        { 
+          :noreply, 
           socket 
           |> assign(edit_todo_form_errors: [message])
         }
@@ -237,7 +238,8 @@ defmodule Auth2024Web.EditTodoLive do
     
             IO.inspect("add error 2")
             IO.inspect(message)
-            { :noreply, 
+            { 
+              :noreply, 
               socket 
               |> assign(edit_todo_form_errors: [message])
             }
@@ -337,7 +339,8 @@ defmodule Auth2024Web.EditTodoLive do
       Auth2024Web.ConfirmNewPersonLive.subscribe(socket, "edit_todo-confirm_new_person")
     end
 
-    { :ok,
+    { 
+      :ok,
       socket
     }
   end

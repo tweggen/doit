@@ -1,6 +1,6 @@
-<div id={"edit_person_top-#{@id}"} class="top-2 right-2 fixed z-30">
+<div id={"edit_person_top"} class="top-2 right-2 fixed z-30">
   <Auth2024Web.CoreComponents.modal 
-    id={"edit_person_modal-#{@id}"}
+    id={"edit_person_modal"}
     phx-hook="ModalCloser"
   >
     <Auth2024Web.CoreComponents.header>
@@ -15,11 +15,6 @@
       phx-target={@myself}
     >
       <Auth2024Web.CoreComponents.input 
-        id="edit_person-email"
-        field={@edit_person_form[:email]} 
-        label="email"
-      />
-      <Auth2024Web.CoreComponents.input 
         id="edit_person-family_name"
         field={@edit_person_form[:family_name]} 
         label="family name"
@@ -30,9 +25,14 @@
         label="given name"
       />
       <Auth2024Web.CoreComponents.input 
+        id="edit_person-email"
+        field={@edit_person_form[:email]} 
+        label="email"
+      />
+      <Auth2024Web.CoreComponents.input 
         id="edit_person-id"
-        type="hidden"
         field={@edit_person_form[:id]} 
+        type="hidden"
       />
 
       <:actions>
@@ -41,7 +41,7 @@
         </Auth2024Web.CoreComponents.button>
         <Auth2024Web.CoreComponents.button 
           type="button"
-          phx-click={Auth2024Web.CoreComponents.hide_modal("edit_person_modal-#{@id}")}
+          phx-click={Auth2024Web.CoreComponents.hide_modal("edit_person_modal")}
         >
           Cancel
         </Auth2024Web.CoreComponents.button>
