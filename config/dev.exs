@@ -56,7 +56,7 @@ config :auth2024, Auth2024Web.Endpoint,
 config :auth2024, Auth2024Web.Endpoint,
   live_reload: [
     patterns: [
-      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg|tff)$",
+      ~r"priv/static/(?!uploads/).*(js|css|ico|png|jpeg|jpg|gif|svg|tff)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/auth2024_web/(controllers|live|components)/.*(ex|heex)$"
     ]

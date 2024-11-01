@@ -101,31 +101,73 @@ defmodule Auth2024Web.EditTodoLive do
   end
 
 
+  @impl true
+  def handle_event(
+    "edit_todo-new_person",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    IO.inspect("clicked")
+    socket =
+    if socket.assigns.is_new_person_open do
+      Tools.push_js(socket, root_id(@form_name_edit_item), 
+        %JS{} 
+        |> JS.hide(
+          to: "#edit_todo-new_person_container",
+          #transition:  {
+          #  "ease-out duration-300",
+          #  "opacity-100", "opacity-0"
+          #}
+        )
+        |> JS.show(
+          to: "#edit_todo-existing_person_container",
+          #transition:  {
+          #  "ease-out duration-300",
+          #  "opacity-0", "opacity-100"
+          #}
+        )
+      )
+      |> assign(%{is_new_person_open: false})
+    else
+      Tools.push_js(socket, root_id(@form_name_edit_item), 
+        %JS{} 
+        |> JS.hide(
+          to: "#edit_todo-existing_person_container",
+          #transition:  {
+          #  "ease-out duration-300",
+          #  "opacity-100", "opacity-0"
+          #}
+        )
+        |> JS.show(
+          to: "#edit_todo-new_person_container",
+          #transition:  {
+          #  "ease-out duration-300",
+          #  "opacity-0", "opacity-100"
+          #}
+        )
+      )
+      |> assign(%{is_new_person_open: true})
+      #|> push_event("set-value", %{id: "new-person-form-family-name", value: family_name})
+      #|> push_event("set-value", %{id: "new-person-form-submit-event", value: onsubmit})
+    end
+
+    {
+      :noreply, 
+      socket 
+    }
+  end
+
+
   @impl true 
   def handle_event(
     "edit_todo-new_person_selected",
     params,
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    IO.inspect("edit_todo-new_person_selected")
-    IO.inspect(params)
-    contact_person_id = params["contact_person_id"]
-
-    if String.ends_with?(contact_person_id, "-create-new") do
-      {:noreply, 
-        socket 
-        |> Auth2024Web.ConfirmNewPersonLive.show(
-          "confirm-new-person", 
-          nil,
-          "edit_todo_onperson"
-        )
-      }
-    else
-      {
-        :noreply,
-        socket
-      }
-    end
+    {
+      :noreply,
+      socket
+    }
   end
 
 
@@ -171,6 +213,7 @@ defmodule Auth2024Web.EditTodoLive do
         {:ok, item} ->
           case Todos.update_item_contact(user, item, %{:contact => contact_person}) do
             {:error, message} ->
+      
               IO.inspect("add error 2")
               IO.inspect(message)
               { :noreply, 
@@ -254,7 +297,8 @@ defmodule Auth2024Web.EditTodoLive do
     default_assigns = %{
       create_edit_todo_form: nil,
       edit_todo_form: Phoenix.Component.to_form(Item.create_changeset(%{})),
-      edit_todo_form_errors: []
+      edit_todo_form_errors: [],
+      is_new_person_open: false
     }
 
     socket = socket 

@@ -39,6 +39,7 @@ defmodule Auth2024Web.CoreComponents do
   """
   attr :id, :string, required: true
   attr :show, :boolean, default: false
+  attr :zIndex, :integer, default: 50
   attr :on_cancel, JS, default: %JS{}
   slot :inner_block, required: true
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the modal container"
@@ -50,7 +51,7 @@ defmodule Auth2024Web.CoreComponents do
       phx-mounted={@show && show_modal(@id)}
       phx-remove={hide_modal(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
-      class="relative z-50 hidden"
+      class={"relative z-#{@zIndex} hidden"}
       {@rest}
     >
       <div id={"#{@id}-bg"} class="bg-zinc-50/90 fixed inset-0 transition-opacity" aria-hidden="true" />

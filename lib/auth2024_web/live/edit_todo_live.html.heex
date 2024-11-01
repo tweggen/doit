@@ -17,17 +17,67 @@
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-caption"
         field={@edit_todo_form[:caption]} 
-        label="caption"
+        label="Caption"
       />
-      <Auth2024Web.SelectPersonComponent.combobox
-        id={"select-todo-item-contact-in_edit_todo_modal"}
-        module={Auth2024Web.SelectPersonComponent}
-        name="contact_person_id"
-        class="flex-1 truncate mt-2 block w-full rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
-        available_persons={@available_persons}
-        look="modal"
-        on_change="edit_todo-new_person_selected"
-      />
+      <div 
+        id="edit_todo-existing_person_container" 
+        class="flex flex-row items-center"
+      >
+        <Auth2024Web.SelectPersonComponent.combobox
+          id={"select-todo-item-contact-in_edit_todo_modal"}
+          module={Auth2024Web.SelectPersonComponent}
+          name="contact_person_id"
+          class="flex-1 truncate inline-block rounded-md border border-gray-300 bg-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm mr-1"
+          available_persons={@available_persons}
+          look="modal"
+          on_change="edit_todo-new_person_selected"
+        />
+        <label class="flex-0">&nbsp;or&nbsp;</label>
+        <Auth2024Web.CoreComponents.button 
+          class="flex-0" type="button"
+          phx-click="edit_todo-new_person"
+          phx-target={@myself}
+        >
+          New...
+        </Auth2024Web.CoreComponents.button>
+      </div>
+
+      <div 
+        id="edit_todo-new_person_container" 
+        class="flex flex-column hidden"
+      >
+        <div class="flex flex-row items-center">
+          <label class="flex-0">Enter details below</label>
+          <span class="flex-1"></span>
+          <label class="flex-0">&nbsp;or&nbsp;</label>          
+          <Auth2024Web.CoreComponents.button 
+            class="flex-0 py-0" type="button"
+            phx-click="edit_todo-new_person"
+            phx-target={@myself}
+          >
+            Use Existing...
+          </Auth2024Web.CoreComponents.button>
+        </div>
+
+        <Auth2024Web.CoreComponents.input 
+          id="edit_todo-email"
+          field={@edit_todo_form[:email]} 
+          label="Email"
+        />
+
+        <Auth2024Web.CoreComponents.input 
+          id="edit_todo-family_name"
+          field={@edit_todo_form[:family_name]} 
+          label="Family Name"
+        />
+
+        <Auth2024Web.CoreComponents.input 
+          id="edit_todo-given_name"
+          field={@edit_todo_form[:given_name]} 
+          label="Given Name"
+        />
+      </div>
+
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-due"
         type="date" 
@@ -36,10 +86,10 @@
       <Auth2024Web.CoreComponents.input  
         id="edit_todo-content"
         type="textarea"
-        rows="10"
+        rows="5"
         field={@edit_todo_form[:content]} 
         phx-hook="SetValue"
-        label="notes"
+        label="Notes"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-id"

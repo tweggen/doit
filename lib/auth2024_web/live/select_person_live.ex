@@ -45,12 +45,7 @@ defmodule Auth2024Web.SelectPersonComponent do
             <%= Tools.display_person_name(contact) %>                      
           </option>
         <% end %>
-        <option 
-          id={"#{@id}-createnew"}
-          value="-create-new"
-        > 
-          Create new...
-        </option>
+
       </select>
 
     """
