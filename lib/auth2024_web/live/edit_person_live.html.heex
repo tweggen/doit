@@ -16,16 +16,19 @@
     >
       <Auth2024Web.CoreComponents.input 
         id="edit_person-family_name"
+        phx-hook="SetValue"
         field={@edit_person_form[:family_name]} 
         label="family name"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_person-given_name"
+        phx-hook="SetValue"
         field={@edit_person_form[:given_name]} 
         label="given name"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_person-email"
+        phx-hook="SetValue"
         field={@edit_person_form[:email]} 
         label="email"
       />

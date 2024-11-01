@@ -363,7 +363,8 @@ defmodule Auth2024Web.PageLive do
       available_persons: Todos.list_persons!(socket.assigns.current_user),
     }
     #socket
-    {:noreply,
+    {
+      :noreply,
       socket
       |> save_edit_done(socket.assigns.editing_item, :contact, person)
       |> assign(new_assigns)
@@ -376,7 +377,8 @@ defmodule Auth2024Web.PageLive do
     socket
   ) do
     #socket
-    {:noreply,
+    {
+      :noreply,
       socket
       |> just_edit_done()
     }
@@ -388,7 +390,8 @@ defmodule Auth2024Web.PageLive do
     socket
   ) do
     #socket
-    {:noreply,
+    {
+      :noreply,
       socket
       |> just_edit_done()
     }
