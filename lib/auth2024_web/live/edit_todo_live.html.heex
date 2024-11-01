@@ -1,7 +1,7 @@
 <div id={"edit_todo_top-#{@id}"} class="top-2 right-2 fixed z-30">
   <Auth2024Web.CoreComponents.modal 
     id={"edit_todo_modal-#{@id}"}
-    phx-hook="ModalClogirt r"
+    phx-hook="ModalCloser"
   >
     <Auth2024Web.CoreComponents.header>
       <:subtitle>
@@ -17,7 +17,7 @@
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-caption"
         field={@edit_todo_form[:caption]} 
-        label="Caption"
+        placeholder="todo title"
       />
       <div 
         id="edit_todo-existing_person_container" 
@@ -62,19 +62,19 @@
         <Auth2024Web.CoreComponents.input 
           id="edit_todo-family_name"
           field={@edit_todo_form[:family_name]} 
-          label="Family Name"
+          placeholder="Family Name"
         />
 
         <Auth2024Web.CoreComponents.input 
           id="edit_todo-given_name"
           field={@edit_todo_form[:given_name]} 
-          label="Given Name"
+          placeholder="Given Name"
         />
 
         <Auth2024Web.CoreComponents.input 
           id="edit_todo-email"
           field={@edit_todo_form[:email]} 
-          label="Email"
+          placeholder="Email"
         />
 
       </div>
@@ -90,7 +90,7 @@
         rows="6"
         field={@edit_todo_form[:content]} 
         phx-hook="SetValue"
-        label="Notes"
+        placeholder="Notes"
       />
       <Auth2024Web.CoreComponents.input 
         id="edit_todo-id"
