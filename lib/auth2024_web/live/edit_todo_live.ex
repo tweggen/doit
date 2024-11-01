@@ -126,6 +126,7 @@ defmodule Auth2024Web.EditTodoLive do
           #  "opacity-0", "opacity-100"
           #}
         )
+        |> JS.focus(to: "#select-todo-item-contact-in_edit_todo_modal")        
       )
       |> assign(%{is_new_person_open: false})
     else
@@ -145,6 +146,7 @@ defmodule Auth2024Web.EditTodoLive do
           #  "opacity-0", "opacity-100"
           #}
         )
+        |> JS.focus(to: "#edit_todo-family_name")
       )
       |> assign(%{is_new_person_open: true})
       #|> push_event("set-value", %{id: "new-person-form-family-name", value: family_name})
