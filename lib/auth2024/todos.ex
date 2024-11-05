@@ -81,6 +81,9 @@ defmodule Auth2024.Todos do
 
   @doc false
   def add_item(user, attrs) do
+    IO.inspect("add_item")
+    IO.inspect(attrs)
+    IO.inspect(user)
     user
     |> Ecto.build_assoc(:todos, attrs)
     |> Repo.insert()

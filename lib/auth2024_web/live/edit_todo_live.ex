@@ -197,9 +197,9 @@ defmodule Auth2024Web.EditTodoLive do
     case should_create_new_person do
       true -> 
         IO.inspect("about to create new person")
-        family_name = params["family_name"]
-        given_name = params["given_name"]
-        email = params["email"]    
+        family_name = params[:family_name]
+        given_name = params[:given_name]
+        email = params[:email]    
         case Todos.possibly_add_person(user, email, family_name, given_name) do
           { -1, message } ->
             {
@@ -228,7 +228,9 @@ defmodule Auth2024Web.EditTodoLive do
     # existing we shall update, perform the database access.
 
     # add the person passed to us.
-    add_update_params = Map.put(add_update_params, "contact_person", person)
+    add_update_params = Map.put(add_update_params, :contact, person)
+
+    IO.inspect(add_update_params)
     case add_or_update_item(user, item_id, add_update_params) do
       {:error, message} ->
         IO.inspect("add error 1")
@@ -287,7 +289,6 @@ defmodule Auth2024Web.EditTodoLive do
 
     %{"item" => item_params, "contact_person_id" => contact_id_string} = params
 
-    IO.inspect(params)
     user = socket.assigns.current_user
     current_person = Todos.find_person_for_user(user)
     item_id = String.to_integer(item_params["id"])
@@ -298,15 +299,16 @@ defmodule Auth2024Web.EditTodoLive do
       if -1 == item_id do
         IO.inspect("About to create new item")
         %{
-          "status" => 0,
-          "author" => current_person,
-          "content" => item_params["content"],
-          "caption" => item_params["caption"],
-          "due" => due_date
+          status: 0,
+          author: current_person,
+          content: item_params["content"],
+          caption: item_params["caption"],
+          due: due_date
         }
       else
         IO.inspect("About to update item")
         item_params
+        |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
       end
 
     handle_fetch_or_create_person_then(socket, add_update_params, contact_id,
