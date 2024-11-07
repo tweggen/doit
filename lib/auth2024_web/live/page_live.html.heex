@@ -25,7 +25,7 @@
             </form>
           </div>
         </div>
-        <div class="flex-none w-28"></div>
+        <div class="flex-none w-28"><%= Float.to_string(Float.round(@percent_late), decimals: 0) %>% late</div>
       </li>
     </ul>
     <section class="flex-1 minh--0 min-w-0 overflow-y-scroll">
@@ -169,7 +169,7 @@
               </form>
             </div>
           </div>
-          <div class="flex-none w-28"></div>
+        <div class="flex-none w-28"><%= Float.to_string(Float.round(@percent_late), decimals: 0) %>% late</div>
         </div>
         <ul class="flex-none flex flex-row min-w-0 min-h-0 text-sm font-sm text-center text-gray-500 border-t border-gray-200 dark:border-gray-700 dark:text-gray-400">
           <li class="flex-grow-1 flex flex-col min-w-0 min-h-0">

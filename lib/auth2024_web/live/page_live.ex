@@ -60,10 +60,29 @@ defmodule Auth2024Web.PageLive do
   defp query_items(
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    Todos.list_items(
+    items = Todos.list_items(
       socket.assigns.current_user, 
       Todos.config_filter_by_value(socket.assigns.user_config),
       Todos.config_sort_by_column(socket.assigns.user_config)
+    )
+
+    {erl_date, _erl_time} = :calendar.local_time()
+    {:ok, date} = Date.from_erl(erl_date)
+    %{count: count, n_late: n_late} = Enum.reduce(
+      items, 
+      %{count: 0, n_late: 0},
+      fn item, acc -> %{
+        count: (if (item.status==0), do: acc.count + 1, else: acc.count),
+        n_late: (if item.status==0 && Date.compare(item.due, date) == :lt, do: acc.n_late+1, else: acc.n_late) 
+      }
+      end
+    )
+    socket 
+    |> assign(
+      items: items,
+      n_items: count,
+      n_late: n_late,
+      percent_late: (if count>0, do: n_late/count * 100, else: 0)
     )
   end
 
@@ -77,6 +96,7 @@ defmodule Auth2024Web.PageLive do
       current_person: nil,
       editing_item_datalist: [],
       items: nil,
+      percent_late: 0,
       available_persons: []
     }
   end
@@ -100,11 +120,11 @@ defmodule Auth2024Web.PageLive do
       user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
         current_person = Todos.find_person_for_user(user)
         user_config = Todos.find_config_for_user(user)
-        items = Todos.list_items(
-          user, 
-          Todos.config_filter_by_value(user_config),
-          Todos.config_sort_by_column(user_config)
-        )
+        #items = Todos.list_items(
+        #  user, 
+        #  Todos.config_filter_by_value(user_config),
+        #  Todos.config_sort_by_column(user_config)
+        #)
       {:ok, 
         socket 
         |> assign(default_assigns) 
@@ -113,10 +133,10 @@ defmodule Auth2024Web.PageLive do
             user_config: user_config,
             current_user: user,
             current_person: current_person,
-            items: items,
             available_persons: editing_contact_datalist(user, socket, ""),
             editing_item_values: empty_editing_item_values()
         )
+        |> query_items()
       }
     else
       _ -> {:ok, socket}
@@ -126,8 +146,8 @@ defmodule Auth2024Web.PageLive do
 
  def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
     socket = socket 
+      |> query_items()
       |> assign(
-      items: query_items(socket),
       editing_item: nil,
       editing_kind: nil,
       editing_item_datalist: [],
@@ -204,8 +224,8 @@ defmodule Auth2024Web.PageLive do
         }
       _ ->
         socket
+        |> query_items()
         |> assign(
-          items: query_items(socket), 
           active: %Item{}
         )
         Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
@@ -222,8 +242,9 @@ defmodule Auth2024Web.PageLive do
   ) do
     user = socket.assigns.current_user
     Todos.delete_item(user, Map.get(data, "item_id"))
-    socket = assign(socket, 
-      items: query_items(socket), 
+    socket = socket
+    |> query_items()
+    |> assign(
       active: %Item{}
     )
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
@@ -237,8 +258,9 @@ defmodule Auth2024Web.PageLive do
 	  status = if Map.has_key?(data, "value"), do: 1, else: 0
 	  item = Todos.get_item!(Map.get(data, "item_id"))
 	  Todos.update_item(user, item, %{status: status})
-    socket = assign(socket, 
-      items: query_items(socket), 
+    socket = socket
+    |> query_items()
+    |> assign(
       active: %Item{}
     )
     Auth2024Web.Endpoint.broadcast(@topic, "update", socket.assigns)
