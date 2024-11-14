@@ -73,7 +73,7 @@ defmodule Auth2024Web.PageLive do
       %{count: 0, n_late: 0},
       fn item, acc -> %{
         count: (if (item.status==0), do: acc.count + 1, else: acc.count),
-        n_late: (if item.status==0 && Date.compare(item.due, date) == :lt, do: acc.n_late+1, else: acc.n_late) 
+        n_late: (if item.status==0 && Date.compare(item.due, date) == :lt && item.due.day != date.day, do: acc.n_late+1, else: acc.n_late) 
       }
       end
     )
