@@ -473,4 +473,9 @@ defmodule Auth2024Web.PageLive do
     "form-todo-item-due-#{item.id}"
   end
 
+
+  def form_todo_contact_due_id(contact) do
+    "form-todo-contact-due-#{contact.id}"
+  end
+
 end

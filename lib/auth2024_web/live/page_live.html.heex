@@ -40,13 +40,34 @@
         <Auth2024Web.GroupingComponent.for_items :let={item} items={@items} sort_by_column={Todos.config_sort_by_column(@user_config)}>
           <:header :let={group_header}>
             <%= if Todos.config_sort_by_column(@user_config) == "contact" do %>
-              <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
-                <%= Tools.display_person_name(group_header) %>
-                &nbsp;
-                <span phx-click="on-header-click" phx-value-header={group_header.id}>
-                  <.icon name="hero-plus-solid" class="h-4 w-4"/>
-                </span>
-              </p>
+              <div class="flex-none flex flex-row min-w-0 min-h-0">
+                <div class="flex-1 flex min-w-0 min-h-0">
+                  <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
+                    <%= Tools.display_person_name(group_header) %>
+                    &nbsp;
+                    <span phx-click="on-header-click" phx-value-header={group_header.id}>
+                      <.icon name="hero-plus-solid" class="h-4 w-4"/>
+                    </span>
+                  </p>
+                </div>
+                <div class="flex-1 flex min-w-0 min-h-0">
+                  <form 
+                    phx-submit="submit-todo-item-due" 
+                    id={form_todo_contact_due_id(group_header)}>
+                    <input 
+                      type="date" 
+                      name="duedate"
+                      class="w-24 text-xs border-none text-gray-900 sm:text-sm p-0" 
+                      phx-change="validate-todo-item-due"
+                      phx-blur={JS.dispatch("submit", to: "#" <> form_todo_contact_due_id(group_header))}
+                      phx-select={JS.dispatch("submit", to: "#" <> form_todo_contact_due_id(group_header))}
+                      value=""
+                    />
+                    <button class="" type="button">&gt;&gt;</button>
+                    <input type="hidden" name="contact_id" value={group_header.id}/>
+                  </form>
+                </div>
+              </div>
             <% else %>
               <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
                 <%= group_header %>
@@ -131,7 +152,7 @@
                   <button class="" type="button">&gt;&gt;</button>
                   <input type="hidden" name="item_id" value={item.id}/>
                 </form>
-             </div>
+              </div>
             </div>
           </li>
         </Auth2024Web.GroupingComponent.for_items>
