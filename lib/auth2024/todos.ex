@@ -106,6 +106,13 @@ defmodule Auth2024.Todos do
 
 
   @doc false
+  def update_person_due(user, contact_id, duedate) do
+    person_items = from(i in Item, where: i.user_id == ^user.id and i.contact_id == ^contact_id)
+    Repo.update_all(person_items, set: [due: duedate])
+  end
+
+
+  @doc false
   def find_person_for_user(user) do
     case Repo.get_by(Person, [user_id: user.id, owning_user_id: user.id]) do
       nil ->

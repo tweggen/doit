@@ -283,6 +283,22 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_event(
+    "submit-todo-contact-due", 
+    %{"contact_id" => contact_id, "duedate" => datetext}, 
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    user = socket.assigns.current_user
+    Todos.update_person_due(user, contact_id, datetext)
+    Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
+    {
+      :noreply,
+      socket 
+      |> query_items()
+    }
+  end
+
+
+  def handle_event(
     "on-header-click",
     params,
     %Phoenix.LiveView.Socket{} = socket
