@@ -21,11 +21,12 @@ defmodule Auth2024.Todo.Note do
     belongs_to :tag, Tag
 
     # What do I want to note here?
-    field :content, :text
+    field :content, :string
 
     timestamps(type: :utc_datetime)
   end
 
+  
   @doc false
   def create_changeset(attrs, user_id) do
     %__MODULE__{}

@@ -1,6 +1,7 @@
 defmodule Auth2024Web.PersonsLive do
   use Auth2024Web, :live_view
   alias Auth2024.Todos
+  alias Auth2024.Todos.Persons
   alias Auth2024Web.Tools
  
   @topic "person_live"
