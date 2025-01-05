@@ -61,15 +61,11 @@
                       phx-change="validate-todo-item-due"
                       value=""
                     />
-<<<<<<< HEAD
-                    <button class="" type="button">bla&gt;&gt;</button>
-=======
                     <button 
                       class="" 
                       type="button"
                       phx-click={JS.dispatch("submit", to: "#" <> form_todo_contact_due_id(group_header))}
                     >for all</button>
->>>>>>> 150606bae55f43584b6b5f5752633e27bdac1c5e
                     <input type="hidden" name="contact_id" value={group_header.id}/>
                   </form>
                 </div>
