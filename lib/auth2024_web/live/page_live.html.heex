@@ -52,18 +52,24 @@
                 </div>
                 <div class="flex-1 flex min-w-0 min-h-0">
                   <form 
-                    phx-submit="submit-todo-item-due" 
+                    phx-submit="submit-todo-contact-due" 
                     id={form_todo_contact_due_id(group_header)}>
                     <input 
                       type="date" 
                       name="duedate"
                       class="w-24 text-xs border-none text-gray-900 sm:text-sm p-0" 
                       phx-change="validate-todo-item-due"
-                      phx-blur={JS.dispatch("submit", to: "#" <> form_todo_contact_due_id(group_header))}
-                      phx-select={JS.dispatch("submit", to: "#" <> form_todo_contact_due_id(group_header))}
                       value=""
                     />
+<<<<<<< HEAD
                     <button class="" type="button">bla&gt;&gt;</button>
+=======
+                    <button 
+                      class="" 
+                      type="button"
+                      phx-click={JS.dispatch("submit", to: "#" <> form_todo_contact_due_id(group_header))}
+                    >for all</button>
+>>>>>>> 150606bae55f43584b6b5f5752633e27bdac1c5e
                     <input type="hidden" name="contact_id" value={group_header.id}/>
                   </form>
                 </div>
