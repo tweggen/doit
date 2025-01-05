@@ -273,6 +273,7 @@ defmodule Auth2024Web.PageLive do
     %{"item_id" => item_id, "duedate" => datetext}, 
     %Phoenix.LiveView.Socket{} = socket
   ) do
+    IO.inspect("Called submit-todo-item-due")
     {
       :noreply, 
       socket
