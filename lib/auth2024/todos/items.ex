@@ -1,4 +1,4 @@
-defmodule Auto2024.Todos.Items do
+defmodule Auth2024.Todos.Items do
   @moduledoc false
 
   import Ecto.Query, warn: false

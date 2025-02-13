@@ -3,6 +3,7 @@ defmodule Auth2024Web.PageLive do
   alias Phoenix.LiveView.JS
   alias Auth2024.Todo.{Item}
   alias Auth2024.Todos
+  alias Auth2024Web.ItemList
   alias Auth2024Web.Tools
 
   alias Auth2024Web.ItemHandler
@@ -46,52 +47,6 @@ defmodule Auth2024Web.PageLive do
       persons
     end
     persons
-  end
-
-
-  # This is specific for caption
-  defp default_editing_item_values(
-    %Phoenix.LiveView.Socket{} = socket, text
-  ) do
-    {erl_date, _erl_time} = :calendar.local_time()
-    {:ok, date} = Date.from_erl(erl_date)
-    %{
-      caption: text,
-      status: 0,
-      author: socket.assigns.current_person,
-      contact: socket.assigns.current_person,
-      due: date
-    }
-  end
-
-
-  defp query_items(
-    %Phoenix.LiveView.Socket{} = socket
-  ) do
-    items = Todos.list_items(
-      socket.assigns.current_user, 
-      Todos.config_filter_by_value(socket.assigns.user_config),
-      Todos.config_sort_by_column(socket.assigns.user_config)
-    )
-
-    {erl_date, _erl_time} = :calendar.local_time()
-    {:ok, date} = Date.from_erl(erl_date)
-    %{count: count, n_late: n_late} = Enum.reduce(
-      items, 
-      %{count: 0, n_late: 0},
-      fn item, acc -> %{
-        count: (if (item.status==0), do: acc.count + 1, else: acc.count),
-        n_late: (if item.status==0 && Date.compare(item.due, date) == :lt && item.due.day != date.day, do: acc.n_late+1, else: acc.n_late) 
-      }
-      end
-    )
-    socket 
-    |> assign(
-      items: items,
-      n_items: count,
-      n_late: n_late,
-      percent_late: (if count>0, do: n_late/count * 100, else: 0)
-    )
   end
 
 
@@ -144,7 +99,7 @@ defmodule Auth2024Web.PageLive do
             available_persons: editing_contact_datalist(user, socket, ""),
             editing_item_values: empty_editing_item_values()
         )
-        |> query_items()
+        |> ItemList.query_items()
       }
     else
       _ -> {:ok, socket}
@@ -154,7 +109,7 @@ defmodule Auth2024Web.PageLive do
 
  def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
     socket = socket 
-      |> query_items()
+      |> ItemList.query_items()
       |> assign(
       editing_item: nil,
       editing_kind: nil,
@@ -191,29 +146,6 @@ defmodule Auth2024Web.PageLive do
   end
 
 
-  @doc """
-  Find associated data with the new value in the database or other
-  sources, possibly cancelling the edit or opening a modal user flow.
-
-  This function either terminates the flow or continues using a modal
-  or calls save_edit_done.
-
-  returns socket
-  """
-  def find_edit_done(
-    %Phoenix.LiveView.Socket{} = socket, 
-    item_id,
-    kind, 
-    value
-  ) do
-    # user = socket.assigns.current_user
-    # current_item = Todos.get_item!(socket.assigns.editing_item)
-    case kind do
-      :due ->
-        socket |> save_edit_done(item_id, kind, value)
-    end
-  end
-
   # TXWTODO: A proper validation path is missing, we are directly going into the
   # save path, treating validation as a special case.
 
@@ -229,7 +161,7 @@ defmodule Auth2024Web.PageLive do
     {
       :noreply,
       socket 
-      |> query_items()
+      |> ItemList.query_items()
     }
   end
 

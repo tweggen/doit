@@ -5,9 +5,34 @@ defmodule Auth2024Web.ItemHandler do
   import Phoenix.LiveView, only: [push_event: 3]
   
   alias Auth2024.Todo.{Item}
+  alias Auth2024Web.ItemList
 
 
   @topic "page_live"
+
+  @doc """
+  Find associated data with the new value in the database or other
+  sources, possibly cancelling the edit or opening a modal user flow.
+
+  This function either terminates the flow or continues using a modal
+  or calls save_edit_done.
+
+  returns socket
+  """
+  defp find_edit_done(
+    %Phoenix.LiveView.Socket{} = socket, 
+    item_id,
+    kind, 
+    value
+  ) do
+    # user = socket.assigns.current_user
+    # current_item = Todos.get_item!(socket.assigns.editing_item)
+    case kind do
+      :due ->
+        socket |> PageLive.save_edit_done(item_id, kind, value)
+    end
+  end
+
 
   def submit_todo_item_due(
         %{"item_id" => item_id, "duedate" => datetext},
@@ -28,7 +53,7 @@ defmodule Auth2024Web.ItemHandler do
         %{"text" => text},
         %Phoenix.LiveView.Socket{} = socket
       ) do
-    case Todos.add_item(socket.assigns.current_user, default_editing_item_values(socket, text)) do
+    case Todos.add_item(socket.assigns.current_user, ItemList.default_editing_item_values(socket, text)) do
       {:ok, item} ->
         {:noreply,
           socket
@@ -36,7 +61,7 @@ defmodule Auth2024Web.ItemHandler do
         }
       _ ->
         socket
-        |> query_items()
+        |> ItemList.query_items()
         |> assign(
              active: %Item{}
            )
@@ -54,7 +79,7 @@ defmodule Auth2024Web.ItemHandler do
     user = socket.assigns.current_user
     Todos.delete_item(user, Map.get(data, "item_id"))
     socket = socket
-             |> query_items()
+             |> ItemList.query_items()
              |> assign(
                   active: %Item{}
                 )
@@ -70,7 +95,7 @@ defmodule Auth2024Web.ItemHandler do
     item = Todos.get_item!(Map.get(data, "item_id"))
     Todos.update_item(user, item, %{status: status})
     socket = socket
-             |> query_items()
+             |> ItemList.query_items()
              |> assign(
                   active: %Item{}
                 )

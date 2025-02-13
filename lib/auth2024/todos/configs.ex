@@ -1,4 +1,4 @@
-defmodule Configs do
+defmodule Auth2024.Todos.Configs do
   @moduledoc false
 
   import Ecto.Query, warn: false
