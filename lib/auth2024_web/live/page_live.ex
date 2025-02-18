@@ -20,9 +20,9 @@ defmodule Auth2024Web.PageLive do
   
   @impl true
   def handle_event("submit-todo-item-due", params, socket), do: ItemHandler.submit_todo_item_due(socket, params)
-  def handle_event("create", params, socket), do: ItemHandler.create(socket, params)
-  def handle_event("delete", params, socket), do: ItemHandler.delete(socket, params)
-  def handle_event("toggle", params, socket), do: ItemHandler.toggle(socket, params)
+  def handle_event("create", params, socket), do: ItemHandler.create(params, socket)
+  def handle_event("delete", params, socket), do: ItemHandler.delete(params, socket)
+  def handle_event("toggle", params, socket), do: ItemHandler.toggle(params, socket)
 
   defp empty_editing_item_values() do
     %{caption: nil}
