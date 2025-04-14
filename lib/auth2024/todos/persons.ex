@@ -3,7 +3,7 @@ defmodule Auth2024.Todos.Persons do
 
   import Ecto.Query, warn: false
   alias Auth2024.Repo
-  alias Auth2024.Todo.{Person}
+  alias Auth2024.Todo.{Item,Person}
 
   
   def get_person!(id), do: Repo.get!(Person, id)
