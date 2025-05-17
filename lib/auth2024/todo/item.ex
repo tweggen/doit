@@ -22,7 +22,9 @@ defmodule Auth2024.Todo.Item do
   
 
   def get_item_duestate(item) do
-    if item.status==0 && item.due != nil do && date != nil do
+    {erl_date, _erl_time} = :calendar.local_time()
+    {:ok, date} = Date.from_erl(erl_date)
+    if item.status==0 && item.due != nil && date != nil do
       comp = Date.compare(item.due, date)
       if comp == :lt do
         if item.due.day != date.day do
@@ -39,9 +41,8 @@ defmodule Auth2024.Todo.Item do
           0
         end      
       end
-     end
-   end
-   0
+    end
+    0
   end
 
   @doc false
