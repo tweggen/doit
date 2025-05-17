@@ -90,8 +90,14 @@
                   <input class="toggle" type="checkbox" phx-value-item_id={item.id} phx-click="toggle" 
                   />
                 <% end %>
-                <!-- span class="text-yellow-400">&#x2022;</span -->
-                <span class="text-red-600">&#x2022;</span>
+                <%= case Auth2024.Todo.Item.get_item_duestate(item) do %>
+                  <% 0 -> %>
+                    <span></span>
+                  <% 1 -> %>
+                    <span class="text-yellow-400">&#x2022;</span>
+                  <% 2 -> %>
+                    <span class="text-red-600">&#x2022;</span>
+                <% end %>
               </div>
             </div>
             <div 

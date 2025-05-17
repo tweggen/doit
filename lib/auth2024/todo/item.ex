@@ -36,13 +36,16 @@ defmodule Auth2024.Todo.Item do
         end
       else
         if item.due.day != date.day do
-          1
-        else
+          # if the days do not match, this is older
           0
+        else
+          # the days are the same, so it is noticable
+          1
         end      
       end
+    else
+      0
     end
-    0
   end
 
   @doc false
