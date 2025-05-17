@@ -20,6 +20,30 @@ defmodule Auth2024.Todo.Item do
     timestamps(type: :utc_datetime)
   end
   
+
+  def get_item_duestate(item) do
+    if item.status==0 && item.due != nil do && date != nil do
+      comp = Date.compare(item.due, date)
+      if comp == :lt do
+        if item.due.day != date.day do
+          # This is late, is from yesterday or earlier
+          2
+        else
+          # This is from today, is from yesterday or earlier
+          1
+        end
+      else
+        if item.due.day != date.day do
+          1
+        else
+          0
+        end      
+      end
+     end
+   end
+   0
+  end
+
   @doc false
   def create_changeset(attrs) do
     %__MODULE__{}
