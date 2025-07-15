@@ -7,6 +7,7 @@
         {
             "type": "mix_task",
             "name": "phx.server",
+            "task": "phx.server",
             "request": "launch",
             "projectDir": "${workspaceRoot}",
             "debugAutoInterpretAllModules": false,
@@ -14,21 +15,5 @@
             "exitAfterTaskReturns": false,
             "excludeModules": [":bcrypt_elixir",]
         },
-        {
-            "type": "mix_task",
-            "name": "mix test",
-            "request": "launch",
-            "task": "test",
-            "taskArgs": [
-                "--trace"
-            ],
-            "startApps": true,
-            "projectDir": "${workspaceRoot}",
-            "requireFiles": [
-                "test/**/test_helper.exs",
-                "test/**/*_test.exs"
-            ],
-
-        }
     ]
 }
