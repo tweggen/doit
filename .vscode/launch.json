@@ -13,7 +13,7 @@
             "debugAutoInterpretAllModules": false,
             "debugInterpretModulesPatterns": ["Auth2024*", "Auth2024Web*"],
             "exitAfterTaskReturns": false,
-            "excludeModules": [":bcrypt_elixir",]
+            "excludeModules": [":bcrypt_elixir"],
         },
     ]
 }

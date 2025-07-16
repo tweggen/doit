@@ -13,7 +13,7 @@ defmodule Auth2024.Todos do
   
   defdelegate get_item!(id), to: Items
   defdelegate list_items_normalized(user, filter_by_value, sort_by_column), to: Items
-  defdelegate list_items(user, filter_by_value, sort_by_column), to: Items
+  defdelegate list_items(user, filter_by_value, solo_contact, sort_by_column), to: Items
   defdelegate hydrate_item(item), to: Items
   defdelegate add_item(user, attrs), to: Items
   defdelegate update_item(_user, item, attrs), to: Items

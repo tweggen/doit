@@ -27,7 +27,7 @@ defmodule Auth2024.Todos.Items do
   end
   
 
-  def list_items(user, filter_by_value, sort_by_column) do
+  def list_items(user, filter_by_value, solo_contact, sort_by_column) do
     # We have different base queries depending on if we order by date
     # or by user, eventually grouping by each.
     case sort_by_column do

@@ -7,6 +7,8 @@ import Config
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
+DotenvParser.load_file("dev_oauth2.env")
+
 # ## Using releases
 #
 # If you use `mix release`, you need to explicitly enable the server

@@ -60,7 +60,8 @@ defmodule Auth2024Web.PageLive do
       editing_item_datalist: [],
       items: nil,
       percent_late: 0,
-      available_persons: []
+      available_persons: [],
+      solo_contact: nil
     }
   end
 
@@ -82,11 +83,6 @@ defmodule Auth2024Web.PageLive do
     with token when is_bitstring(token) <- session["user_token"], user when not is_nil(user) <- Auth2024.Accounts.get_user_by_session_token(token) do
       current_person = Todos.find_person_for_user(user)
       user_config = Todos.find_config_for_user(user)
-      #items = Todos.list_items(
-      #  user, 
-      #  Todos.config_filter_by_value(user_config),
-      #  Todos.config_sort_by_column(user_config)
-      #)
       {:ok, 
         socket 
         |> assign(default_assigns) 
@@ -166,11 +162,31 @@ defmodule Auth2024Web.PageLive do
 
 
   def handle_event(
+    "on-solo-click",
+    params,
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    socket =
+      case Todos.config_sort_by_column(socket.assigns.user_config) do
+        "date" -> socket
+        "contact" ->
+          assign(socket, 
+            solo_contact: 
+              case socket.assigns.solo_contact do
+                nil -> params["header"]
+                _ -> nil          
+              end
+          ) 
+      end
+    {:noreply, socket}
+  end
+
+
+  def handle_event(
     "on-header-click",
     params,
     %Phoenix.LiveView.Socket{} = socket
   ) do
-    IO.inspect(params)
     socket = socket |> Auth2024Web.EditTodoLive.show(
       -1,
       case Todos.config_sort_by_column(socket.assigns.user_config) do
@@ -231,7 +247,7 @@ defmodule Auth2024Web.PageLive do
       {:noreply,
         assign(socket,
           user_config: user_config,
-          items: Todos.list_items(user, new_filter_by_value, new_sort_by_column)
+          items: Todos.list_items(user, new_filter_by_value, nil, new_sort_by_column)
         )
       }
     else

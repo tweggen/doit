@@ -28,6 +28,7 @@ defmodule Auth2024Web.ItemList do
       items = Todos.list_items(
         socket.assigns.current_user, 
         Todos.config_filter_by_value(socket.assigns.user_config),
+        socket.assigns.solo_contact,
         Todos.config_sort_by_column(socket.assigns.user_config)
       )
 
