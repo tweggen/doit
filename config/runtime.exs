@@ -7,8 +7,6 @@ import Config
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
-DotenvParser.load_file("dev_oauth2.env")
-
 # ## Using releases
 #
 # If you use `mix release`, you need to explicitly enable the server
@@ -130,4 +128,6 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+else
+  DotenvParser.load_file("dev_oauth2.env")
 end
