@@ -44,12 +44,13 @@
                 <div class="flex-1 flex min-w-0 min-h-0">
                   <p class="flex-0 text-xs font-semibold py-2 text-gray-400">
                     <%= Tools.display_person_name(group_header) %>
-                    &nbsp;
-                    <span phx-click="on-header-click" phx-value-header={group_header.id}>
-                      <.icon name="hero-plus-solid" class="h-4 w-4"/>
-                    </span>
+                    &nbsp;&nbsp;
                     <span phx-click="on-solo-click" phx-value-header={group_header.id}>
                       <.icon name="hero-arrows-pointing-out-solid" class="h-4 w-4"/>
+                    </span>
+                    &nbsp;&nbsp;
+                    <span phx-click="on-header-click" phx-value-header={group_header.id}>
+                      <.icon name="hero-plus-solid" class="h-4 w-4"/>
                     </span>
                   </p>
                 </div>

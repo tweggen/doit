@@ -161,6 +161,11 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  @doc """
+  The solo icon has been clicked.
+  Adjust the filter for list accordingly: It is was nil,
+  set it to the user which we clicked, set it to nil otherwise.
+  """
   def handle_event(
     "on-solo-click",
     params,
@@ -170,13 +175,16 @@ defmodule Auth2024Web.PageLive do
       case Todos.config_sort_by_column(socket.assigns.user_config) do
         "date" -> socket
         "contact" ->
-          assign(socket, 
-            solo_contact: 
-              case socket.assigns.solo_contact do
-                nil -> params["header"]
-                _ -> nil          
-              end
-          ) 
+          socket = assign(socket,
+              solo_contact: 
+                case socket.assigns.solo_contact do
+                  nil -> params["header"]
+                  _ -> nil          
+                end
+            )
+          socket = assign(socket,
+              items: page_item_list(socket)
+            )
       end
     {:noreply, socket}
   end
@@ -214,6 +222,22 @@ defmodule Auth2024Web.PageLive do
   end
 
 
+  @doc """
+  Return the item list as requested by the current configuration
+  """
+  def page_item_list(
+    %Phoenix.LiveView.Socket{} = socket
+  ) do
+    user = socket.assigns.current_user
+    user_config = socket.assigns.user_config
+
+    filter_by_value = Todos.config_filter_by_value(user_config)
+    sort_by_column = Todos.config_sort_by_column(user_config)
+
+    Todos.list_items(user, filter_by_value, socket.assigns.solo_contact, sort_by_column)
+  end
+
+
   @impl true
   def handle_params(
     params, 
@@ -244,12 +268,10 @@ defmodule Auth2024Web.PageLive do
           user_config
         end
 
-      {:noreply,
-        assign(socket,
-          user_config: user_config,
-          items: Todos.list_items(user, new_filter_by_value, nil, new_sort_by_column)
-        )
-      }
+
+      socket = assign(socket, user_config: user_config)
+      socket = assign(socket, items: page_item_list(socket))
+      {:noreply, socket}
     else
       {:noreply, socket}
     end

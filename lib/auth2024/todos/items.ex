@@ -27,6 +27,13 @@ defmodule Auth2024.Todos.Items do
   end
   
 
+  @doc """
+  Create the list of items based on hte current configuration.
+  This consideres:
+  - assigns.current_user
+  - assigns.solo_contact
+  - sort/filter configuration from assigns.user_config
+  """
   def list_items(user, filter_by_value, solo_contact, sort_by_column) do
     # We have different base queries depending on if we order by date
     # or by user, eventually grouping by each.
@@ -40,6 +47,7 @@ defmodule Auth2024.Todos.Items do
     end
     |> where([a], a.user_id == ^user.id)
     |> QueryFilters.apply_filter(filter_by_value)
+    |> QueryFilters.apply_solo(solo_contact)
     |> Repo.all()
     |> Repo.preload([:contact, :author, :user])
   end
