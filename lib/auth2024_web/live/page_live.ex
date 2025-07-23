@@ -178,14 +178,16 @@ defmodule Auth2024Web.PageLive do
           socket = assign(socket,
               solo_contact: 
                 case socket.assigns.solo_contact do
-                  nil -> params["header"]
+                  nil -> String.to_integer(params["header"])
                   _ -> nil          
                 end
             )
           socket = assign(socket,
               items: page_item_list(socket)
             )
+          socket
       end
+    Auth2024Web.Endpoint.broadcast_from(self(), @topic, "update", socket.assigns)
     {:noreply, socket}
   end
 

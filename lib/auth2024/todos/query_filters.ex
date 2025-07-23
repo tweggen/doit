@@ -16,7 +16,7 @@ defmodule Auth2024.Todos.QueryFilters do
   - "completed", "all" or "active" values shall be displayed.
   """
   def apply_solo(query, filter_by_value) do
-    where(query, [a], a.user_id == ^filter_by_value)
+    where(query, [a], a.contact_id == ^filter_by_value)
   end
 
   @doc """
