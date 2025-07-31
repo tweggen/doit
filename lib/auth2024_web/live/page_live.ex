@@ -101,8 +101,10 @@ defmodule Auth2024Web.PageLive do
     end
   end
 
-
- def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
+  @doc """
+  Deactivate any item that currently is edited
+  """
+  def cancel_edit_item(%Phoenix.LiveView.Socket{} = socket) do
     socket = socket 
       |> ItemList.query_items()
       |> assign(
@@ -137,7 +139,7 @@ defmodule Auth2024Web.PageLive do
         Todos.update_item_contact(user, current_item, %{:contact => value})
         #Todos.update_item(user, current_item, Tools.easy_changeset_attrs(kind, value))
     end
-    socket |> just_edit_done()
+    socket |> cancel_edit_item()
   end
 
 
@@ -329,7 +331,7 @@ defmodule Auth2024Web.PageLive do
     {
       :noreply,
       socket
-      |> just_edit_done()
+      |> cancel_edit_item()
     }
   end
 
@@ -342,7 +344,7 @@ defmodule Auth2024Web.PageLive do
     {
       :noreply,
       socket
-      |> just_edit_done()
+      |> cancel_edit_item()
     }
   end
 

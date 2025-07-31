@@ -12,7 +12,7 @@ defmodule Auth2024Web.PersonsLive do
   end
 
 
-  def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
+  def cancel_edit_item(%Phoenix.LiveView.Socket{} = socket) do
     socket = socket 
       |> assign(
       persons: Todos.list_persons!(
@@ -66,7 +66,7 @@ defmodule Auth2024Web.PersonsLive do
     {
       :noreply,
       socket
-      |> just_edit_done()
+      |> cancel_edit_item()
     }
   end
 

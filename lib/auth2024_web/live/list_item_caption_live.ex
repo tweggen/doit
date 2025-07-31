@@ -21,8 +21,8 @@ defmodule Auth2024Web.ListItemCaptionLive do
   end
 
 
-  def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
-    IO.inspect("list_item_caption_just_edit_done")
+  def cancel_edit_item(%Phoenix.LiveView.Socket{} = socket) do
+    IO.inspect("list_item_caption_cancel_edit_item")
     socket |> assign(empty_assigns())
   end
 
@@ -62,7 +62,7 @@ defmodule Auth2024Web.ListItemCaptionLive do
       value: value
     } )
 
-    socket |> just_edit_done()
+    socket |> cancel_edit_item()
   end
 
 

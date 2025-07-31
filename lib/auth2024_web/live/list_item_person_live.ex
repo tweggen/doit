@@ -22,7 +22,7 @@ defmodule Auth2024Web.ListItemPersonLive do
   end
 
 
-  def just_edit_done(%Phoenix.LiveView.Socket{} = socket) do
+  def cancel_edit_item(%Phoenix.LiveView.Socket{} = socket) do
     socket = socket 
     |> assign(empty_assigns())
     socket
@@ -64,7 +64,7 @@ defmodule Auth2024Web.ListItemPersonLive do
         value: value
       } )
     end
-    socket |> just_edit_done()
+    socket |> cancel_edit_item()
   end
 
 
